@@ -1,7 +1,8 @@
 # SchoolConnect
 ## Overview
-SchoolConnect is an online platform where high schools can connect with their students online. Our main features are listed below.
+SchoolConnect is an online platform where high schools can connect with their students online. Teachers and Students will be part of class rooms where they will be able to share class material and chat with eachother. Students also will be able to organize their schedules via a built in calender and view volunteering postions as well as join clubs!
 
+A Description of our main features are listed below.
 
 ### Account Types
 There will be three types of accounts:
@@ -44,7 +45,7 @@ There will be three types of accounts:
     
 2.  Sign In for teachers (requires email + password)
     
-3.  School account creation requires email + password + code)
+3.  School account creation (requires email + password + code)
     
 
 ### Calendar Feature
