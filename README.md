@@ -4,6 +4,9 @@ SchoolConnect is an online platform where high schools can connect with their st
 
 A description of our main features are listed below.
 
+## Developers:
+Rakshit Patel (rakshit.patel@mail.utoronto.ca)
+
 ### Account Types
 There will be three types of accounts:
     
