@@ -19,7 +19,7 @@ There will be three types of accounts:
 
 	-   Can only be created by a school account
     
-	-   As CRUD abilities for calendar events, classes and clubs
+	-   Has CRUD abilities for calendar events, classes and clubs
     
 
 3.  School Account
