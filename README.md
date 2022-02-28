@@ -1,8 +1,8 @@
 # SchoolConnect
 
 ## Developers:
-Rakshit Patel (rakshit.patel@mail.utoronto.ca)
-Yusuf Khan (yusuf.khan@mail.utoronto.ca)
+- Rakshit Patel (rakshit.patel@mail.utoronto.ca)
+- Yusuf Khan (yusuf.khan@mail.utoronto.ca)
 
 ## Overview
 SchoolConnect is an online platform where high schools can connect with their students online. Teachers and Students will be part of class rooms where they will be able to share class material and chat with each other. Students also will be able to organize their schedules via a built in calender and view volunteering postions as well as join clubs!
