@@ -30,7 +30,7 @@ type Query {
 }
 
 type Mutation {
-    signin(username: String, password: String): String
+    signin(email: String, password: String): String
     signup(input: UserInput): String
 }
 `);
@@ -38,14 +38,22 @@ type Mutation {
 let root = {
     signup: ({ input }, request) => {
         User.findOne({email: input.email}, (err, item) => {
+            if (item) return;
             bcrypt.hash(input.hash, 10, (err, hash) => {
-                console.log(hash);
                 User.create({firstName: input.firstName, lastName: input.lastName, email: input.email, hash, type: input.type},
                     (err, res) => {
                         request.session.user = res.email;
                     });
             });
         });   
+    },
+    signin: ({ email, password }, request) => {
+        User.findOne({email}, (err, item) => {
+            if (!item) return;
+            bcrypt.compare(password, item.hash, (err, result) => {
+                request.session.user = email;
+            });
+        });
     }
 }
 
@@ -55,7 +63,7 @@ db.connect();
 let app = express();
 
 app.use(session({
-    secret: 'test',
+    secret: process.env.PASSWORD_SECRET,
     resave: false,
     saveUninitialized: true,
 }));
