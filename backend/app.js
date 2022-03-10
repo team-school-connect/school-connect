@@ -5,6 +5,7 @@ const http = require('http');
 const User = require('./models/User');
 const db = require("./db");
 const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
 
 const typeDefs = gql`
   type MutationResponse {
@@ -31,6 +32,7 @@ const typeDefs = gql`
 
   type Mutation {
       signup(firstName: String, lastName: String, email: String, password: String): MutationResponse
+      signin(email: String, password: String): MutationResponse
   }
 `;
 
@@ -43,7 +45,10 @@ const resolvers = {
             const { firstName, lastName, email, password } = args;
             return User.findOne({email})
             .then(item => {
-                if (!item) return User.create({firstName, lastName, email, password});
+                if (!item) return bcrypt.hash(password, 10);
+            })
+            .then(hash => {
+                if (hash) return User.create({firstName, lastName, email, hash})
             })
             .then(item => {
                 console.log(item);
@@ -51,6 +56,17 @@ const resolvers = {
                 return {code: 200, success: true, message: 'user created'};
             })
             .catch(err => ({code: 500, success: false, message: err}));
+        },
+        signin: (parent, args) => {
+          const { email, password } = args;
+          return User.findOne({email})
+          .then(item => {
+            if (item) return bcrypt.compare(password, item.hash);
+          })
+          .then(result => {
+            if (!result) return {code: 404, success: false, message: 'access denied'};
+            return {code: 200, success: true, message: 'user logged in'};
+          })
         }
     }
   };
