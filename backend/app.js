@@ -1,6 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const express = require('express');
+const session = require('express-session');
 const http = require('http');
 const User = require('./models/User');
 const db = require("./db");
@@ -27,7 +28,7 @@ const typeDefs = gql`
   }
 
   type Query {
-      getAllUsers: [User]
+      checkLogin: String
   }
 
   type Mutation {
@@ -38,10 +39,14 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        getAllUsers: () => users,
+        checkLogin: (parent, args, context) => {
+          console.log(context.session);
+          if (context.session.user) return `user logged in ${context.session.user.email}`;
+          return 'user not logged in';
+        },
     },
     Mutation: {
-        signup: (parent, args) => {
+        signup: (parent, args, context) => {
             const { firstName, lastName, email, password } = args;
             return User.findOne({email})
             .then(item => {
@@ -51,19 +56,24 @@ const resolvers = {
                 if (hash) return User.create({firstName, lastName, email, hash})
             })
             .then(item => {
-                console.log(item);
+                context.session.user = item;
                 if (!item) return {code: 400, success: false, message: 'user already exists'};
                 return {code: 200, success: true, message: 'user created'};
             })
             .catch(err => ({code: 500, success: false, message: err}));
         },
-        signin: (parent, args) => {
+        signin: (parent, args, context) => {
           const { email, password } = args;
+          let currentUser;
           return User.findOne({email})
           .then(item => {
-            if (item) return bcrypt.compare(password, item.hash);
+            if (item) {
+              currentUser = item;
+              return bcrypt.compare(password, item.hash);
+            }
           })
           .then(result => {
+            context.session.user = currentUser;
             if (!result) return {code: 404, success: false, message: 'access denied'};
             return {code: 200, success: true, message: 'user logged in'};
           })
@@ -79,7 +89,14 @@ async function startApolloServer(typeDefs, resolvers) {
       typeDefs,
       resolvers,
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+      context: ({ req }) => req
     });
+
+    app.use(session({
+      secret: process.env.SECRET,
+      resave: false,
+      saveUninitialized: true,
+    }));
   
     await server.start();
     server.applyMiddleware({
