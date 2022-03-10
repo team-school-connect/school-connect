@@ -1,82 +1,81 @@
+const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const { buildSchema } = require('graphql');
+const http = require('http');
 const User = require('./models/User');
-
 const db = require("./db");
 const dotenv = require("dotenv");
-const session = require('express-session');
-const bcrypt = require('bcrypt');
 
-const schema = buildSchema(`
-input UserInput {
+const typeDefs = gql`
+  type MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+
+  enum AccountType {
+      STUDENT
+  }
+
+  type User {
     firstName: String
     lastName: String
     email: String
-    hash: String
-    type: String
-}
+    password: String
+    type: AccountType
+  }
 
-type User {
-    firstName: String
-    lastName: String
-    email: String
-    hash: String
-    type: String
-}
+  type Query {
+      getAllUsers: [User]
+  }
 
-type Query {
-    getStudents(id: ID!, page: Int): [User]
-}
+  type Mutation {
+      signup(firstName: String, lastName: String, email: String, password: String): MutationResponse
+  }
+`;
 
-type Mutation {
-    signin(email: String, password: String): String
-    signup(input: UserInput): String
-}
-`);
-
-let root = {
-    signup: ({ input }, request) => {
-        User.findOne({email: input.email}, (err, item) => {
-            if (item) return;
-            bcrypt.hash(input.hash, 10, (err, hash) => {
-                User.create({firstName: input.firstName, lastName: input.lastName, email: input.email, hash, type: input.type},
-                    (err, res) => {
-                        request.session.user = res.email;
-                    });
-            });
-        });   
+const resolvers = {
+    Query: {
+        getAllUsers: () => users,
     },
-    signin: ({ email, password }, request) => {
-        User.findOne({email}, (err, item) => {
-            if (!item) return;
-            bcrypt.compare(password, item.hash, (err, result) => {
-                request.session.user = email;
-            });
-        });
+    Mutation: {
+        signup: (parent, args) => {
+            const { firstName, lastName, email, password } = args;
+            return User.findOne({email})
+            .then(item => {
+                if (!item) return User.create({firstName, lastName, email, password});
+            })
+            .then(item => {
+                console.log(item);
+                if (!item) return {code: 400, success: false, message: 'user already exists'};
+                return {code: 200, success: true, message: 'user created'};
+            })
+            .catch(err => ({code: 500, success: false, message: err}));
+        }
     }
-}
+  };
+
+async function startApolloServer(typeDefs, resolvers) {
+    const app = express();
+    const httpServer = http.createServer(app);
+  
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    });
+  
+    await server.start();
+    server.applyMiddleware({
+      app,
+      path: '/',
+    });
+  
+    // Modified server startup
+    await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+  }
 
 dotenv.config();
-db.connect();
-
-let app = express();
-
-app.use(session({
-    secret: process.env.PASSWORD_SECRET,
-    resave: false,
-    saveUninitialized: true,
-}));
-
-app.use(function (req, res, next){
-    req.username = (req.session.user)? req.session.user._id : null;
-    next();
-});
-
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true,
-}));
-app.listen(4000);
-console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+db.connect()
+startApolloServer(typeDefs, resolvers);
