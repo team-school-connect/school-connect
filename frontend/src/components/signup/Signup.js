@@ -10,7 +10,7 @@
  import { makeStyles } from '@material-ui/core/styles';
  import { Grid,Paper, Button} from '@material-ui/core'
  import { useState } from 'react';
- import Link from '@material-ui/core/Link';
+ import { Link } from "react-router-dom";
  import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
   import { StudentSignupForm } from './StudentSignupForm';
  
