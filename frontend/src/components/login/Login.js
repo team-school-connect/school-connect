@@ -1,11 +1,10 @@
 /** 
- * This component is responsible for the login page.
- * It will have 3 buttons:
- *  1. Student Login
- *  2. Teacher Login
- *  3. Administration Login
+ * This component is responsible for the login form.
+ * It has 2 text fields:
+ * 1. Username
+ * 2. Password
  * 
- * Depending on which user login is chosen, the appropriate login page will be shown.
+ * It has a button to login.
  * */ 
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid,Paper, Avatar, TextField, Button} from '@material-ui/core'
@@ -36,14 +35,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function Login(){
-  const [userType, setUserType] = useState();
+  const [userType, setUserType] = useState(""); //We may not need userType for login***
   const classes = useStyles();
 
   const onClickLogin = () => {
 
     //Send request to server to check if user is valid
     
-
+    //These checks may not be needed***
     if(userType === "Student"){
         console.log("Student Login");
     }
@@ -61,11 +60,13 @@ export function Login(){
       <Paper elevation={10} className={classes.loginFormContainer}>
           <Grid align='center'>
               <Avatar className={classes.lockIcon}><LockOutlinedIcon/></Avatar>
-              <h2>Sign In</h2>
+              <h2>Log In</h2>
           </Grid>
           <TextField label='Username' placeholder='Enter username' fullWidth required/>
           <TextField label='Password' placeholder='Enter password' type='password' fullWidth required/>
-          <Button type='submit' color='primary' variant="contained" className={classes.loginButton} fullWidth>Sign in</Button>
+          <Button type='submit' color='primary' variant="contained" className={classes.loginButton} onClick={onClickLogin} fullWidth>
+            Log in
+          </Button>
       </Paper>
     </Grid>
   );

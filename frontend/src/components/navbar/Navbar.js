@@ -15,6 +15,11 @@ import {
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
+  navBar: {
+   background: 'linear-gradient(45deg, #1a62ff 30%, #00FFA1 90%)',
+   //Have bottom corners rounded
+    borderRadius: '0 0 1rem 1rem',
+  },
   navlinks: {
     marginLeft: theme.spacing(10),
     display: "flex",
@@ -28,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
   navButton: {
     justifyContent: 'center',
     marginTop: '30px',
-    backgroundColor: '#add8e6',
+    backgroundColor: '#1a62ff',
     color: 'black',
     '&:hover': {
-      backgroundColor: '#1bbd7e',
+      backgroundColor: '#1fffff',
     },
   },
   
@@ -41,14 +46,19 @@ export function Navbar() {
   const classes = useStyles();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" className = {classes.navBar}>
       <CssBaseline />
       <Toolbar>
         <Typography variant="h4" className={classes.logo}>
           School Connect
         </Typography>
           <div className={classes.navlinks}>
-          <Link to="/login">
+            <Link to="/">
+              <Button className={classes.navButton}>
+                Home
+              </Button>
+            </Link>
+            <Link to="/login">
               <Button className={classes.navButton}>
                 Login
               </Button>
@@ -58,7 +68,6 @@ export function Navbar() {
                 Sign Up
               </Button>
             </Link>
-            
           </div>
       </Toolbar>
     </AppBar>
