@@ -17,6 +17,13 @@ const typeDefs = gql`
 
   enum AccountType {
       STUDENT
+      SCHOOL_ADMIN
+      TEACHER
+  }
+
+  type School {
+    name: String
+    id: ID
   }
 
   type User {
@@ -24,6 +31,7 @@ const typeDefs = gql`
     lastName: String
     email: String
     password: String
+    schoolId: ID
     type: AccountType
   }
 
@@ -32,7 +40,11 @@ const typeDefs = gql`
   }
 
   type Mutation {
-      signup(firstName: String, lastName: String, email: String, password: String): MutationResponse
+      # create new user and school in db
+      # signupSchool(firstName: String, lastName: String, email: String, password: String, schoolName: String): MutationResponse
+
+      # for students and teachers
+      signup(firstName: String, lastName: String, email: String, password: String, schoolId: String, type: AccountType): MutationResponse
       signin(email: String, password: String): MutationResponse
   }
 `;
@@ -47,13 +59,14 @@ const resolvers = {
     },
     Mutation: {
         signup: (parent, args, context) => {
-            const { firstName, lastName, email, password } = args;
+            const { firstName, lastName, email, password, type } = args;
+            if (type === "SCHOOL_ADMIN") return {code: 400, success: false, message: 'cannot create school admin'};
             return User.findOne({email})
             .then(item => {
                 if (!item) return bcrypt.hash(password, 10);
             })
             .then(hash => {
-                if (hash) return User.create({firstName, lastName, email, hash})
+                if (hash) return User.create({firstName, lastName, email, hash, type})
             })
             .then(item => {
                 context.session.user = item;
@@ -103,8 +116,7 @@ async function startApolloServer(typeDefs, resolvers) {
       app,
       path: '/',
     });
-  
-    // Modified server startup
+    
     await new Promise(resolve => httpServer.listen({ port: process.env.PORT }, resolve));
     console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
   }
