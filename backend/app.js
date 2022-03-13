@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const http = require('http');
 const User = require('./models/User');
+const School = require('./models/School');
 const db = require("./db");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
@@ -41,7 +42,7 @@ const typeDefs = gql`
 
   type Mutation {
       # create new user and school in db
-      # signupSchool(firstName: String, lastName: String, email: String, password: String, schoolName: String): MutationResponse
+      signupSchool(firstName: String, lastName: String, email: String, password: String, schoolName: String): MutationResponse
 
       # for students and teachers
       signup(firstName: String, lastName: String, email: String, password: String, schoolId: String, type: AccountType): MutationResponse
@@ -58,38 +59,43 @@ const resolvers = {
         },
     },
     Mutation: {
-        signup: (parent, args, context) => {
-            const { firstName, lastName, email, password, type } = args;
-            if (type === "SCHOOL_ADMIN") return {code: 400, success: false, message: 'cannot create school admin'};
-            return User.findOne({email})
-            .then(item => {
-                if (!item) return bcrypt.hash(password, 10);
-            })
-            .then(hash => {
-                if (hash) return User.create({firstName, lastName, email, hash, type})
-            })
-            .then(item => {
-                context.session.user = item;
-                if (!item) return {code: 400, success: false, message: 'user already exists'};
-                return {code: 200, success: true, message: 'user created'};
-            })
-            .catch(err => ({code: 500, success: false, message: err}));
+        signupSchool: async (parent, args, context) => {
+            const { firstName, lastName, email, password, schoolName } = args;
+            const user = await User.findOne({email});
+            if (user) return {code: 400, success: false, message: 'user already exists'};
+            const school = await School.findOne({email});
+            if (school) return {code: 400, success: false, message: 'school already exists'};
+            const hash = await bcrypt.hash(password, 10);
+            if (!hash) return {code: 500, success: false, message: 'internal server error'};
+            const resUser = await User.create({firstName, lastName, email, hash, type: "SCHOOL_ADMIN"});
+            if (!resUser) return {code: 500, success: false, message: 'internal server error'};
+            const resSchool = await School.create({name: schoolName});
+            if (!resSchool) return {code: 500, success: false, message: 'internal server error'};
+            context.session.user = resUser;
+            return {code: 200, success: true, message: 'user and school created'}
         },
-        signin: (parent, args, context) => {
+        signup: async (parent, args, context) => {
+            const { firstName, lastName, email, password, type, schoolId } = args;
+            if (type === "SCHOOL_ADMIN") return {code: 400, success: false, message: 'cannot create school admin'};
+            const school = await School.findOne({name: schoolId});
+            if (!school) return {code: 400, success: false, message: 'school does not exist'};
+            const user = await User.findOne({email});
+            if (user) return {code: 400, success: false, message: 'user already exists'};
+            const hash = await bcrypt.hash(password, 10);
+            if (!hash) return {code: 500, success: false, message: 'internal server error'};
+            const resUser = await User.create({firstName, lastName, email, hash, type, schoolId});
+            if (!resUser) return {code: 500, success: false, message: 'internal server error'};
+            context.session.user = resUser;
+            return {code: 200, success: true, message: 'user created'}
+        },
+        signin: async (parent, args, context) => {
           const { email, password } = args;
-          let currentUser;
-          return User.findOne({email})
-          .then(item => {
-            if (item) {
-              currentUser = item;
-              return bcrypt.compare(password, item.hash);
-            }
-          })
-          .then(result => {
-            context.session.user = currentUser;
-            if (!result) return {code: 404, success: false, message: 'access denied'};
-            return {code: 200, success: true, message: 'user logged in'};
-          })
+          const user = await User.findOne({email});
+          if (!user) return {code: 401, success: false, message: 'access denied'};
+          const resPassword = bcrypt.compare(password, user.hash);
+          if (!resPassword) return {code: 401, success: false, message: 'access denied'};
+          context.session.user = user;
+          return {code: 200, success: true, message: 'user logged in'};
         }
     }
   };
