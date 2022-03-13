@@ -8,6 +8,7 @@ const School = require('./models/School');
 const db = require("./db");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
+const { skip, combineResolvers } = require("graphql-resolvers");
 
 const typeDefs = gql`
   type MutationResponse {
@@ -38,6 +39,7 @@ const typeDefs = gql`
 
   type Query {
       checkLogin: String
+      checkTeacherOnly: String
   }
 
   type Mutation {
@@ -50,8 +52,15 @@ const typeDefs = gql`
   }
 `;
 
+const isTeacher = (parent, args, context) => {
+  return (!context.session.user || context.session.user.type !== "TEACHER") ? "not a teacher" : skip;
+}
+
 const resolvers = {
     Query: {
+        checkTeacherOnly: combineResolvers(isTeacher, (parent, args, context) => {
+          return "you are a teacher";
+        }),
         checkLogin: (parent, args, context) => {
           console.log(context.session);
           if (context.session.user) return `user logged in ${context.session.user.email}`;
@@ -92,7 +101,7 @@ const resolvers = {
           const { email, password } = args;
           const user = await User.findOne({email});
           if (!user) return {code: 401, success: false, message: 'access denied'};
-          const resPassword = bcrypt.compare(password, user.hash);
+          const resPassword = await bcrypt.compare(password, user.hash);
           if (!resPassword) return {code: 401, success: false, message: 'access denied'};
           context.session.user = user;
           return {code: 200, success: true, message: 'user logged in'};
