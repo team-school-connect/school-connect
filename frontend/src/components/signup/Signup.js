@@ -42,6 +42,7 @@
     const onClickStudent = () => {
       console.log("Student Signup");
       setUserType("Student");
+      
 
       //Set cookie for usertype
       

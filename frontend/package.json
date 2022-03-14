@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "@material-ui/icons": "^4.11.2",
     "@mui/icons-material": "^5.0.0",
     "@mui/styled-engine": "^5.4.4",
