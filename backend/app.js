@@ -49,6 +49,8 @@ const typeDefs = gql`
       # for students and teachers
       signup(firstName: String, lastName: String, email: String, password: String, schoolId: String, type: AccountType): MutationResponse
       signin(email: String, password: String): MutationResponse
+
+      signout: MutationResponse
   }
 `;
 
@@ -110,6 +112,10 @@ const resolvers = {
           if (!resPassword) return {code: 401, success: false, message: 'access denied'};
           context.session.user = user;
           return {code: 200, success: true, message: 'user logged in'};
+        },
+        signout: (parent, args, context) => {
+          context.session.destroy();
+          return {code: 200, success: true, message: 'user logged out'};
         }
     }
   };
