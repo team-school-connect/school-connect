@@ -85,11 +85,16 @@ const resolvers = {
         },
         signup: async (parent, args, context) => {
             const { firstName, lastName, email, password, type, schoolId } = args;
+            let user = context.session.user;
+
+            if (((user && user.type !== "SCHOOL_ADMIN") || !user) && args.type === "TEACHER") 
+              return {code: 401, success: false, message: 'cannot create teacher account'}
+
             if (type === "SCHOOL_ADMIN") return {code: 400, success: false, message: 'cannot create school admin'};
             const school = await School.findOne({name: schoolId});
             if (!school) return {code: 400, success: false, message: 'school does not exist'};
-            const user = await User.findOne({email});
-            if (user) return {code: 400, success: false, message: 'user already exists'};
+            const findUser = await User.findOne({email});
+            if (findUser) return {code: 400, success: false, message: 'user already exists'};
             const hash = await bcrypt.hash(password, 10);
             if (!hash) return {code: 500, success: false, message: 'internal server error'};
             const resUser = await User.create({firstName, lastName, email, hash, type, schoolId});
