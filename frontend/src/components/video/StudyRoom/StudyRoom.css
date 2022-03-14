@@ -1,0 +1,32 @@
+.container {
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    height: 100%;
+}
+
+.headerBar {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 2em;
+    width: 100%;
+}
+
+
+.streamContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.streamContainer{
+    max-width: 100%;
+    height: 100%;
+}
+
+.streamContainer > * {
+    width: 40%;
+}
