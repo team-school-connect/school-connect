@@ -99,7 +99,7 @@ const resolvers = {
       const { firstName, lastName, email, password, schoolName } = args;
       const user = await User.findOne({ email });
       if (user) return { code: 400, success: false, message: "user already exists" };
-      const school = await School.findOne({ email });
+      const school = await School.findOne({name: schoolName});
       if (school) return { code: 400, success: false, message: "school already exists" };
       const hash = await bcrypt.hash(password, 10);
       if (!hash) return { code: 500, success: false, message: "internal server error" };
