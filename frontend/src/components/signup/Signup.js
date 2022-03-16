@@ -44,19 +44,19 @@
     const onClickStudent = () => {
       console.log("Student Signup");
       setUserType("Student");
-      setCookie('accountType', userType, { path: '/' });
+      // setCookie('accountType', userType, { path: '/' });
     }
 
     const onClickTeacher = () => {
       console.log("Teacher Signup");
       setUserType("Teacher");
-      setCookie('accountType', userType, { path: '/' });
+      // setCookie('accountType', userType, { path: '/' });
     }
 
     const onClickAdministration = () => {
       console.log("Administration Signup");
       setUserType("Administration");
-      setCookie('accountType', userType, { path: '/' });
+      // setCookie('accountType', userType, { path: '/' });
     }
  
    return (

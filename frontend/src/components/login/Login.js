@@ -10,6 +10,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid,Paper, Avatar, TextField, Button} from '@material-ui/core'
 import { useState } from 'react';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { SIGNIN_MUTATION } from '../../graphql/Mutations';
+import { useMutation } from '@apollo/client';
+
 
 const useStyles = makeStyles(theme => ({
   loginFormContainer: {
@@ -35,23 +38,31 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function Login(){
-  const [userType, setUserType] = useState(""); //We may not need userType for login***
+  // const [userType, setUserType] = useState(""); //We may not need userType for login***
   const classes = useStyles();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [signin, { error }] = useMutation(SIGNIN_MUTATION);
+
 
   const onClickLogin = () => {
 
     //Send request to server to check if user is valid
     
     //These checks may not be needed***
-    if(userType === "Student"){
-        console.log("Student Login");
+    
+    console.log("Login Clicked");
+    signin({
+      variables: {
+        username: username,
+        password: password,
+      }
+    });
+    if (error) {
+      console.log(error);
     }
-    else if(userType === "Teacher"){
-        console.log("Teacher Login");
-    }
-    else if(userType === "Administration"){
-        console.log("Administration Login");
-    }
+
+    
   }
 
   //Parts of the Login Form have been adopeted from https://github.com/vikas62081/YT/blob/loginPage/src/components/login.js
@@ -62,8 +73,8 @@ export function Login(){
               <Avatar className={classes.lockIcon}><LockOutlinedIcon/></Avatar>
               <h2>Log In</h2>
           </Grid>
-          <TextField label='Username' placeholder='Enter username' fullWidth required/>
-          <TextField label='Password' placeholder='Enter password' type='password' fullWidth required/>
+          <TextField label='Username' placeholder='Enter username' onChange={(e) => {setUsername(e.target.value);}} fullWidth required/>
+          <TextField label='Password' placeholder='Enter password' onChange={(e) => {setPassword(e.target.value);}} type='password' fullWidth required/>
           <Button type='submit' color='primary' variant="contained" className={classes.loginButton} onClick={onClickLogin} fullWidth>
             Log in
           </Button>
