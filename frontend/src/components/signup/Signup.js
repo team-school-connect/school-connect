@@ -11,8 +11,10 @@
  import { Grid,Paper, Button} from '@material-ui/core'
  import { useState } from 'react';
  import { Link } from "react-router-dom";
- import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-  import { StudentSignupForm } from './StudentSignupForm';
+ import { useCookies } from 'react-cookie';
+ import { useQuery } from "@apollo/client";
+ import { ACCOUNT_TYPE_ENUM_QUERY } from "../../graphql/Querys";
+ 
  
  const useStyles = makeStyles(theme => ({
   signupFormContainer: {
@@ -37,32 +39,24 @@
  export function Signup(){
    const [userType, setUserType] = useState("");
    const classes = useStyles();
- 
+   const [cookies, setCookie] = useCookies(['account']);
 
     const onClickStudent = () => {
       console.log("Student Signup");
       setUserType("Student");
-      
-
-      //Set cookie for usertype
-      
-      // return ( 
-      //   <Router>
-      //     <Routes>
-      //       <Route path="/signup/student" element={<StudentSignupForm userType={userType}/>} />  
-      //     </Routes>
-      //   </Router>
-      // );
+      setCookie('accountType', userType, { path: '/' });
     }
 
     const onClickTeacher = () => {
+      console.log("Teacher Signup");
       setUserType("Teacher");
-      // return <TeacherSignupForm userType={userType}/>
+      setCookie('accountType', userType, { path: '/' });
     }
 
     const onClickAdministration = () => {
+      console.log("Administration Signup");
       setUserType("Administration");
-      // return <AdministrationSignupForm userType={userType}/>
+      setCookie('accountType', userType, { path: '/' });
     }
  
    return (

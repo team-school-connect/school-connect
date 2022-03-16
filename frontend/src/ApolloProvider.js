@@ -6,6 +6,7 @@ import {
     createHttpLink, 
     ApolloProvider,
 } from '@apollo/client';
+import { CookiesProvider } from "react-cookie";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:5000/',
@@ -19,7 +20,9 @@ const client = new ApolloClient({
 export default (
     <React.StrictMode>
         <ApolloProvider client={client}>
-            <App />
+            <CookiesProvider>
+                <App />
+            </CookiesProvider>
         </ApolloProvider>
     </React.StrictMode>
 );

@@ -5,6 +5,7 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Login } from "./components/login/Login";
 import { Signup } from "./components/signup/Signup";
 import { StudentSignupForm } from "./components/signup/StudentSignupForm";
+import { AdministrationSignupForm } from "./components/signup/AdministrationSignupForm";
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
@@ -26,6 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signup/student" element={<StudentSignupForm />} />
+          <Route path="/signup/administration" element={<AdministrationSignupForm />} />
           <Route path="/studyRooms/:id/" element={<StudyRoom />} />
         </Routes>
       </Router>
