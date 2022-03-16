@@ -24,6 +24,7 @@ const { NotFoundError, ConflictError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
+const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const io = require("socket.io")(httpServer, {
   cors: {
     origin: "*",
@@ -58,9 +59,24 @@ const typeDefs = gql`
     type: AccountType
   }
 
+  type StudyRoom {
+    _id: ID
+    roomName: String
+    ownerId: String
+    participantCount: Int
+    subject: String
+    createdOn: String
+  }
+
+  type StudyRoomPage {
+    totalPages: Int
+    studyRooms: [StudyRoom]
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
+    getStudyRooms(page: Int): StudyRoomPage
   }
 
   type Mutation {
@@ -108,6 +124,8 @@ const resolvers = {
       if (context.session.user) return `user logged in ${context.session.user.email}`;
       return "user not logged in";
     },
+
+    getStudyRooms: getStudyRoomsQuery,
   },
   Mutation: {
     signupSchool: async (parent, args, context) => {
