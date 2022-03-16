@@ -9,6 +9,7 @@ import { AdministrationSignupForm } from "./components/signup/AdministrationSign
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
+import StudyRoomListing from "./components/studyRoomListing/StudyRoomListing";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/signup/student" element={<StudentSignupForm />} />
           <Route path="/signup/administration" element={<AdministrationSignupForm />} />
           <Route path="/studyRooms/:id/" element={<StudyRoom />} />
+          <Route path="/studyRooms" element={<StudyRoomListing/>} />
         </Routes>
       </Router>
     </div>

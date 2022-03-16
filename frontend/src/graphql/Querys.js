@@ -11,3 +11,19 @@ const ACCOUNT_TYPE_ENUM_QUERY = gql`
     }
   }
 `;
+
+export const STUDY_ROOM_QUERY = gql`
+  query getStudyRooms($page: Int) {
+    getStudyRooms(page: $page) {
+      totalRows
+      studyRooms {
+        _id
+        roomName
+        ownerId
+        participantCount
+        subject
+        createdOn
+      }
+    }
+  }
+`;

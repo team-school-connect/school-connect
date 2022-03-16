@@ -14,7 +14,7 @@ const getStudyRoomsQuery = async (parent, args, context) => {
 
     const count = await StudyRoom.countDocuments();
 
-    return { totalPages: Math.ceil(count / pageLimit), studyRooms: studyRooms };
+    return { totalRows: count, studyRooms: studyRooms };
   } catch (err) {
     console.log(err);
     throw new ApolloError("Something went wrong");

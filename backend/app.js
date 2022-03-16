@@ -69,7 +69,7 @@ const typeDefs = gql`
   }
 
   type StudyRoomPage {
-    totalPages: Int
+    totalRows: Int
     studyRooms: [StudyRoom]
   }
 
