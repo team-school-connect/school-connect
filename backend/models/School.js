@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const SchoolSchema = new Schema({
-    name: String
+  name: { type: String, required: true },
 });
 
-module.exports = mongoose.model('School',SchoolSchema);
+module.exports = mongoose.model("School", SchoolSchema);

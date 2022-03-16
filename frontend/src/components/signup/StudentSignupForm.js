@@ -63,7 +63,7 @@
           email: email,
           password: password,
           schoolName: schoolName,
-          accountType: cookies.accountType,
+          accountType: "STUDENT",
         }
       });
       if (error) {

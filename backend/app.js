@@ -1,5 +1,11 @@
 const { ApolloServer, gql } = require("apollo-server-express");
-const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+const {
+  ApolloServerPluginDrainHttpServer,
+  UserInputError,
+  ForbiddenError,
+  AuthenticationError,
+  ApolloError,
+} = require("apollo-server-core");
 const express = require("express");
 const session = require("express-session");
 const http = require("http");
@@ -12,6 +18,9 @@ const { skip, combineResolvers } = require("graphql-resolvers");
 const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
+
+const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
+const { NotFoundError, ConflictError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
@@ -76,11 +85,18 @@ const typeDefs = gql`
     signin(email: String, password: String): MutationResponse
 
     signout: MutationResponse
+
+    createStudyRoom(roomName: String, subject: String): MutationResponse
   }
 `;
 
 const isTeacher = (parent, args, context) => {
   return !context.session.user || context.session.user.type !== "TEACHER" ? "not a teacher" : skip;
+};
+
+const isAuthenticated = (parent, args, context) => {
+  if (context.session.user) skip;
+  throw new AuthenticationError("User is not logged in");
 };
 
 const resolvers = {
@@ -98,15 +114,22 @@ const resolvers = {
     signupSchool: async (parent, args, context) => {
       const { firstName, lastName, email, password, schoolName } = args;
       const user = await User.findOne({ email });
-      if (user) return { code: 400, success: false, message: "user already exists" };
-      const school = await School.findOne({name: schoolName});
-      if (school) return { code: 400, success: false, message: "school already exists" };
+      if (user) throw new ConflictError("user already exists");
+      const school = await School.findOne({ name: schoolName });
+      if (school) throw new ConflictError("school already exists");
       const hash = await bcrypt.hash(password, 10);
-      if (!hash) return { code: 500, success: false, message: "internal server error" };
-      const resUser = await User.create({ firstName, lastName, email, hash, type: "SCHOOL_ADMIN" });
-      if (!resUser) return { code: 500, success: false, message: "internal server error" };
+      if (!hash) throw new ApolloError("Something went wrong");
+      const resUser = await User.create({
+        firstName,
+        lastName,
+        email,
+        hash,
+        type: "SCHOOL_ADMIN",
+        schoolId: schoolName,
+      });
+      if (!resUser) throw new ApolloError("Something went wrong");
       const resSchool = await School.create({ name: schoolName });
-      if (!resSchool) return { code: 500, success: false, message: "internal server error" };
+      if (!resSchool) throw new ApolloError("Something went wrong");
       context.session.user = resUser;
       return { code: 200, success: true, message: "user and school created" };
     },
@@ -114,28 +137,28 @@ const resolvers = {
       const { firstName, lastName, email, password, type, schoolId } = args;
       let user = context.session.user;
 
-      if (((user && user.type !== "SCHOOL_ADMIN") || !user) && args.type === "TEACHER")
-        return { code: 401, success: false, message: "cannot create teacher account" };
+      if (((user && user.type !== "SCHOOL_ADMIN") || !user) && args.type === "TEACHER") {
+        throw new ForbiddenError("cannot create teacher account");
+      }
 
-      if (type === "SCHOOL_ADMIN")
-        return { code: 400, success: false, message: "cannot create school admin" };
+      if (type === "SCHOOL_ADMIN") throw new UserInputError("cannot create school admin");
       const school = await School.findOne({ name: schoolId });
-      if (!school) return { code: 400, success: false, message: "school does not exist" };
+      if (!school) throw new NotFoundError("school does not exist");
       const findUser = await User.findOne({ email });
-      if (findUser) return { code: 400, success: false, message: "user already exists" };
+      if (findUser) throw new ConflictError("user already exists");
       const hash = await bcrypt.hash(password, 10);
-      if (!hash) return { code: 500, success: false, message: "internal server error" };
+      if (!hash) throw new ApolloError("internal server error");
       const resUser = await User.create({ firstName, lastName, email, hash, type, schoolId });
-      if (!resUser) return { code: 500, success: false, message: "internal server error" };
+      if (!resUser) throw new ApolloError("internal server error");
       context.session.user = resUser;
       return { code: 200, success: true, message: "user created" };
     },
     signin: async (parent, args, context) => {
       const { email, password } = args;
       const user = await User.findOne({ email });
-      if (!user) return { code: 401, success: false, message: "access denied" };
+      if (!user) throw new ForbiddenError("access denied");
       const resPassword = await bcrypt.compare(password, user.hash);
-      if (!resPassword) return { code: 401, success: false, message: "access denied" };
+      if (!resPassword) throw new ForbiddenError("access denied");
       context.session.user = user;
       return { code: 200, success: true, message: "user logged in" };
     },
@@ -143,6 +166,7 @@ const resolvers = {
       context.session.destroy();
       return { code: 200, success: true, message: "user logged out" };
     },
+    createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
   },
 };
 
