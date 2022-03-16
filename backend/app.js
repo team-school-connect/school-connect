@@ -95,8 +95,7 @@ const isTeacher = (parent, args, context) => {
 };
 
 const isAuthenticated = (parent, args, context) => {
-  if (context.session.user) skip;
-  throw new AuthenticationError("User is not logged in");
+  return context.session.user ? skip : new AuthenticationError("User is not logged in");
 };
 
 const resolvers = {

@@ -11,6 +11,7 @@ const createStudyRoomMutation = async (parent, args, context) => {
   try {
     let room = new StudyRoom({
       roomName,
+      ownerId: context.session.user._id,
       participantCount: 0,
       subject,
       createdOn: new Date(),
@@ -20,6 +21,7 @@ const createStudyRoomMutation = async (parent, args, context) => {
 
     return { code: 200, success: true, message: "Study Room created", response };
   } catch (err) {
+    console.log(err);
     throw new ApolloError("Something went wrong");
   }
 };
