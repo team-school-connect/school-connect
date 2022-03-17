@@ -1,4 +1,4 @@
-const { UserInputError, ApolloError } = require('apollo-server-core');
+const { UserInputError, ApolloError, ForbiddenError } = require('apollo-server-core');
 const { ConflictError } = require('../apollo-errors');
 const Classroom = require('../models/Classroom');
 const Announcement = require('../models/Announcement');
@@ -37,6 +37,9 @@ const ClassroomResolver = {
 
                 const classroom = await Classroom.findOne({name: className});
                 if (!classroom) throw new ConflictError(`classroom ${classId} does not exist`);
+
+                const joinClass = await ClassroomUser.findOne({userEmail: user.email, classCode: classroom.code});
+                if (!joinClass) throw new ForbiddenError('user has not joined this class');
                 
                 let announce = await Announcement.create({title, content, className, author: user.email});
                 if (!announce) throw new ApolloError('internal server error');
@@ -70,6 +73,13 @@ const ClassroomResolver = {
         getAnnouncements: combineResolvers(isAuthenticated, async (parent, args, context) => {
             const { page, className } = args;
             if (page < 0) throw new UserInputError('page cannot be negative');
+
+            const classroom = await Classroom.findOne({name: className});
+            if (!classroom) throw new ConflictError(`classroom ${classCode} does not exist`);
+
+            const currentJoinClass = await ClassroomUser.findOne({classCode, userEmail: user.email});
+            if (currentJoinClass) throw new ConflictError(`user ${user.email} has already join class ${classCode}`);
+
             const announceList = await Announcement.find({name: className}).sort({createdAt: 'desc'}).skip(page * 10).limit(10);
             if (!announceList) throw new ApolloError('internal server error');
             announceList.forEach(x => x.date = x.createdAt)
