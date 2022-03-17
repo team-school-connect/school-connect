@@ -19,6 +19,7 @@
     "graphql": "^16.3.0",
     "graphql-resolvers": "^0.4.2",
     "mongoose": "^6.2.4",
+    "short-unique-id": "^4.4.4",
     "socket.io": "^4.4.1"
   }
 }

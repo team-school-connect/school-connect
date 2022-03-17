@@ -80,11 +80,17 @@ const typeDefs = gql`
     id: ID
     name: String
     schoolId: ID
+    code: String
   }
 
   type ClassroomPage {
     total: Int
     classrooms: [Classroom]
+  }
+
+  type ClassroomUsers {
+    userEmail: String
+    classCode: String
   }
 
   type Announcement {
@@ -133,6 +139,7 @@ const typeDefs = gql`
 
     createClassroom(name: String): Classroom
     createAnnouncement(title: String, content: String, className: String): Announcement
+    joinClassroom(classCode: String): MutationResponse
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
   }
