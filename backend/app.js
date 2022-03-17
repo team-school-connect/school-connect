@@ -82,6 +82,11 @@ const typeDefs = gql`
     schoolId: ID
   }
 
+  type ClassroomPage {
+    total: Int
+    classrooms: [Classroom]
+  }
+
   type Announcement {
     title: String
     content: String
@@ -89,10 +94,17 @@ const typeDefs = gql`
     date: String
   }
 
+  type AnnouncementPage {
+    total: Int
+    announcements: [Announcement]
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
     getStudyRooms(page: Int): StudyRoomPage
+    getClassrooms(page: Int, schoolName: String): ClassroomPage
+    getAnnouncements(page: Int, className: String): AnnouncementPage
   }
 
   type Mutation {
@@ -145,6 +157,8 @@ const resolvers = {
     },
 
     getStudyRooms: getStudyRoomsQuery,
+
+    ...ClassroomResolver.query
   },
   Mutation: {
     signupSchool: async (parent, args, context) => {

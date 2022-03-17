@@ -37,6 +37,24 @@ const ClassroomResolver = {
             announce.author = user;
             return announce;
         }
+    },
+    query: {
+        getClassrooms: async (parent, args, context) => {
+            if (!context.session.user) throw new AuthenticationError('user not authenticated');
+            const { page, schoolName } = args;
+            if (page < 0) throw new UserInputError('page cannot be negative');
+            const classList = await Classroom.find({schoolId: schoolName}).sort({name: 'asc'}).skip(page * 10).limit(10);
+            if (!classList) throw new ApolloError('internal server error');
+            return {total: classList.length, classrooms: classList};
+        },
+        getAnnouncements: async (parent, args, context) => {
+            if (!context.session.user) throw new AuthenticationError('user not authenticated');
+            const { page, className } = args;
+            if (page < 0) throw new UserInputError('page cannot be negative');
+            const announceList = await Announcement.find({name: className}).sort({createdAt: 'desc'}).skip(page * 10).limit(10);
+            if (!announceList) throw new ApolloError('internal server error');
+            return {total: announceList.length, announcements: announceList};
+        }
     }
 }
 
