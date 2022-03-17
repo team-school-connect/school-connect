@@ -32,7 +32,7 @@ const ClassroomResolver = {
                 
                 let announce = await Announcement.create({title, content, className, author: user.email});
                 if (!announce) throw new ApolloError('internal server error');
-
+                announce.date = announce.createdAt;
                 return announce;
         })
     },

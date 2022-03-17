@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const AnnouncementSchema = new Schema({
     title: String,
     content: String,
-    classId: String,
+    className: String,
     author: String
 }, {timestamps: true});
 

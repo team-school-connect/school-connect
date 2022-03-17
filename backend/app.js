@@ -91,6 +91,7 @@ const typeDefs = gql`
     title: String
     content: String
     author: String
+    className: String
     date: String
   }
 
