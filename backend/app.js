@@ -3,7 +3,6 @@ const {
   ApolloServerPluginDrainHttpServer,
   UserInputError,
   ForbiddenError,
-  AuthenticationError,
   ApolloError,
 } = require("apollo-server-core");
 const express = require("express");
@@ -14,7 +13,7 @@ const School = require("./models/School");
 const db = require("./db");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
-const { skip, combineResolvers } = require("graphql-resolvers");
+const { combineResolvers } = require("graphql-resolvers");
 const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
@@ -22,6 +21,7 @@ const socketHandler = require("./socket");
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
 const ClassroomResolver = require("./resolvers/ClassroomResolver");
+const { isAuthenticated, isAccountType } = require('./resolvers/AccountCheck');
 
 const { NotFoundError, ConflictError } = require("./apollo-errors");
 
@@ -137,17 +137,9 @@ const typeDefs = gql`
   }
 `;
 
-const isTeacher = (parent, args, context) => {
-  return !context.session.user || context.session.user.type !== "TEACHER" ? "not a teacher" : skip;
-};
-
-const isAuthenticated = (parent, args, context) => {
-  return context.session.user ? skip : new AuthenticationError("User is not logged in");
-};
-
 const resolvers = {
   Query: {
-    checkTeacherOnly: combineResolvers(isTeacher, (parent, args, context) => {
+    checkTeacherOnly: combineResolvers(isAccountType(["TEACHER"]), (parent, args, context) => {
       return "you are a teacher";
     }),
     checkLogin: (parent, args, context) => {
