@@ -54,7 +54,7 @@ export function Login(){
     console.log("Login Clicked");
     signin({
       variables: {
-        username: username,
+        email: username,
         password: password,
       }
     });
