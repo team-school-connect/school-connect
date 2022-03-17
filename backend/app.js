@@ -90,7 +90,7 @@ const typeDefs = gql`
   type Announcement {
     title: String
     content: String
-    author: User
+    author: String
     date: String
   }
 

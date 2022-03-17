@@ -30,11 +30,9 @@ const ClassroomResolver = {
             const classroom = await Classroom.findOne({name: className});
             if (!classroom) throw new UserInputError(`classroom ${classId} does not exist`);
             
-            const announce = await Announcement.create({title, content, className});
+            let announce = await Announcement.create({title, content, className, author: user.email});
             if (!announce) throw new ApolloError('internal server error');
 
-            announce.date = announce.createdAt;
-            announce.author = user;
             return announce;
         }
     },
@@ -53,6 +51,7 @@ const ClassroomResolver = {
             if (page < 0) throw new UserInputError('page cannot be negative');
             const announceList = await Announcement.find({name: className}).sort({createdAt: 'desc'}).skip(page * 10).limit(10);
             if (!announceList) throw new ApolloError('internal server error');
+            announceList.forEach(x => x.date = x.createdAt)
             return {total: announceList.length, announcements: announceList};
         }
     }
