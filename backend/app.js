@@ -19,7 +19,10 @@ const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
 
+// Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
+const ClassroomResolver = require("./resolvers/ClassroomResolver");
+
 const { NotFoundError, ConflictError } = require("./apollo-errors");
 
 //Temporary for socket io
@@ -73,6 +76,19 @@ const typeDefs = gql`
     studyRooms: [StudyRoom]
   }
 
+  type Classroom {
+    id: ID
+    name: String
+    schoolId: ID
+  }
+
+  type Announcement {
+    title: String
+    content: String
+    author: User
+    date: String
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
@@ -101,6 +117,9 @@ const typeDefs = gql`
     signin(email: String, password: String): MutationResponse
 
     signout: MutationResponse
+
+    createClassroom(name: String): Classroom
+    createAnnouncement(title: String, content: String, className: String): Announcement
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
   }
@@ -184,6 +203,7 @@ const resolvers = {
       return { code: 200, success: true, message: "user logged out" };
     },
     createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
+    ...ClassroomResolver.mutation
   },
 };
 
