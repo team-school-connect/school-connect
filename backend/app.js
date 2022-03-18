@@ -131,7 +131,7 @@ const typeDefs = gql`
       email: String
       password: String
       schoolId: String
-      type: AccountType
+      type: String
     ): MutationResponse
     signin(email: String, password: String): MutationResponse
 

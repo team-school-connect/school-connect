@@ -7,7 +7,7 @@ export const SIGNUP_MUTATION = gql`
       $email: String!
       $password: String!
       $schoolId: String!
-      $type: AccountType!
+      $type: String!
     ) {
         signup( 
             firstName: $firstName,

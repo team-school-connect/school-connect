@@ -10,6 +10,7 @@ import { CookiesProvider } from "react-cookie";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:5000/',
+    credentials: 'same-origin',
 });
 
 const client = new ApolloClient({
