@@ -9,7 +9,7 @@ import { AdministrationSignupForm } from "./components/signup/AdministrationSign
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
-import StudyRoomListing from "./components/studyRoomListing/StudyRoomListing";
+import StudyRoomListing from "./components/studentview/studyRoomListing/StudyRoomListing";
 import StudentView from "./components/studentview/StudentView";
 
 function App() {

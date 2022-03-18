@@ -34,17 +34,26 @@ export const createAlreadyInRoomPeer = (sendingToId, myStream, socket) => {
 };
 
 //Destroy all connections when leaving a room
-export const handleLeaveRoom = (peers, socket, stream) => {
-  if (stream) {
-    stream.getTracks().forEach((track) => {
-      return track.stop();
-    });
-  }
+export const handleLeaveRoom = (peers, socket) => {
+  console.log("cleaning up");
+
   peers.forEach((peerObj) => {
     peerObj.peer.destroy(true);
   });
 
   socket.disconnect();
+};
+
+export const stopStream = (stream) => {
+  if (stream) {
+    console.log("stopping stream");
+    stream.getVideoTracks().forEach((track) => {
+      track.stop();
+    });
+    stream.getAudioTracks().forEach((track) => {
+      track.stop();
+    });
+  }
 };
 
 export const removePeer = (peers, peerId) => {

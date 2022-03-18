@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import { Button } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material//Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const ToggleVideoButton = ({ onToggle }) => {
   const [icon, setIcon] = useState(<VisibilityOffIcon />);

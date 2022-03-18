@@ -1,3 +1,6 @@
+const StudyRoom = require("../models/StudyRoom");
+const Participant = require("../models/Participant");
+
 const connect = (io) => {
   let rooms = {};
 
@@ -5,32 +8,47 @@ const connect = (io) => {
   return (socket) => {
     socket.emit("sendYourId", socket.id);
 
-    socket.on("joinStudyRoom", (id) => {
+    socket.on("joinStudyRoom", async (id) => {
       console.log("joining room " + id);
 
-      //only join room if its not full (max 4 people)
+      //only join room if it exists and is not full
 
-      //empty room, then create it
-      if (!rooms[id]) {
-        socket.emit("roomPeers", []);
+      try {
+        const room = await StudyRoom.findById(id);
+
+        if (!room) {
+          socket.emit("roomFull");
+          return;
+        }
+
+        //increment room count
+        const count = await StudyRoom.updateOne(
+          { _id: id },
+          { participantCount: room.participantCount + 1 },
+          { runValidators: true }
+        ).exec();
+
+        console.log("Worked");
+
+        //add participant to room
+        let newParticipant = Participant({ studyRoomId: id, socketId: socket.id });
+        await newParticipant.save();
+
+        //get all participants in room
+        const roomPeers = await Participant.find({ studyRoomId: id });
+
+        //join the room on the server
         socket.join(id);
-        users[socket.id] = id;
-        rooms[id] = [socket.id];
+        console.log("joined room");
 
-        //if there is space in the room then join
-      } else if (rooms[id].length < 4) {
-        socket.emit("roomPeers", rooms[id]);
-        socket.join(id);
-        users[socket.id] = id;
-        rooms[id] = [...rooms[id], socket.id];
-
-        //send back that the room is full
-      } else {
+        socket.emit(
+          "roomPeers",
+          roomPeers.map((peer) => peer.socketId).filter((socketId) => socketId !== socket.id)
+        );
+      } catch (err) {
+        console.log(err);
         socket.emit("roomFull");
       }
-
-      console.log("joined room");
-      console.log(rooms);
     });
 
     socket.on("signalUserInRoom", ({ sendingToId, signal }) => {
@@ -41,27 +59,24 @@ const connect = (io) => {
       io.to(sendingToId).emit("userInRoomSignaledBack", { fromId: socket.id, signal });
     });
 
-    socket.on("disconnect", () => {
-      const id = users[socket.id];
+    socket.on("disconnect", async () => {
+      try {
+        const participant = await Participant.findOne({ socketId: socket.id });
 
-      if (id) {
-        console.log("id");
-        console.log(id);
-
-        console.log("user");
-        console.log(socket.id);
-
-        rooms[id] = rooms[id].filter((personId) => {
-          return personId !== socket.id;
-        });
-
-        delete users[socket.id];
-
-        console.log("user left room");
-        console.log(rooms);
-        console.log("users");
-
-        socket.to(id).emit("userLeftRoom", socket.id);
+        if (participant) {
+          console.log(participant);
+          console.log("STUDY ROOM ID");
+          console.log(participant.studyRoomId.toString());
+          io.to(participant.studyRoomId.toString()).emit("userLeftRoom", socket.id);
+          await Participant.deleteOne({ socketId: socket.id });
+          await StudyRoom.updateOne(
+            { _id: participant.studyRoomId },
+            { $inc: { participantCount: -1 } },
+            { runValidators: true }
+          ).exec();
+        }
+      } catch (err) {
+        console.log(err);
       }
     });
   };
