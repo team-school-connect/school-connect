@@ -10,6 +10,7 @@ import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
 import StudyRoomListing from "./components/studyRoomListing/StudyRoomListing";
+import StudentView from "./components/studentview/StudentView";
 
 function App() {
   return (
@@ -30,7 +31,9 @@ function App() {
           <Route path="/signup/student" element={<StudentSignupForm />} />
           <Route path="/signup/administration" element={<AdministrationSignupForm />} />
           <Route path="/studyRooms/:id/" element={<StudyRoom />} />
-          <Route path="/studyRooms" element={<StudyRoomListing/>} />
+          <Route path="/student" element={<StudentView/>}>
+            <Route path="studyRooms" element={<StudyRoomListing/>}/>
+          </Route>
         </Routes>
       </Router>
     </div>
