@@ -21,19 +21,18 @@ const socketHandler = require("./socket");
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
 const ClassroomResolver = require("./resolvers/ClassroomResolver");
-const { isAuthenticated, isAccountType } = require('./resolvers/AccountCheck');
+const { isAuthenticated, isAccountType } = require("./resolvers/AccountCheck");
 
 const { NotFoundError, ConflictError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
+const corsOptions = { origin: "http://localhost:3000", credentials: true };
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: "*",
-  },
+  cors: corsOptions,
 });
-app.use(cors());
+app.use(cors(corsOptions));
 
 const typeDefs = gql`
   type MutationResponse {
@@ -158,7 +157,7 @@ const resolvers = {
 
     getStudyRooms: getStudyRoomsQuery,
 
-    ...ClassroomResolver.query
+    ...ClassroomResolver.query,
   },
   Mutation: {
     signupSchool: async (parent, args, context) => {
@@ -186,6 +185,7 @@ const resolvers = {
     signup: async (parent, args, context) => {
       const { firstName, lastName, email, password, type, schoolId } = args;
       let user = context.session.user;
+      console.log(user);
 
       if (((user && user.type !== "SCHOOL_ADMIN") || !user) && args.type === "TEACHER") {
         throw new ForbiddenError("cannot create teacher account");
@@ -210,6 +210,8 @@ const resolvers = {
       const resPassword = await bcrypt.compare(password, user.hash);
       if (!resPassword) throw new ForbiddenError("access denied");
       context.session.user = user;
+      console.log(context.session.user);
+      console.log("LOGGEDIN");
       return { code: 200, success: true, message: "user logged in" };
     },
     signout: (parent, args, context) => {
@@ -217,7 +219,7 @@ const resolvers = {
       return { code: 200, success: true, message: "user logged out" };
     },
     createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
-    ...ClassroomResolver.mutation
+    ...ClassroomResolver.mutation,
   },
 };
 
@@ -241,6 +243,7 @@ async function startApolloServer(typeDefs, resolvers) {
   server.applyMiddleware({
     app,
     path: "/",
+    cors: corsOptions,
   });
 
   await new Promise((resolve) => httpServer.listen({ port: process.env.PORT }, resolve));
@@ -252,4 +255,4 @@ db.connect();
 
 startApolloServer(typeDefs, resolvers);
 
-io.on("connection", socketHandler.connect(io));
+// io.on("connection", socketHandler.connect(io));

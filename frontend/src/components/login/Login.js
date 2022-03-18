@@ -50,6 +50,9 @@ export function Login(){
     //Send request to server to check if user is valid
     
     //These checks may not be needed***
+
+    console.log(username);
+    console.log(password);
     
     console.log("Login Clicked");
     signin({
