@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@material-ui/core";
-import PresentToAllIcon from "@material-ui/icons/PresentToAll";
-import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
+import { Button } from "@mui/material";
+import PresentToAllIcon from "@mui/icons-material//PresentToAll";
+import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
 
 const ToggleSharingButton = ({ onToggle }) => {
   const [icon, setIcon] = useState(<PresentToAllIcon />);

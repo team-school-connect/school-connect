@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@material-ui/core";
-import VolumeOffIcon from "@material-ui/icons/VolumeUp";
-import VolumeUpIcon from "@material-ui/icons/VolumeUp";
+import { Button } from "@mui/material";
+import VolumeOffIcon from "@mui/icons-material//VolumeUp";
+import VolumeUpIcon from "@mui/icons-material//VolumeUp";
 
 const ToggleMuteButton = ({ onToggle }) => {
   const [icon, setIcon] = useState(<VolumeOffIcon />);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const checkIsFull = (size) => {
-  size < 4;
+  return size < 4;
 };
 
 const StudyRoomSchema = new Schema({
@@ -10,7 +10,7 @@ const StudyRoomSchema = new Schema({
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   participantCount: {
     type: Number,
-    validate: [checkIsFull, "Sorry this room is full!"],
+    max: 4,
     required: true,
   },
   subject: { type: String, required: true },

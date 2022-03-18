@@ -10,14 +10,15 @@ import {
   createJoiningPeer,
   handleLeaveRoom,
   removePeer,
+  stopStream,
   toggleHideStream,
   toggleMuteStream,
 } from "./handlers";
 
 import "./StudyRoom.css";
 import ToggleMuteButton from "../ToggleMuteButton/ToggleMuteButton";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { Button } from "@material-ui/core";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { Button, Toolbar, Typography } from "@mui/material";
 import ToggleVideoButton from "../ToggleVideoButton/ToggleVideoButton";
 import ToggleSharingButton from "../ToggleSharingButton/ToggleSharingButton";
 
@@ -33,6 +34,7 @@ const StudyRoom = () => {
   const [peers, setPeers] = useState([]);
   const peersRef = useRef([]);
   const [isSharingScreen, setIsSharingScreen] = useState(false);
+  const [inRoom, setInRoom] = useState(false);
 
   useEffect(() => {
     //setup the socket
@@ -75,6 +77,7 @@ const StudyRoom = () => {
       });
 
       setPeers(roomPeers);
+      setInRoom(true);
     });
 
     //handle when someone joins the room
@@ -108,6 +111,7 @@ const StudyRoom = () => {
     });
 
     socket.current.on("userLeftRoom", (leftRoomId) => {
+      console.log("USER LEFT THE ROOM");
       const destroyingPeer = peersRef.current.find((p) => {
         return p.id === leftRoomId;
       });
@@ -121,9 +125,21 @@ const StudyRoom = () => {
 
     //clean up function when leaving
     return () => {
-      handleLeaveRoom(peersRef.current, socket.current, stream);
+      handleLeaveRoom(peersRef.current, socket.current);
     };
   }, []);
+
+  useEffect(() => {
+    return () => {
+      stopStream(stream);
+    };
+  }, [stream]);
+
+  useEffect(() => {
+    if (roomFull) {
+      stopStream(stream);
+    }
+  }, [roomFull]);
 
   const toggleShareScreen = async () => {
     try {
@@ -170,9 +186,11 @@ const StudyRoom = () => {
 
   return (
     <div className="container">
-      {roomFull && <div>Sorry the room is full</div>}
-      {myStreamRef && !roomFull && (
-        <div className="headerBar">
+      {roomFull && (
+        <Typography sx={{ color: "white" }}>Sorry this room is full or does not exist.</Typography>
+      )}
+      {inRoom && myStreamRef && !roomFull && (
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Link to="/">
             <Button
               variant="contained"
@@ -188,7 +206,7 @@ const StudyRoom = () => {
           <ToggleSharingButton onToggle={() => toggleShareScreen()} />
           <ToggleVideoButton onToggle={() => toggleHideStream(myStreamRef.current.srcObject)} />
           <ToggleMuteButton onToggle={() => toggleMuteStream(myStreamRef.current.srcObject)} />
-        </div>
+        </Toolbar>
       )}
       {!roomFull && (
         <Grid container spacing={1} className="streamContainer">
