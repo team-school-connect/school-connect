@@ -9,7 +9,9 @@ import {
   createAlreadyInRoomPeer,
   createJoiningPeer,
   handleLeaveRoom,
+  hideStream,
   removePeer,
+  showStream,
   stopStream,
   toggleHideStream,
   toggleMuteStream,
@@ -33,8 +35,12 @@ const StudyRoom = () => {
   const [roomFull, setRoomFull] = useState(false);
   const [peers, setPeers] = useState([]);
   const peersRef = useRef([]);
-  const [isSharingScreen, setIsSharingScreen] = useState(false);
   const [inRoom, setInRoom] = useState(false);
+
+  //controls
+  const [isMuted, setIsMuted] = useState(false);
+  const [isShowingVideo, setIsShowingVideo] = useState(true);
+  const [isSharingScreen, setIsSharingScreen] = useState(false);
 
   useEffect(() => {
     //setup the socket
@@ -141,46 +147,54 @@ const StudyRoom = () => {
     }
   }, [roomFull]);
 
-  const toggleShareScreen = async () => {
+  const shareScreen = async () => {
     try {
-      if (!isSharingScreen) {
-        let myScreen = await navigator.mediaDevices.getDisplayMedia();
-        setScreen(myScreen);
-        socket.current.emit("shareScreen");
+      let myScreen = await navigator.mediaDevices.getDisplayMedia();
+      setScreen(myScreen);
+      socket.current.emit("shareScreen");
 
-        peersRef.current.forEach((p) => {
-          p.peer.replaceTrack(
-            p.peer.streams[0].getVideoTracks()[0],
-            myScreen.getVideoTracks()[0],
-            p.peer.streams[0]
-          );
-        });
+      peersRef.current.forEach((p) => {
+        p.peer.replaceTrack(
+          p.peer.streams[0].getVideoTracks()[0],
+          myScreen.getVideoTracks()[0],
+          p.peer.streams[0]
+        );
+      });
 
-        myStreamRef.current.srcObject = myScreen;
+      myScreen.onended = () => {
+        console.log("ended stream");
+      };
 
-        setIsSharingScreen(true);
+      myStreamRef.current.srcObject = myScreen;
+      console.log("sharing");
 
-        return true;
-      } else {
-        peersRef.current.forEach((p) => {
-          p.peer.replaceTrack(
-            p.peer.streams[0].getVideoTracks()[0],
-            stream.getVideoTracks()[0],
-            p.peer.streams[0]
-          );
-        });
-
-        myStreamRef.current.srcObject = stream;
-        screen.getTracks().forEach((track) => {
-          return track.stop();
-        });
-        setIsSharingScreen(false);
-      }
+      setIsSharingScreen(true);
     } catch (err) {
       console.log(err);
       setIsSharingScreen(false);
       myStreamRef.current.srcObject = stream;
-      return false;
+    }
+  };
+
+  const stopShareScreen = async () => {
+    try {
+      peersRef.current.forEach((p) => {
+        p.peer.replaceTrack(
+          p.peer.streams[0].getVideoTracks()[0],
+          stream.getVideoTracks()[0],
+          p.peer.streams[0]
+        );
+      });
+      console.log("stopped sharing");
+
+      myStreamRef.current.srcObject = stream;
+      screen.getTracks().forEach((track) => {
+        return track.stop();
+      });
+      setIsSharingScreen(false);
+    } catch (err) {
+      console.log(err);
+      myStreamRef.current.srcObject = stream;
     }
   };
 
@@ -203,9 +217,29 @@ const StudyRoom = () => {
               Leave
             </Button>
           </Link>
-          <ToggleSharingButton onToggle={() => toggleShareScreen()} />
-          <ToggleVideoButton onToggle={() => toggleHideStream(myStreamRef.current.srcObject)} />
-          <ToggleMuteButton onToggle={() => toggleMuteStream(myStreamRef.current.srcObject)} />
+          <ToggleSharingButton
+            sharingScreen={isSharingScreen}
+            onToggle={() => {
+              if (!isSharingScreen) {
+                shareScreen();
+              } else {
+                stopShareScreen();
+              }
+            }}
+          />
+          <ToggleVideoButton
+            showingVideo={isShowingVideo}
+            onToggle={() => {
+              if (isShowingVideo) {
+                hideStream(stream);
+                setIsShowingVideo(false);
+              } else {
+                showStream(stream);
+                setIsShowingVideo(true);
+              }
+            }}
+          />
+          <ToggleMuteButton onToggle={() => toggleMuteStream(stream)} />
         </Toolbar>
       )}
       {!roomFull && (

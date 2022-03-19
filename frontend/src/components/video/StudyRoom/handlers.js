@@ -67,7 +67,12 @@ export const toggleMuteStream = (stream) => {
   stream.getAudioTracks()[0].enabled = !muted;
 };
 
-export const toggleHideStream = (stream) => {
+export const hideStream = (stream) => {
   const visibility = stream.getVideoTracks()[0].enabled;
-  stream.getVideoTracks()[0].enabled = !visibility;
+  stream.getVideoTracks()[0].enabled = false;
+};
+
+export const showStream = (stream) => {
+  const visibility = stream.getVideoTracks()[0].enabled;
+  stream.getVideoTracks()[0].enabled = true;
 };
