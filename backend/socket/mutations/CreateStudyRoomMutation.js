@@ -4,6 +4,8 @@ const { UserInputError, ApolloError } = require("apollo-server-core");
 const createStudyRoomMutation = async (parent, args, context) => {
   const { roomName, subject } = args;
 
+  console.log(args);
+
   if (!roomName || !subject) {
     throw new UserInputError("Input is invalid");
   }
@@ -18,6 +20,8 @@ const createStudyRoomMutation = async (parent, args, context) => {
     });
 
     let response = await room.save();
+
+    console.log(response);
 
     return { code: 200, success: true, message: "Study Room created", response };
   } catch (err) {

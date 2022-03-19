@@ -10,9 +10,13 @@ import { AdministrationSignupForm } from "./components/signup/AdministrationSign
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
-import StudyRoomListing from "./components/studentview/studyRoomListing/StudyRoomListing";
 import StudentView from "./components/studentview/StudentView";
 import AdministrationView from "./components/administrationview/AdministrationView";
+import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoom/NewStudyRoomPage";
+import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListing/StudyRoomListingPage";
+import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
+import JoinClassroomPage from "./components/studentview/Pages/JoinClassroom/JoinClassroomPage";
+
 
 function App() {
   return (
@@ -33,11 +37,14 @@ function App() {
           <Route path="/signup/student" element={<StudentSignupForm />} />
           <Route path="/signup/administration" element={<AdministrationSignupForm />} />
           <Route path="/studyRooms/:id/" element={<StudyRoom />} />
-          <Route path="/student" element={<StudentView/>}>
-            <Route path="studyRooms" element={<StudyRoomListing/>}/>
+          <Route path="/student" element={<StudentView />}>
+            <Route path="studyRooms" element={<StudyRoomListingPage />} />
+            <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
+            <Route path="classrooms" element={<ClassroomPage />} />
+            <Route path="classrooms/join" element={<JoinClassroomPage />} />
           </Route>
-          <Route path="/administration" element={<AdministrationView/>}>
-            <Route path="signup/teacher" element={<TeacherSignupForm/>}/>
+          <Route path="/administration" element={<AdministrationView />}>
+            <Route path="signup/teacher" element={<TeacherSignupForm />} />
           </Route>
         </Routes>
       </Router>

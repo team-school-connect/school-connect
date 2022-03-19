@@ -8,6 +8,7 @@ const getStudyRoomsQuery = async (parent, args, context) => {
 
   try {
     const studyRooms = await StudyRoom.find()
+      .sort({ createdOn: -1 })
       .limit(pageLimit)
       .skip(page * pageLimit)
       .exec();
