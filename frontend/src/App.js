@@ -1,6 +1,8 @@
 import "./App.css";
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 
 import { Login } from "./components/login/Login";
 import { Signup } from "./components/signup/Signup";
@@ -17,36 +19,37 @@ import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListin
 import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
 import JoinClassroomPage from "./components/studentview/Pages/JoinClassroom/JoinClassroomPage";
 
-
 function App() {
   return (
     <div className="App">
       <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div>
-                <Navbar />
-                <Home />
-              </div>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signup/student" element={<StudentSignupForm />} />
-          <Route path="/signup/administration" element={<AdministrationSignupForm />} />
-          <Route path="/studyRooms/:id/" element={<StudyRoom />} />
-          <Route path="/student" element={<StudentView />}>
-            <Route path="studyRooms" element={<StudyRoomListingPage />} />
-            <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
-            <Route path="classrooms" element={<ClassroomPage />} />
-            <Route path="classrooms/join" element={<JoinClassroomPage />} />
-          </Route>
-          <Route path="/administration" element={<AdministrationView />}>
-            <Route path="signup/teacher" element={<TeacherSignupForm />} />
-          </Route>
-        </Routes>
+        <AlertProvider template={AlertTemplate} timeout={4000}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  <Navbar />
+                  <Home />
+                </div>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/signup/student" element={<StudentSignupForm />} />
+            <Route path="/signup/administration" element={<AdministrationSignupForm />} />
+            <Route path="/studyRooms/:id/" element={<StudyRoom />} />
+            <Route path="/student" element={<StudentView />}>
+              <Route path="studyRooms" element={<StudyRoomListingPage />} />
+              <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
+              <Route path="classrooms" element={<ClassroomPage />} />
+              <Route path="classrooms/join" element={<JoinClassroomPage />} />
+            </Route>
+            <Route path="/administration" element={<AdministrationView />}>
+              <Route path="signup/teacher" element={<TeacherSignupForm />} />
+            </Route>
+          </Routes>
+        </AlertProvider>
       </Router>
     </div>
   );
