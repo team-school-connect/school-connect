@@ -17,7 +17,7 @@ const styles = {
 const StudentSideNav = () => {
   return (
     <Drawer
-      sx={{ width: "3em"}}
+      sx={{ width: "3em" }}
       PaperProps={{ sx: { backgroundColor: "rgb(51, 51, 51)", flexShrink: 0, position: "fixed" } }}
       variant="permanent"
       anchor="left"
@@ -29,11 +29,11 @@ const StudentSideNav = () => {
           </Tooltip>
         </ListItem>
         <ListItem button key={"My Classes"}>
-          
+          <Link to="classrooms">
             <Tooltip title="My Classes" placement="right">
               <ClassIcon sx={styles.myclasses} />
             </Tooltip>
-        
+          </Link>
         </ListItem>
         <ListItem button key={"Browse Study Groups"}>
           <Link to="studyRooms">

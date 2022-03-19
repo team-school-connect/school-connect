@@ -10,10 +10,11 @@ import { AdministrationSignupForm } from "./components/signup/AdministrationSign
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
-import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListingPage/StudyRoomListingPage";
 import StudentView from "./components/studentview/StudentView";
 import AdministrationView from "./components/administrationview/AdministrationView";
-import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoomPage/NewStudyRoomPage";
+import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoom/NewStudyRoomPage";
+import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListing/StudyRoomListingPage";
+import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/student" element={<StudentView />}>
             <Route path="studyRooms" element={<StudyRoomListingPage />} />
             <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
+            <Route path="classrooms" element={<ClassroomPage />} />
           </Route>
           <Route path="/administration" element={<AdministrationView />}>
             <Route path="signup/teacher" element={<TeacherSignupForm />} />
