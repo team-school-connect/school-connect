@@ -15,7 +15,7 @@ const JoinClassroomForm = () => {
   const navigate = useNavigate();
 
   const schema = yup.object().shape({
-    code: yup.string().label("Class Code").required(),
+    code: yup.string().label("Classroom Code").required(),
   });
 
   const submit = async (values) => {
