@@ -53,11 +53,11 @@
    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
    const alert = useAlert();
 
-   const onClickSignup = () => {
+   const onClickSignup = async () => {
      //Send request to server to check if user is valid
     try {
       setIsButtonDisabled(true);
-      signupAdministration({
+      await signupAdministration({
           variables: {
             firstName: firstName,
             lastName: lastName,
