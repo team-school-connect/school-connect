@@ -12,7 +12,8 @@
  import { Grid,Paper, Avatar, TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core'
  import AccountCircleIcon from '@material-ui/icons/AccountCircle';
  import { SIGNUP_MUTATION } from '../../graphql/Mutations';
- import { useMutation } from '@apollo/client';
+ import { GET_SCHOOL_LIST_QUERY } from '../../graphql/Querys';
+ import { useMutation, useQuery } from '@apollo/client';
  import { useState } from 'react';
  import { useCookies } from "react-cookie";
 
@@ -41,20 +42,26 @@
  
  export function StudentSignupForm(){
    const classes = useStyles();
+   
    const [signup, { error }] = useMutation(SIGNUP_MUTATION);
+   const {data} = useQuery(GET_SCHOOL_LIST_QUERY);
+   console.log("HERE");
+    console.log(data);
+    console.log("HERE2");
    const [firstName, setFirstName] = useState("");
    const [lastName, setLastName] = useState("");
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [schoolName, setSchoolName] = useState("");
-   const [accountType, setAccountType] = useState("");
-
+  //  const [accountType, setAccountType] = useState("");
+   
    const [cookies, setCookie] = useCookies();
 
    const onClickSignup = () => {
      //Get accountType from cookie and send request to server to check if user is valid
-
-
+    console.log("HERE");
+    console.log(data);
+    console.log("HERE2");
      //Send request to server to check if user is valid
      signup({
         variables: {
@@ -95,10 +102,18 @@
                     onChange={(e) => {setSchoolName(e.target.value);}}
                     fullWidth
                 >
+                  {/* Create a drop down menu that contains a list of all school ins data */}
+                  {data && data.schools && data.schools.map(school => {
+                    return (
+                      <MenuItem value={school.id}>{school.name}</MenuItem>
+                    )
+                  })}
+                  {/* <Menu />
+
                     <MenuItem value=""/>
                     <MenuItem value={'School 1'}>School 1</MenuItem>
                     <MenuItem value={'School 2'}>School 2</MenuItem>
-                    <MenuItem value={'School 3'}>School 3</MenuItem>
+                    <MenuItem value={'School 3'}>School 3</MenuItem> */}
                 </Select>
             </FormControl>
            

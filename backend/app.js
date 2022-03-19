@@ -108,11 +108,15 @@ const typeDefs = gql`
   type AccountTypeResponse {
     type: AccountType
   }
+  type UsersSchool {
+    schoolId: String
+  }
 
   type Query {
     checkLogin: String
     checkTeacherOnly: String
     getAccountType: AccountTypeResponse
+    getUsersSchool: UsersSchool
     getStudyRooms(page: Int): StudyRoomPage
     getClassrooms(page: Int, schoolName: String): ClassroomPage
     getAnnouncements(page: Int, className: String): AnnouncementPage
@@ -157,6 +161,9 @@ const resolvers = {
     }),
     getAccountType: (parent, args, context) => {
       return {type: context.session.user.type};
+    },
+    getUsersSchool: (parent, args, context) => {
+      return {schoolId: context.session.user.schoolId};
     },
     checkLogin: (parent, args, context) => {
       console.log(context.session);
