@@ -105,9 +105,14 @@ const typeDefs = gql`
     announcements: [Announcement]
   }
 
+  type AccountTypeResponse {
+    type: AccountType
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
+    getAccountType: AccountTypeResponse
     getStudyRooms(page: Int): StudyRoomPage
     getClassrooms(page: Int, schoolName: String): ClassroomPage
     getAnnouncements(page: Int, className: String): AnnouncementPage
@@ -149,6 +154,9 @@ const resolvers = {
     checkTeacherOnly: combineResolvers(isAccountType(["TEACHER"]), (parent, args, context) => {
       return "you are a teacher";
     }),
+    getAccountType: (parent, args, context) => {
+      return {type: context.session.user.type};
+    },
     checkLogin: (parent, args, context) => {
       console.log(context.session);
       if (context.session.user) return `user logged in ${context.session.user.email}`;

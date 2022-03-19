@@ -2,18 +2,16 @@
  * This component is responsible for the signup form.
  * It will have 3 buttons:
  *  1. Student Login
- *  2. Teacher Login
- *  3. Administration Login
+ *  2. Administration Login
  * 
  * Depending on which user type is chosen, the appropriate signup page will be shown.
  * */ 
  import { makeStyles } from '@material-ui/core/styles';
  import { Grid,Paper, Button} from '@material-ui/core'
- import { useState } from 'react';
+//  import { useState } from 'react';
  import { Link } from "react-router-dom";
- import { useCookies } from 'react-cookie';
- import { useQuery } from "@apollo/client";
- import { ACCOUNT_TYPE_ENUM_QUERY } from "../../graphql/Querys";
+//  import { useCookies } from 'react-cookie';
+
  
  
  const useStyles = makeStyles(theme => ({
@@ -37,25 +35,25 @@
  }));
  
  export function Signup(){
-   const [userType, setUserType] = useState("");
+  //  const [userType, setUserType] = useState("");
    const classes = useStyles();
-   const [cookies, setCookie] = useCookies(['account']);
+
 
     const onClickStudent = () => {
       console.log("Student Signup");
-      setUserType("Student");
+      // setUserType("Student");
       // setCookie('accountType', userType, { path: '/' });
     }
 
-    const onClickTeacher = () => {
-      console.log("Teacher Signup");
-      setUserType("Teacher");
-      // setCookie('accountType', userType, { path: '/' });
-    }
+    // const onClickTeacher = () => {
+    //   console.log("Teacher Signup");
+    //   setUserType("Teacher");
+    //   // setCookie('accountType', userType, { path: '/' });
+    // }
 
     const onClickAdministration = () => {
       console.log("Administration Signup");
-      setUserType("Administration");
+      // setUserType("Administration");
       // setCookie('accountType', userType, { path: '/' });
     }
  
@@ -69,11 +67,11 @@
                 Student
             </Button>
           </Link>
-          <Link to="/signup/teacher">
+          {/* <Link to="/signup/teacher">
             <Button variant="contained" color="primary" className={classes.userSelectionButton} onClick={onClickTeacher} fullWidth>
                 Teacher
             </Button>
-          </Link>
+          </Link> */}
           <Link to="/signup/administration">
             <Button variant="contained" color="primary" className={classes.userSelectionButton} onClick={onClickAdministration} fullWidth>
                 Administration
