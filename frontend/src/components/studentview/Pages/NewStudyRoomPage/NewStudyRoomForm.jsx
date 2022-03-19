@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import FormControl from "@mui/material/FormControl";
-import { CREATE_STUDY_ROOM_MUTATION } from "../../graphql/Mutations";
+import { CREATE_STUDY_ROOM_MUTATION } from "../../../../graphql/Mutations";
 import { useMutation } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -39,6 +40,8 @@ const NewStudyRoomForm = () => {
   const [createStudyRoom, { error }] = useMutation(CREATE_STUDY_ROOM_MUTATION);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  const navigate = useNavigate();
+
   const schema = yup.object().shape({
     roomName: yup.string().label("Room Name").required(),
     subject: yup
@@ -50,8 +53,13 @@ const NewStudyRoomForm = () => {
   });
 
   const submit = async (values) => {
+    console.log(values);
     try {
-      const studyRoom = await createStudyRoom(values.roomName, values.subject);
+      const studyRoom = await createStudyRoom({
+        variables: { roomName: values.roomName, subject: values.subject },
+      });
+
+      navigate("/student/studyRooms");
     } catch (err) {
       //change to react alert
       console.log(err);
@@ -63,6 +71,8 @@ const NewStudyRoomForm = () => {
       <Formik
         onSubmit={submit}
         validationSchema={schema}
+        validateOnBlur={false}
+        validateOnChange={false}
         initialValues={{
           roomName: "",
           subject: "",
