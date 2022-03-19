@@ -11,7 +11,9 @@ import { Grid,Paper, Avatar, TextField, Button} from '@material-ui/core'
 import { useState } from 'react';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { SIGNIN_MUTATION } from '../../graphql/Mutations';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { GET_ACCOUNT_TYPE_QUERY } from "../../graphql/Querys";
+import { useNavigate } from "react-router-dom";
 
 
 const useStyles = makeStyles(theme => ({
@@ -38,12 +40,38 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function Login(){
-  // const [userType, setUserType] = useState(""); //We may not need userType for login***
+  const [userType, setUserType] = useState("");
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [signin, { error }] = useMutation(SIGNIN_MUTATION);
+  const [getAccountType, {loading, data}] = useLazyQuery(GET_ACCOUNT_TYPE_QUERY);
+  const navigate = useNavigate();
 
+  function trySignin(){
+    signin({
+      variables: {
+        email: username,
+        password: password,
+      }
+    });
+    
+   
+    if (error) {
+      console.log(error);
+      return;
+    }
+  }
+
+  function getUserType(){
+    getAccountType();
+    if(loading){
+      console.log("Loading...");
+    }
+    // console.log(data?.getAccountType?.type);
+
+    setUserType(data?.getAccountType?.type);
+  }
 
   const onClickLogin = () => {
 
@@ -51,23 +79,59 @@ export function Login(){
     
     //These checks may not be needed***
 
-    console.log(username);
-    console.log(password);
+    // console.log(username);
+    // console.log(password);
     
     console.log("Login Clicked");
-    signin({
-      variables: {
-        email: username,
-        password: password,
-      }
+    // signin({
+    //   variables: {
+    //     email: username,
+    //     password: password,
+    //   }
+    // });
+    
+   
+    // if (error) {
+    //   console.log(error);
+    //   return;
+    // }
+    //Create new promise with trySignin()
+    const promise = new Promise((resolve, reject) => {
+      trySignin();
+      resolve();
     });
-    if (error) {
-      console.log(error);
+    promise.then(() => {
+      getUserType();
+    });
+
+    // getAccountType();
+    // if(loading){
+    //   console.log("Loading...");
+    // }
+    // // console.log(data?.getAccountType?.type);
+    // setUserType(data["getAccountType"]["type"]);
+
+    if(userType === "STUDENT"){
+      console.log("Student");
+      navigate("/student");
       return;
     }
-    // if()
+    if(userType === "TEACHER"){
+      console.log("TEACHER");
+      navigate("/teacher");
+      return;
+    }
+    if(userType === "SCHOOL_ADMIN"){
+      console.log("SCHOOL_ADMIN");
+      navigate("/administration");
 
+      return;
+    }
     
+    console.log("Invalid User");
+    return;
+    
+    // if the user type is admin, redirect to admin page
   }
 
   //Parts of the Login Form have been adopeted from https://github.com/vikas62081/YT/blob/loginPage/src/components/login.js
