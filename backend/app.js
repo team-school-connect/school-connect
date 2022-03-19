@@ -116,6 +116,7 @@ const typeDefs = gql`
     getStudyRooms(page: Int): StudyRoomPage
     getClassrooms(page: Int, schoolName: String): ClassroomPage
     getAnnouncements(page: Int, className: String): AnnouncementPage
+    getSchools: [School]
   }
 
   type Mutation {
@@ -166,6 +167,11 @@ const resolvers = {
     getStudyRooms: getStudyRoomsQuery,
 
     ...ClassroomResolver.query,
+
+    getSchools: async (parent, args, context) => {
+      const schools = await School.find({}).sort({name: 'asc'});
+      return schools;
+    }
   },
   Mutation: {
     signupSchool: async (parent, args, context) => {
