@@ -255,4 +255,4 @@ db.connect();
 
 startApolloServer(typeDefs, resolvers);
 
-// io.on("connection", socketHandler.connect(io));
+io.on("connection", socketHandler.connect(io));
