@@ -13,14 +13,13 @@ import {
   removePeer,
   showStream,
   stopStream,
-  toggleHideStream,
   toggleMuteStream,
 } from "./handlers";
 
 import "./StudyRoom.css";
 import ToggleMuteButton from "../ToggleMuteButton/ToggleMuteButton";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { Button, Toolbar, Typography } from "@mui/material";
+import { Button, Toolbar, Typography, Box } from "@mui/material";
 import ToggleVideoButton from "../ToggleVideoButton/ToggleVideoButton";
 import ToggleSharingButton from "../ToggleSharingButton/ToggleSharingButton";
 
@@ -199,7 +198,20 @@ const StudyRoom = () => {
   };
 
   return (
-    <div className="container">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        
+        width: "100%",
+        height:"fit-content",
+        minHeight: "100%",
+        alignItems: "center",
+        background: "#333333",
+        paddingBottom: "1em",
+        paddingTop: "2em"
+      }}
+    >
       {roomFull && (
         <Typography sx={{ color: "white" }}>Sorry this room is full or does not exist.</Typography>
       )}
@@ -250,7 +262,7 @@ const StudyRoom = () => {
           })}
         </Grid>
       )}
-    </div>
+    </Box>
   );
 };
 
