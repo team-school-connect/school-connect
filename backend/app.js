@@ -112,6 +112,10 @@ const typeDefs = gql`
     schoolId: String
   }
 
+  type SchoolList {
+    Schools: [School]
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String

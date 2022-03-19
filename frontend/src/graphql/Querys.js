@@ -19,10 +19,7 @@ export const GET_USERS_SCHOOL_QUERY = gql`
 export const GET_SCHOOL_LIST_QUERY = gql`
   query getSchools {
     getSchools {
-      School {
-        schoolId
-        schoolName
-      }
+      name
     }
   }
 `;

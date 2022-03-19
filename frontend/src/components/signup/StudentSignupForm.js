@@ -1,10 +1,11 @@
 /** 
  * This component is responsible for the student signup form.
- * It has 2 text fields:
- * 1. Name
- * 2. E-mail
- * 3. Password
- * 4. School
+ * It has 5 fields:
+ * 1. First Name
+ * 2. Last Name
+ * 3. E-mail
+ * 4. Password
+ * 5. School
  * 
  * It has a button to login.
  * */ 
@@ -15,7 +16,8 @@
  import { GET_SCHOOL_LIST_QUERY } from '../../graphql/Querys';
  import { useMutation, useQuery } from '@apollo/client';
  import { useState } from 'react';
- import { useCookies } from "react-cookie";
+ import { useNavigate } from 'react-router-dom';
+ import { useAlert } from "react-alert";
 
  const useStyles = makeStyles(theme => ({
     signupFormContainer: {
@@ -42,42 +44,40 @@
  
  export function StudentSignupForm(){
    const classes = useStyles();
-   
    const [signup, { error }] = useMutation(SIGNUP_MUTATION);
    const {data} = useQuery(GET_SCHOOL_LIST_QUERY);
-   console.log("HERE");
-    console.log(data);
-    console.log("HERE2");
    const [firstName, setFirstName] = useState("");
    const [lastName, setLastName] = useState("");
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [schoolName, setSchoolName] = useState("");
-  //  const [accountType, setAccountType] = useState("");
-   
-   const [cookies, setCookie] = useCookies();
+   const navigate = useNavigate();
+
+   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+   const alert = useAlert();
 
    const onClickSignup = () => {
-     //Get accountType from cookie and send request to server to check if user is valid
-    console.log("HERE");
-    console.log(data);
-    console.log("HERE2");
      //Send request to server to check if user is valid
-     signup({
-        variables: {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          schoolId: schoolName,
-          type: "STUDENT",
-        }
+     try {
+      setIsButtonDisabled(true);
+      signup({
+          variables: {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            schoolId: schoolName,
+            type: "STUDENT",
+          }
       });
-      if (error) {
-        console.log(error);
-      }
-     
-   }
+      
+    } catch (err) {
+      setIsButtonDisabled(false);
+      console.log(err);
+      alert.error("Signup Information is invalid");
+    }
+    
+  }
  
    //Parts of the Signup Form have been adopted from https://github.com/vikas62081/YT/blob/loginPage/src/components/login.js
    return (
@@ -98,26 +98,20 @@
                     labelId="school-select-label"
                     label="School"
                     placeholder='Select School'
-                    value=""
+                    value={schoolName}
                     onChange={(e) => {setSchoolName(e.target.value);}}
                     fullWidth
                 >
-                  {/* Create a drop down menu that contains a list of all school ins data */}
-                  {data && data.schools && data.schools.map(school => {
+                  {data && data.getSchools && data.getSchools.map(school => {
+                    // console.log(school.name);
                     return (
-                      <MenuItem value={school.id}>{school.name}</MenuItem>
+                      <MenuItem key={school.name} value={school.name}>{school.name}</MenuItem>
                     )
                   })}
-                  {/* <Menu />
-
-                    <MenuItem value=""/>
-                    <MenuItem value={'School 1'}>School 1</MenuItem>
-                    <MenuItem value={'School 2'}>School 2</MenuItem>
-                    <MenuItem value={'School 3'}>School 3</MenuItem> */}
                 </Select>
             </FormControl>
            
-           <Button type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
+           <Button disabled={isButtonDisabled} type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
                Create Account
             </Button>
        </Paper>

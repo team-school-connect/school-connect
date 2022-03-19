@@ -14,6 +14,8 @@
  import { SIGNUP_SCHOOL_MUTATION } from '../../graphql/Mutations';
  import { useMutation } from '@apollo/client';
  import { useState } from 'react';
+ import { useNavigate } from 'react-router-dom';
+ import { useAlert } from "react-alert";
  
  const useStyles = makeStyles(theme => ({
     signupFormContainer: {
@@ -46,20 +48,29 @@
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [schoolName, setSchoolName] = useState("");
+   const navigate = useNavigate();
+
+   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+   const alert = useAlert();
+
    const onClickSignup = () => {
      //Send request to server to check if user is valid
-     signupAdministration({
-        variables: {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          schoolName: schoolName,
-        }
-      });
-      if (error) {
-        console.log(error);
-      }
+    try {
+      setIsButtonDisabled(true);
+      signupAdministration({
+          variables: {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            schoolName: schoolName,
+          }
+        });
+    } catch (err) {
+      setIsButtonDisabled(false);
+      console.log(err);
+      alert.error("Signup Information is invalid");
+    }
 
    }
  
@@ -76,7 +87,7 @@
            <TextField label='E-mail' placeholder='Enter E-mail (This will be your Username)' onChange={(e)=>{setEmail(e.target.value);}} fullWidth required/>
            <TextField label='Password' placeholder='Enter password' type='password' onChange={(e)=>{setPassword(e.target.value);}} fullWidth required/>
            <TextField label='School Name' placeholder='Enter School Name' onChange={(e)=>{setSchoolName(e.target.value);}} fullWidth required/>
-           <Button type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
+           <Button disabled={isButtonDisabled} type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
                Create Account
             </Button>
        </Paper>

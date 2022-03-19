@@ -12,10 +12,11 @@
  import { Grid,Paper, Avatar, TextField, Button } from '@material-ui/core'
  import AccountCircleIcon from '@material-ui/icons/AccountCircle';
  import { SIGNUP_MUTATION } from '../../graphql/Mutations';
- import { useMutation, useQuery } from '@apollo/client';
+ import { useMutation, useLazyQuery } from '@apollo/client';
  import { GET_USERS_SCHOOL_QUERY } from "../../graphql/Querys";
  import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+ import { useNavigate } from 'react-router-dom';
+ import { useAlert } from "react-alert";
  
  const useStyles = makeStyles(theme => ({
     signupFormContainer: {
@@ -43,34 +44,48 @@ import { useNavigate } from 'react-router-dom';
  export function TeacherSignupForm(){
    const classes = useStyles();
    const [signup, { error }] = useMutation(SIGNUP_MUTATION);
-   const { data } = useQuery(GET_USERS_SCHOOL_QUERY); 
+   const [getUsersSchool, { loading, data }] = useLazyQuery(GET_USERS_SCHOOL_QUERY);
    const [firstName, setFirstName] = useState("");
    const [lastName, setLastName] = useState("");
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
-   const [schoolName, setSchoolName] = useState(data?.getUsersSchool?.schoolId);
+  //  const [schoolName, setSchoolName] = useState("");
    const navigate = useNavigate();
    //  setSchoolName(data?.getUsersSchool?.schoolId);
-   const onClickSignup = () => {
-     console.log(data);
-     setSchoolName(data?.getUsersSchool?.schoolId);
-     console.log(schoolName);
-     //Send request to server to check if user is valid
-     signup({
+
+
+   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const alert = useAlert();
+
+  const onClickSignup = async () => {
+    try {
+      setIsButtonDisabled(true);
+
+      const {
+        data: {
+          getUsersSchool: {schoolId},
+        },
+      } = await getUsersSchool();
+      // setSchoolName(schoolId);
+
+      await signup({
         variables: {
           firstName: firstName,
           lastName: lastName,
           email: email,
           password: password,
-          schoolId: schoolName,
+          schoolId: schoolId,
           type: "TEACHER"
         }
       });
-      if (error) {
-        console.log(error);
-      }
+    } catch (err) {
+      setIsButtonDisabled(false);
+      console.log(err);
+      alert.error("Signup Information is invalid");
+    }
 
-      navigate("/administration");
+    navigate("/administration");
 
    }
  
@@ -87,7 +102,7 @@ import { useNavigate } from 'react-router-dom';
            <TextField label='E-mail' placeholder='Enter E-mail (This will be your Username)' onChange={(e)=>{setEmail(e.target.value);}} fullWidth required/>
            <TextField label='Password' placeholder='Enter password' type='password' onChange={(e)=>{setPassword(e.target.value);}} fullWidth required/>
            {/* <TextField label='School Name' inputProps={{readOnly: true}} defaultValue={schoolName} fullWidth required/> */}
-           <Button type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
+           <Button disabled={isButtonDisabled} type='submit' color='primary' variant="contained" className={classes.signupButton} onClick={onClickSignup} fullWidth>
                Create Account
             </Button>
        </Paper>
