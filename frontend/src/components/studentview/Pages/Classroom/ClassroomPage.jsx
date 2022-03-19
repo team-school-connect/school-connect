@@ -16,7 +16,7 @@ const ClassRoomPage = () => {
       }}
     >
       <CustomAppBar title="My Classes" icon={<ClassIcon sx={{ color: "#5e94ff" }} />}>
-        <Link to="new">
+        <Link to="join">
           <Button variant="contained" endIcon={<AddIcon />}>
             Join Classroom
           </Button>

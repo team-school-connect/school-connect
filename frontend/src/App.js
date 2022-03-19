@@ -15,6 +15,8 @@ import AdministrationView from "./components/administrationview/AdministrationVi
 import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoom/NewStudyRoomPage";
 import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListing/StudyRoomListingPage";
 import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
+import JoinClassroomPage from "./components/studentview/Pages/JoinClassroom/JoinClassroomPage";
+
 
 function App() {
   return (
@@ -39,6 +41,7 @@ function App() {
             <Route path="studyRooms" element={<StudyRoomListingPage />} />
             <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
             <Route path="classrooms" element={<ClassroomPage />} />
+            <Route path="classrooms/join" element={<JoinClassroomPage />} />
           </Route>
           <Route path="/administration" element={<AdministrationView />}>
             <Route path="signup/teacher" element={<TeacherSignupForm />} />
