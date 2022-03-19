@@ -14,7 +14,7 @@ const styles = {
   studygroups: { color: "#5effa1" },
 };
 
-const StudentNav = () => {
+const StudentSideNav = () => {
   return (
     <Drawer
       sx={{ width: "3em"}}
@@ -54,4 +54,4 @@ const StudentNav = () => {
   );
 };
 
-export default StudentNav;
+export default StudentSideNav;
