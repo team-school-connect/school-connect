@@ -65,3 +65,14 @@ export const CREATE_STUDY_ROOM_MUTATION = gql`
     }
   }
 `;
+
+
+export const SIGNOUT_MUTATION = gql`
+  mutation Signout {
+    signout {
+      code
+      success
+      message
+    }
+  }
+`;

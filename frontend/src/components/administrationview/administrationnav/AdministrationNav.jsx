@@ -4,7 +4,10 @@ import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { SIGNOUT_MUTATION } from "../../../graphql/Mutations";
+import { useMutation } from "@apollo/client";
+import { useAlert } from "react-alert";
 
 const styles = {
   home: { color: "white" },
@@ -12,6 +15,20 @@ const styles = {
 };
 
 const AdministrationNav = () => {
+  const [signout] = useMutation(SIGNOUT_MUTATION);
+  const navigate = useNavigate();
+  const alert = useAlert();
+  const onClickSignout = async () => {
+    try{
+      await signout();
+      navigate("/");
+    }
+    catch(err){
+      console.log(err);
+      alert.error("Error signing out");
+    }
+  };
+
   return (
     <Drawer
       sx={{ width: "3em"}}
@@ -34,7 +51,7 @@ const AdministrationNav = () => {
         </ListItem>
       </List>
       <List>
-        <ListItem button key={"Sign out"}>
+        <ListItem button key={"Sign out"} onClick={onClickSignout}>
           <Tooltip title="Sign out" placement="right">
             <ExitToAppIcon sx={styles.signout} />
           </Tooltip>
