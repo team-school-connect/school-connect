@@ -59,3 +59,29 @@ export const GET_MY_CLASSROOMS = gql`
   }
 `;
 
+export const GET_CLASSROOM = gql`
+  query Query($classId: String) {
+    getClassroom(classId: $classId) {
+      id
+      name
+      teacher {
+        firstName
+        lastName
+      }
+    }
+  }
+`;
+
+export const GET_CLASSROOM_ANNOUCEMENTS = gql`
+  query Query($page: Int, $classId: String) {
+    getAnnouncements(page: $page, classId: $classId) {
+      total
+      announcements {
+        id
+        title
+        content
+        date
+      }
+    }
+  }
+`;

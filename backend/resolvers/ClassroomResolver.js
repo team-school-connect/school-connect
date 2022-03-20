@@ -49,7 +49,7 @@ const ClassroomResolver = {
         const classroom = await Classroom.findOne({ _id: classId });
         if (!classroom) throw new ConflictError(`classroom ${classId} does not exist`);
 
-        if (classroom.teacherId !== user._id)
+        if (classroom.teacherId.toString() !== user._id.toString())
           throw new ForbiddenError("user is not the teacher of this class");
 
         let announce = await Announcement.create({
@@ -57,8 +57,8 @@ const ClassroomResolver = {
           content: sanitizeContent,
           classId,
         });
-        if (!announce) throw new ApolloError("internal server error");
         announce.date = announce.createdAt;
+        announce.id = announce._id;
         return announce;
       }
     ),
@@ -92,6 +92,13 @@ const ClassroomResolver = {
     }),
   },
   query: {
+    getClassroom: combineResolvers(isAuthenticated, async (parent, args, context) => {
+      const { classId } = args;
+
+      const classInfo = await Classroom.findOne({ _id: classId });
+
+      return classInfo;
+    }),
     getMyClassrooms: combineResolvers(isAuthenticated, async (parent, args, context) => {
       const user = context.session.user;
       const { page } = args;
@@ -121,23 +128,37 @@ const ClassroomResolver = {
       }
     }),
     getAnnouncements: combineResolvers(isAuthenticated, async (parent, args, context) => {
-      const { page, className } = args;
+      const { page, classId } = args;
+      const user = context.session.user;
+
       if (page < 0) throw new UserInputError("page cannot be negative");
 
-      const classroom = await Classroom.findOne({ name: className });
-      if (!classroom) throw new ConflictError(`classroom ${classCode} does not exist`);
+      const classroom = await Classroom.findOne({ _id: classId });
+      if (!classroom) throw new ConflictError(`classroom ${classId} does not exist`);
 
-      const currentJoinClass = await ClassroomUser.findOne({ classCode, userEmail: user.email });
-      if (currentJoinClass)
-        throw new ConflictError(`user ${user.email} has already join class ${classCode}`);
+      if (user.type === "STUDENT") {
+        const currentJoinClass = await ClassroomUser.findOne({ classId, userEmail: user.email });
+        if (!currentJoinClass)
+          throw new ForbiddenError(`user ${user.email} is not in the class ${classId}`);
+      } else {
+        if (classroom.teacherId.toString() !== user._id.toString()) {
+          throw new ForbiddenError(`user ${user.email} is not the teacher of the class ${classId}`);
+        }
+      }
 
-      const announceList = await Announcement.find({ name: className })
+      const announceList = await Announcement.find({ classId })
         .sort({ createdAt: "desc" })
         .skip(page * 10)
-        .limit(10);
-      if (!announceList) throw new ApolloError("internal server error");
-      announceList.forEach((x) => (x.date = x.createdAt));
-      return { total: announceList.length, announcements: announceList };
+        .limit(10)
+        .exec();
+
+      const total = await Announcement.countDocuments({ classId });
+
+      announceList.forEach((x) => {
+        x.date = x.createdAt;
+        x.id = x._id;
+      });
+      return { total, announcements: announceList };
     }),
   },
 };

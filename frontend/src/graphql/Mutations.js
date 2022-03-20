@@ -93,3 +93,11 @@ export const CREATE_CLASSROOM_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_ANNOUNCEMENT_MUTATION = gql`
+  mutation CreateAnnouncement($title: String, $content: String, $classId: String) {
+    createAnnouncement(title: $title, content: $content, classId: $classId) {
+      date
+    }
+  }
+`;

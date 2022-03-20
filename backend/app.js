@@ -22,7 +22,6 @@ const Classroom = require("./models/Classroom");
 const User = require("./models/User");
 const School = require("./models/School");
 
-
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
 const ClassroomResolver = require("./resolvers/ClassroomResolver");
@@ -103,6 +102,7 @@ const typeDefs = gql`
   }
 
   type Announcement {
+    id: ID
     title: String
     content: String
     class: Classroom
@@ -132,8 +132,9 @@ const typeDefs = gql`
     getUsersSchool: UsersSchool
     getStudyRooms(page: Int): StudyRoomPage
     getMyClassrooms(page: Int): ClassroomPage
-    getAnnouncements(page: Int, className: String): AnnouncementPage
+    getAnnouncements(page: Int, classId: String): AnnouncementPage
     getSchools: [School]
+    getClassroom(classId: String): Classroom
   }
 
   type Mutation {
@@ -160,7 +161,7 @@ const typeDefs = gql`
     signout: MutationResponse
 
     createClassroom(name: String): Classroom
-    createAnnouncement(title: String, content: String, className: String): Announcement
+    createAnnouncement(title: String, content: String, classId: String): Announcement
     joinClassroom(classCode: String): MutationResponse
 
     createStudyRoom(roomName: String, subject: String): MutationResponse

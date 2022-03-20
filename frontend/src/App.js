@@ -18,9 +18,12 @@ import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoom/NewStu
 import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListing/StudyRoomListingPage";
 import ClassroomListingPage from "./components/studentview/Pages/ClassroomListing/ClassroomListingPage";
 import JoinClassroomPage from "./components/studentview/Pages/JoinClassroom/JoinClassroomPage";
+import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
 import TeacherView from "./components/teacherview/TeacherView";
 import TeacherClassroomListingPage from "./components/teacherview/TeacherClassroomListing/TeacherClassroomListing";
 import NewClassroomPage from "./components/teacherview/NewClassroom/NewClassroomPage";
+import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroom";
+import NewAnnouncementPage from "./components/teacherview/NewAnnouncement/NewAnnouncementPage";
 
 function App() {
   return (
@@ -39,9 +42,12 @@ function App() {
               <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
               <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
+              <Route path="classrooms/:id" element={<ClassroomPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
+              <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
+              <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
             </Route>
             <Route path="/administration" element={<AdministrationView />}>
