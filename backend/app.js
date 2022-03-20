@@ -8,8 +8,6 @@ const {
 const express = require("express");
 const session = require("express-session");
 const http = require("http");
-const User = require("./models/User");
-const School = require("./models/School");
 const db = require("./db");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
@@ -18,6 +16,12 @@ const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
 const validator = require("validator");
+
+//models
+const Classroom = require("./models/Classroom");
+const User = require("./models/User");
+const School = require("./models/School");
+
 
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
@@ -28,7 +32,10 @@ const { NotFoundError, ConflictError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
-const corsOptions = { origin: "http://localhost:3000", credentials: true };
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+  credentials: true,
+};
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
@@ -79,6 +86,7 @@ const typeDefs = gql`
   type Classroom {
     id: ID
     name: String
+    teacher: User
     schoolId: ID
     code: String
   }
@@ -90,14 +98,14 @@ const typeDefs = gql`
 
   type ClassroomUsers {
     userEmail: String
-    classCode: String
+    classId: String
+    className: String
   }
 
   type Announcement {
     title: String
     content: String
-    author: String
-    className: String
+    class: Classroom
     date: String
   }
 
@@ -123,7 +131,7 @@ const typeDefs = gql`
     getAccountType: AccountTypeResponse
     getUsersSchool: UsersSchool
     getStudyRooms(page: Int): StudyRoomPage
-    getClassrooms(page: Int, schoolName: String): ClassroomPage
+    getMyClassrooms(page: Int): ClassroomPage
     getAnnouncements(page: Int, className: String): AnnouncementPage
     getSchools: [School]
   }
@@ -160,15 +168,30 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+  Announcement: {
+    class: async (parent) => {
+      const classroom = await Classroom.findOne({ _id: parent.classId });
+      return classroom;
+    },
+  },
+
+  Classroom: {
+    teacher: async (parent) => {
+      const teacher = await User.findOne({ _id: parent.teacherId });
+      console.log(teacher);
+      return teacher;
+    },
+  },
+
   Query: {
     checkTeacherOnly: combineResolvers(isAccountType(["TEACHER"]), (parent, args, context) => {
       return "you are a teacher";
     }),
     getAccountType: (parent, args, context) => {
-      return {type: context.session.user.type};
+      return { type: context.session.user.type };
     },
     getUsersSchool: (parent, args, context) => {
-      return {schoolId: context.session.user.schoolId};
+      return { schoolId: context.session.user.schoolId };
     },
     checkLogin: (parent, args, context) => {
       console.log(context.session);
@@ -181,9 +204,9 @@ const resolvers = {
     ...ClassroomResolver.query,
 
     getSchools: async (parent, args, context) => {
-      const schools = await School.find({}).sort({name: 'asc'});
+      const schools = await School.find({}).sort({ name: "asc" });
       return schools;
-    }
+    },
   },
   Mutation: {
     signupSchool: async (parent, args, context) => {
