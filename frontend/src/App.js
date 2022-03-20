@@ -22,7 +22,7 @@ import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPag
 import TeacherView from "./components/teacherview/TeacherView";
 import TeacherClassroomListingPage from "./components/teacherview/TeacherClassroomListing/TeacherClassroomListing";
 import NewClassroomPage from "./components/teacherview/NewClassroom/NewClassroomPage";
-import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroom";
+import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroomPage";
 import NewAnnouncementPage from "./components/teacherview/NewAnnouncement/NewAnnouncementPage";
 
 function App() {

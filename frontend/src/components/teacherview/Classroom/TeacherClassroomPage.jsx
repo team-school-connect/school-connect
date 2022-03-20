@@ -11,7 +11,7 @@ import ClassIcon from "@mui/icons-material/Class";
 import { useAlert } from "react-alert";
 import Announcement from "../../annoucement/Announcement";
 
-const TeacherClassroom = () => {
+const TeacherClassroomPage = () => {
   const { id } = useParams();
 
   const { data, loading, error, fetchMore } = useQuery(GET_CLASSROOM_ANNOUCEMENTS, {
@@ -119,23 +119,8 @@ const TeacherClassroom = () => {
         />
       </Box>
 
-      {/* <DataGrid
-        page={pageNum}
-        onPageChange={(nextPageNum) => setPageNum(nextPageNum)}
-        pageSize={10}
-        pagination
-        columns={[
-          { field: "Title", flex: 1, headerAlign: "center", align: "center" },
-          { field: "Content", flex: 1, headerAlign: "center", align: "center" },
-
-          { field: "Date Posted", flex: 1, headerAlign: "center", align: "center" },
-        ]}
-        rows={pageData}
-        paginationMode="server"
-        rowCount={totalRows}
-      /> */}
     </Box>
   );
 };
 
-export default TeacherClassroom;
+export default TeacherClassroomPage;
