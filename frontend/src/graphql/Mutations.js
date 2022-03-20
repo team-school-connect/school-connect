@@ -66,10 +66,19 @@ export const CREATE_STUDY_ROOM_MUTATION = gql`
   }
 `;
 
-
 export const SIGNOUT_MUTATION = gql`
   mutation Signout {
     signout {
+      code
+      success
+      message
+    }
+  }
+`;
+
+export const JOIN_CLASSROOM_MUTATION = gql`
+  mutation Mutation($classCode: String) {
+    joinClassroom(classCode: $classCode) {
       code
       success
       message

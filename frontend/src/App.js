@@ -16,19 +16,16 @@ import StudentView from "./components/studentview/StudentView";
 import AdministrationView from "./components/administrationview/AdministrationView";
 import NewStudyRoomPage from "./components/studentview/Pages/NewStudyRoom/NewStudyRoomPage";
 import StudyRoomListingPage from "./components/studentview/Pages/StudyRoomListing/StudyRoomListingPage";
-import ClassroomPage from "./components/studentview/Pages/Classroom/ClassroomPage";
+import ClassroomListingPage from "./components/studentview/Pages/ClassroomListing/ClassroomListingPage";
 import JoinClassroomPage from "./components/studentview/Pages/JoinClassroom/JoinClassroomPage";
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <AlertProvider template={AlertTemplate} timeout={4000}>
+      <AlertProvider template={AlertTemplate} timeout={4000}>
+        <Router>
           <Routes>
-            <Route
-              path="/"
-              element={<Home/>}
-            />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup/student" element={<StudentSignupForm />} />
@@ -37,15 +34,15 @@ function App() {
             <Route path="/student" element={<StudentView />}>
               <Route path="studyRooms" element={<StudyRoomListingPage />} />
               <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
-              <Route path="classrooms" element={<ClassroomPage />} />
+              <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
             </Route>
             <Route path="/administration" element={<AdministrationView />}>
               <Route path="signup/teacher" element={<TeacherSignupForm />} />
             </Route>
           </Routes>
-        </AlertProvider>
-      </Router>
+        </Router>
+      </AlertProvider>
     </div>
   );
 }

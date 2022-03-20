@@ -1,4 +1,4 @@
-import {gql} from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_ACCOUNT_TYPE_QUERY = gql`
   query getAccountType {
@@ -35,6 +35,24 @@ export const STUDY_ROOM_QUERY = gql`
         participantCount
         subject
         createdOn
+      }
+    }
+  }
+`;
+
+export const GET_MY_CLASSROOMS = gql`
+  query GetMyClassrooms($page: Int) {
+    getMyClassrooms(page: $page) {
+      total
+      classrooms {
+        id
+        name
+        teacher {
+          firstName
+          lastName
+          email
+        }
+        schoolId
       }
     }
   }

@@ -15,6 +15,7 @@ import {
   InputLabel,
   FormHelperText,
 } from "@mui/material";
+import { useAlert } from "react-alert";
 
 //Subjects from https://www.oasdi.ca/k-12-education-in-ontario/curriculum/
 const subjects = [
@@ -41,6 +42,7 @@ const NewStudyRoomForm = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const navigate = useNavigate();
+  const alert = useAlert();
 
   const schema = yup.object().shape({
     roomName: yup.string().label("Room Name").required(),
@@ -59,10 +61,11 @@ const NewStudyRoomForm = () => {
         variables: { roomName: values.roomName, subject: values.subject },
       });
 
+      alert.success("Created study room successfully!");
       navigate("/student/studyRooms");
     } catch (err) {
-      //change to react alert
       console.log(err);
+      alert.error("Could not create study room");
     }
   };
 

@@ -14,6 +14,7 @@ const CustomAppBar = ({ title, children, icon }) => {
         marginBottom: "1em",
         width: "100%",
         alignItems: "center",
+        zIndex: 0
       }}
     >
       <Typography

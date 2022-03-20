@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import FormControl from "@mui/material/FormControl";
-import { CREATE_STUDY_ROOM_MUTATION } from "../../../../graphql/Mutations";
+import { JOIN_CLASSROOM_MUTATION } from "../../../../graphql/Mutations";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
 import { Button, TextField, Box } from "@mui/material";
+import { useAlert } from "react-alert";
 
 const JoinClassroomForm = () => {
-  const [joinClassRoom, { error }] = useMutation(CREATE_STUDY_ROOM_MUTATION);
+  const [joinClassRoom, { error }] = useMutation(JOIN_CLASSROOM_MUTATION);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const navigate = useNavigate();
+  const alert = useAlert();
 
   const schema = yup.object().shape({
     code: yup.string().label("Classroom Code").required(),
@@ -21,16 +23,19 @@ const JoinClassroomForm = () => {
   const submit = async (values) => {
     console.log(values);
     setIsButtonDisabled(true);
-    // try {
-    //   const studyRoom = await createStudyRoom({
-    //     variables: { roomName: values.roomName, subject: values.subject },
-    //   });
+    try {
+      await joinClassRoom({
+        variables: { classCode: values.code },
+      });
 
-    //   navigate("/student/studyRooms");
-    // } catch (err) {
-    //   //change to react alert
-    //   console.log(err);
-    // }
+      alert.success("Joined classroom successfully!");
+
+      navigate("/student/classrooms");
+    } catch (err) {
+      console.log(err);
+      alert.error(err.toString());
+      setIsButtonDisabled(false);
+    }
   };
 
   return (
