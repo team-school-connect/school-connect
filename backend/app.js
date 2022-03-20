@@ -17,6 +17,7 @@ const { combineResolvers } = require("graphql-resolvers");
 const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
+const validator = require("validator");
 
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
@@ -187,6 +188,7 @@ const resolvers = {
   Mutation: {
     signupSchool: async (parent, args, context) => {
       const { firstName, lastName, email, password, schoolName } = args;
+      if (!validator.isEmail(email)) throw new UserInputError(`${email} is not a valid email`);
       const user = await User.findOne({ email });
       if (user) throw new ConflictError("user already exists");
       const school = await School.findOne({ name: schoolName });
@@ -209,6 +211,7 @@ const resolvers = {
     },
     signup: async (parent, args, context) => {
       const { firstName, lastName, email, password, type, schoolId } = args;
+      if (!validator.isEmail(email)) throw new UserInputError(`${email} is not a valid email`);
       let user = context.session.user;
       console.log(user);
 
@@ -230,6 +233,7 @@ const resolvers = {
     },
     signin: async (parent, args, context) => {
       const { email, password } = args;
+      if (!validator.isEmail(email)) throw new UserInputError(`${email} is not a valid email`);
       const user = await User.findOne({ email });
       if (!user) throw new ForbiddenError("access denied");
       const resPassword = await bcrypt.compare(password, user.hash);

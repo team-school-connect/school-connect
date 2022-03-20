@@ -6,6 +6,7 @@ const ClassroomUser = require('../models/ClassroomUser');
 const { combineResolvers } = require("graphql-resolvers");
 const { isAuthenticated, isAccountType } = require('./AccountCheck');
 const ShortUniqueId = require('short-unique-id');
+const validator = require('validator');
 
 const ClassroomResolver = {
     mutation: {
@@ -34,6 +35,8 @@ const ClassroomResolver = {
                 const user = context.session.user;
                 
                 const { title, content, className } = args;
+                const sanitizeTitle = validator.escape(title);
+                const sanitizeContent = validator.escape(content);
 
                 const classroom = await Classroom.findOne({name: className});
                 if (!classroom) throw new ConflictError(`classroom ${classId} does not exist`);
@@ -41,7 +44,7 @@ const ClassroomResolver = {
                 const joinClass = await ClassroomUser.findOne({userEmail: user.email, classCode: classroom.code});
                 if (!joinClass) throw new ForbiddenError('user has not joined this class');
                 
-                let announce = await Announcement.create({title, content, className, author: user.email});
+                let announce = await Announcement.create({title: sanitizeTitle, content: sanitizeContent, className, author: user.email});
                 if (!announce) throw new ApolloError('internal server error');
                 announce.date = announce.createdAt;
                 return announce;
@@ -50,6 +53,7 @@ const ClassroomResolver = {
             const user = context.session.user;
 
             const { classCode } = args;
+            if (!validator.isAlphanumeric(classCode)) throw new UserInputError('not a valid class code');
 
             const classroom = await Classroom.findOne({code: classCode});
             if (!classroom) throw new ConflictError(`classroom ${classCode} does not exist`);
