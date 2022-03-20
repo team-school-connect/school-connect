@@ -6,7 +6,6 @@ import AdministrationNav from "./administrationnav/AdministrationNav";
 const AdministrationView = () => {
   return (
     <Box sx={{ display: "flex", height: "100%", width:"100%" }}>
-        {/* Add large text to show "administration account" */}
         <AdministrationNav />
         <Outlet />
     </Box>

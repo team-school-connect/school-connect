@@ -63,13 +63,13 @@ export function Login() {
 
       switch (type) {
         case "STUDENT":
-          navigate("/student/classrooms");
+          navigate("/student/home");
           break;
         case "TEACHER":
-          navigate("/teacher/classrooms");
+          navigate("/teacher/home");
           break;
         case "SCHOOL_ADMIN":
-          navigate("/administration");
+          navigate("/admin/home");
           break;
         default:
           navigate("/");

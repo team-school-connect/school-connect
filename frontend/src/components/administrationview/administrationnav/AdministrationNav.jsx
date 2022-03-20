@@ -12,6 +12,7 @@ import { useAlert } from "react-alert";
 const styles = {
   home: { color: "white" },
   signout: { color: "#ff5e5e" },
+  addTeacher: { color: "#c2adff" }
 };
 
 const AdministrationNav = () => {
@@ -31,23 +32,25 @@ const AdministrationNav = () => {
 
   return (
     <Drawer
-      sx={{ width: "3em"}}
+      sx={{ width: "3em" }}
       PaperProps={{ sx: { backgroundColor: "rgb(51, 51, 51)", flexShrink: 0, position: "fixed" } }}
       variant="permanent"
       anchor="left"
     >
       <List sx={{ height: "100%" }}>
         <ListItem button key={"Home"}>
-          <Tooltip title="Home" placement="right">
-            <HomeIcon sx={styles.home} />
-          </Tooltip>
+          <Link to="home">
+            <Tooltip title="Home" placement="right">
+              <HomeIcon sx={styles.home} />
+            </Tooltip>
+          </Link>
         </ListItem>
         <ListItem button key={"Add New Teacher"}>
-            <Link to="signup/teacher">
-                <Tooltip title="Add New Teacher" placement="right">
-                <PersonAddIcon sx={styles.myclasses} />
-                </Tooltip>
-            </Link>
+          <Link to="addTeacher">
+            <Tooltip title="Add New Teacher" placement="right">
+              <PersonAddIcon sx={styles.addTeacher} />
+            </Tooltip>
+          </Link>
         </ListItem>
       </List>
       <List>

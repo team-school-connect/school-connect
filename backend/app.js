@@ -36,6 +36,7 @@ const corsOptions = {
   credentials: true,
 };
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
+const res = require("express/lib/response");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -252,7 +253,9 @@ const resolvers = {
       if (!hash) throw new ApolloError("internal server error");
       const resUser = await User.create({ firstName, lastName, email, hash, type, schoolId });
       if (!resUser) throw new ApolloError("internal server error");
-      context.session.user = resUser;
+      if (user.type !== "SCHOOL_ADMIN") {
+        context.session.user = resUser;
+      }
       return { code: 200, success: true, message: "user created" };
     },
     signin: async (parent, args, context) => {

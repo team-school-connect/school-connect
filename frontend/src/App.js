@@ -24,6 +24,7 @@ import TeacherClassroomListingPage from "./components/teacherview/TeacherClassro
 import NewClassroomPage from "./components/teacherview/NewClassroom/NewClassroomPage";
 import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroomPage";
 import NewAnnouncementPage from "./components/teacherview/NewAnnouncement/NewAnnouncementPage";
+import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPage/NewTeacherFormPage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="/signup/administration" element={<AdministrationSignupForm />} />
             <Route path="/studyRooms/:id/" element={<StudyRoom />} />
             <Route path="/student" element={<StudentView />}>
+              <Route path="home" element={<ClassroomListingPage />} />
               <Route path="studyRooms" element={<StudyRoomListingPage />} />
               <Route path="studyRooms/new" element={<NewStudyRoomPage />} />
               <Route path="classrooms" element={<ClassroomListingPage />} />
@@ -45,13 +47,15 @@ function App() {
               <Route path="classrooms/:id" element={<ClassroomPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>
+              <Route path="home" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
             </Route>
-            <Route path="/administration" element={<AdministrationView />}>
-              <Route path="signup/teacher" element={<TeacherSignupForm />} />
+            <Route path="/admin" element={<AdministrationView />}>
+              <Route path="home" element={<NewTeacherFormPage />} />
+              <Route path="addTeacher" element={<NewTeacherFormPage />} />
             </Route>
           </Routes>
         </Router>

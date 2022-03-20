@@ -59,7 +59,7 @@ export function StudentSignupForm() {
         },
       });
 
-      navigate("/student/classrooms");
+      navigate("/student/home");
     } catch (err) {
       setIsButtonDisabled(false);
       console.log(err);

@@ -39,7 +39,7 @@ const TeacherSideNav = () => {
     >
       <List sx={{ height: "100%" }}>
         <ListItem button key={"Home"}>
-          <Link to="classrooms">
+          <Link to="home">
             <Tooltip title="Home" placement="right">
               <HomeIcon sx={styles.home} />
             </Tooltip>
