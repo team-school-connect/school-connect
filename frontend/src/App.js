@@ -11,6 +11,7 @@ import { TeacherSignupForm } from "./components/signup/TeacherSignupForm";
 import { AdministrationSignupForm } from "./components/signup/AdministrationSignupForm";
 import { Navbar } from "./components/navbar/Navbar";
 import { Home } from "./components/home/Home";
+import Credits from "./components/credits/Credits";
 import StudyRoom from "./components/video/StudyRoom/StudyRoom";
 import StudentView from "./components/studentview/StudentView";
 import AdministrationView from "./components/administrationview/AdministrationView";
@@ -33,6 +34,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/credits" element={<Credits />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup/student" element={<StudentSignupForm />} />

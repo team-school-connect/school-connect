@@ -6,14 +6,20 @@ import React from "react";
 import { Box, Button, Card, Grid, CardHeader, CardMedia, CardContent } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import CustomAppBar from "../appbar/CustomAppBar";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Typography } from "@material-ui/core";
+
+import studygroupImg from "./homeImages/studygroup.png";
+import classroomImg from "./homeImages/classroom.png";
+import schoolClubImg from "./homeImages/schoolclub.png";
+import volunterImg from "./homeImages/volunteer.png";
 
 export function Home() {
   return (
     <Box
       sx={{
         display: "flex",
+        textAlign:"center",
         flexDirection: "column",
         height: "100%",
         width: "100%",
@@ -32,48 +38,42 @@ export function Home() {
         </Link>
       </CustomAppBar>
       <Grid container sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-        <Card>
-          <CardMedia
-            sx={{ width: 300, height: 300 }}
-            title="Study Group"
-            image="https://cdn-icons.flaticon.com/png/512/3192/premium/3192980.png?token=exp=1647733812~hmac=ed703ebc42258c6c7b6af513bc203bb6"
-          />
+        <Card sx={{ margin: "1em", width: 300 }}>
+          <CardMedia sx={{ width: 300, height: 300 }} title="Study Group" image={studygroupImg} />
           <CardContent>
             <Typography variant="h6">Video Study Groups</Typography>
-            <Typography>Talk with others in your class</Typography>
+            <Typography>
+              Students can join video study groups and connect with classmates from their school
+            </Typography>
           </CardContent>
         </Card>
-        <Card>
+        <Card sx={{ margin: "1em", width: 300 }}>
           <CardMedia
             sx={{ width: 300, height: 300 }}
-            title="Study Group"
-            image="https://cdn-icons.flaticon.com/png/512/3185/premium/3185730.png?token=exp=1647733566~hmac=b65911b472fd152ddf1e3c32aa01cd23"
+            title="Online Classroom"
+            image={classroomImg}
           />
           <CardContent>
             <Typography variant="h6">Online Classroom</Typography>
+            <Typography>Stay connected with your students with our online classroom</Typography>
           </CardContent>
         </Card>
-        <Card>
-          <CardMedia
-            sx={{ width: 300, height: 300 }}
-            title="Study Group"
-            image="https://cdn-icons-png.flaticon.com/512/1772/1772040.png"
-          />
+        <Card sx={{ margin: "1em", width: 300 }}>
+          <CardMedia sx={{ width: 300, height: 300 }} title="Volunteer Board" image={volunterImg} />
           <CardContent>
             <Typography variant="h6">Volunteer Board</Typography>
+            <Typography>Post volunteer positions so students from your school can complete their volunteer hours</Typography>
           </CardContent>
         </Card>
-        <Card>
-          <CardMedia
-            sx={{ width: 300, height: 300 }}
-            title="School Clubs"
-            image="https://cdn-icons-png.flaticon.com/512/4144/4144551.png"
-          />
+        <Card sx={{ margin: "1em", width: 300 }}>
+          <CardMedia sx={{ width: 300, height: 300 }} title="School Clubs" image={schoolClubImg} />
           <CardContent>
             <Typography variant="h6">School Clubs</Typography>
+            <Typography>Student can connect with each other through school clubs</Typography>
           </CardContent>
         </Card>
       </Grid>
+      <NavLink to="/credits">Credits</NavLink>
     </Box>
   );
 }
