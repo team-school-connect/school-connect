@@ -21,11 +21,10 @@ const TeacherSideNav = () => {
   const navigate = useNavigate();
   const alert = useAlert();
   const onClickSignout = async () => {
-    try{
+    try {
       await signout();
       navigate("/");
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
       alert.error("Error signing out");
     }
@@ -40,9 +39,11 @@ const TeacherSideNav = () => {
     >
       <List sx={{ height: "100%" }}>
         <ListItem button key={"Home"}>
-          <Tooltip title="Home" placement="right">
-            <HomeIcon sx={styles.home} />
-          </Tooltip>
+          <Link to="classrooms">
+            <Tooltip title="Home" placement="right">
+              <HomeIcon sx={styles.home} />
+            </Tooltip>
+          </Link>
         </ListItem>
         <ListItem button key={"My Classes"}>
           <Link to="classrooms">

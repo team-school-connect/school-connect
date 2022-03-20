@@ -41,9 +41,11 @@ const StudentSideNav = () => {
     >
       <List sx={{ height: "100%" }}>
         <ListItem button key={"Home"}>
-          <Tooltip title="Home" placement="right">
-            <HomeIcon sx={styles.home} />
-          </Tooltip>
+          <Link to="classrooms">
+            <Tooltip title="Home" placement="right">
+              <HomeIcon sx={styles.home} />
+            </Tooltip>
+          </Link>
         </ListItem>
         <ListItem button key={"My Classes"}>
           <Link to="classrooms">

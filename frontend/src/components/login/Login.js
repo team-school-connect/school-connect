@@ -6,8 +6,7 @@
  *
  * It has a button to login.
  * */
-import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Avatar, TextField, Button } from "@material-ui/core";
+import { Grid, Paper, Avatar, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { SIGNIN_MUTATION } from "../../graphql/Mutations";
@@ -16,32 +15,32 @@ import { GET_ACCOUNT_TYPE_QUERY } from "../../graphql/Querys";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 
-const useStyles = makeStyles((theme) => ({
-  loginFormContainer: {
-    padding: 20,
-    height: "300px",
-    width: 280,
-    margin: "100px auto",
-  },
-  lockIcon: {
-    backgroundColor: "#1bbd7e",
-  },
-  loginButton: {
-    justifyContent: "center",
-    marginTop: "10px",
-    padding: "10px",
-    backgroundColor: "#1bbd7e",
-    color: "white",
-    "&:hover": {
-      backgroundColor: "#1bbd7e",
-      color: "white",
-    },
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   loginFormContainer: {
+//     padding: 20,
+//     height: "300px",
+//     width: 280,
+//     margin: "100px auto",
+//   },
+//   lockIcon: {
+//     backgroundColor: "#1bbd7e",
+//   },
+//   loginButton: {
+//     justifyContent: "center",
+//     marginTop: "10px",
+//     padding: "10px",
+//     backgroundColor: "#1bbd7e",
+//     color: "white",
+//     "&:hover": {
+//       backgroundColor: "#1bbd7e",
+//       color: "white",
+//     },
+//   },
+// }));
 
 export function Login() {
   const [userType, setUserType] = useState("");
-  const classes = useStyles();
+  // const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signin, { error }] = useMutation(SIGNIN_MUTATION);
@@ -64,10 +63,10 @@ export function Login() {
 
       switch (type) {
         case "STUDENT":
-          navigate("/student");
+          navigate("/student/classrooms");
           break;
         case "TEACHER":
-          navigate("/teacher");
+          navigate("/teacher/classrooms");
           break;
         case "SCHOOL_ADMIN":
           navigate("/administration");
@@ -85,14 +84,18 @@ export function Login() {
   //Parts of the Login Form have been adopeted from https://github.com/vikas62081/YT/blob/loginPage/src/components/login.js
   return (
     <Grid>
-      <Paper elevation={10} className={classes.loginFormContainer}>
+      <Paper
+        elevation={10}
+        sx={{ padding: 5, borderRadius: 2, height: 300, width: 280, margin: "100px auto" }}
+      >
         <Grid align="center">
-          <Avatar className={classes.lockIcon}>
+          <Avatar>
             <LockOutlinedIcon />
           </Avatar>
           <h2>Log In</h2>
         </Grid>
         <TextField
+          sx={{ paddingBottom: "1em" }}
           label="Username"
           placeholder="Enter username"
           onChange={(e) => {
@@ -103,6 +106,7 @@ export function Login() {
           required
         />
         <TextField
+          sx={{ paddingBottom: "1em" }}
           label="Password"
           placeholder="Enter password"
           onChange={(e) => {
@@ -117,7 +121,6 @@ export function Login() {
           disabled={isButtonDisabled}
           color="primary"
           variant="contained"
-          className={classes.loginButton}
           onClick={onClickLogin}
           fullWidth
         >

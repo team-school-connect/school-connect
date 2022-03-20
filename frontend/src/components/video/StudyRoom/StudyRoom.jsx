@@ -217,7 +217,7 @@ const StudyRoom = () => {
       )}
       {inRoom && myStreamRef && !roomFull && (
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
-          <Link to="/">
+          <Link to="/student/studyRooms">
             <Button
               variant="contained"
               color="error"
