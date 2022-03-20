@@ -85,3 +85,11 @@ export const JOIN_CLASSROOM_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_CLASSROOM_MUTATION = gql`
+  mutation CreateClassroom($name: String) {
+    createClassroom(name: $name) {
+      id
+    }
+  }
+`;

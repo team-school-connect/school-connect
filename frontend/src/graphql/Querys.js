@@ -53,7 +53,9 @@ export const GET_MY_CLASSROOMS = gql`
           email
         }
         schoolId
+        code
       }
     }
   }
 `;
+
