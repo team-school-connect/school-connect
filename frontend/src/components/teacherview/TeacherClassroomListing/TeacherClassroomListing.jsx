@@ -52,7 +52,7 @@ const TeacherClassroomListingPage = () => {
       }}
     >
       <CustomAppBar title="My Classes" icon={<ClassIcon sx={{ color: "#5e94ff" }} />}>
-        <Link to="new">
+        <Link to="/teacher/classrooms/new">
           <Button variant="contained" endIcon={<AddIcon />}>
             Create Classroom
           </Button>
@@ -94,7 +94,7 @@ const TeacherClassroomListingPage = () => {
             align: "center",
             renderCell: (params) => {
               return (
-                <Link to={`${params.row.id}`}>
+                <Link to={`/teacher/classrooms/${params.row.id}`}>
                   <Button variant="outlined" color="success">
                     View
                   </Button>

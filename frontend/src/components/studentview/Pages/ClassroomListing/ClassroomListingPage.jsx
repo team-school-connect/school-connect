@@ -53,7 +53,7 @@ const ClassroomListingPage = () => {
       }}
     >
       <CustomAppBar title="My Classes" icon={<ClassIcon sx={{ color: "#5e94ff" }} />}>
-        <Link to="join">
+        <Link to="/student/classrooms/join">
           <Button variant="contained" endIcon={<AddIcon />}>
             Join Classroom
           </Button>
@@ -76,7 +76,7 @@ const ClassroomListingPage = () => {
             align: "center",
             renderCell: (params) => {
               return (
-                <Link to={`${params.row.id}`}>
+                <Link to={`/student/classrooms/${params.row.id}`}>
                   <Button variant="outlined" color="success">
                     View
                   </Button>
