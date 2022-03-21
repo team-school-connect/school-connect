@@ -253,7 +253,7 @@ const resolvers = {
       if (!hash) throw new ApolloError("internal server error");
       const resUser = await User.create({ firstName, lastName, email, hash, type, schoolId });
       if (!resUser) throw new ApolloError("internal server error");
-      if (user.type !== "SCHOOL_ADMIN") {
+      if (user && user.type !== "SCHOOL_ADMIN") {
         context.session.user = resUser;
       }
       return { code: 200, success: true, message: "user created" };
