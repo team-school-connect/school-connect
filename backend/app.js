@@ -110,6 +110,14 @@ const typeDefs = gql`
     date: String
   }
 
+  type Assignment {
+    id: ID
+    name: String
+    description: String
+    classId: ID
+    date: String
+  }
+
   type AnnouncementPage {
     total: Int
     announcements: [Announcement]
@@ -166,6 +174,8 @@ const typeDefs = gql`
     joinClassroom(classCode: String): MutationResponse
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
+
+    createAssignment(name: String, description: String, classId: ID): Assignment
   }
 `;
 

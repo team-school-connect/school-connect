@@ -2,6 +2,7 @@ const { UserInputError, ApolloError, ForbiddenError } = require("apollo-server-c
 const { ConflictError } = require("../apollo-errors");
 const Classroom = require("../models/Classroom");
 const Announcement = require("../models/Announcement");
+const Assignment = require("../models/Assignment");
 const ClassroomUser = require("../models/ClassroomUser");
 const { combineResolvers } = require("graphql-resolvers");
 const { isAuthenticated, isAccountType } = require("./AccountCheck");
@@ -90,6 +91,18 @@ const ClassroomResolver = {
         message: `user ${user.email} has joined class ${classCode}`,
       };
     }),
+    createAssignment: combineResolvers(isAuthenticated, async(parent, args, context) => {
+      const user = context.session.user;
+      const { name, description, classId } = args;
+      
+      const classroom = await Classroom.findById(classId);
+      if (!classroom) throw new ConflictError('classroom does not exist');
+
+      const assignment = await Assignment.create({name, description, classId});
+      if (!assignment) throw new ApolloError('internal server error');
+      assignment.date = assignment.createdAt;
+      return assignment;
+    })
   },
   query: {
     getClassroom: combineResolvers(isAuthenticated, async (parent, args, context) => {
