@@ -34,6 +34,15 @@ const ClassroomResolver = {
 
         resClass.id = resClass._id;
         console.log(resClass);
+
+        const joinClass = await ClassroomUser.create({
+          classId: resClass._id,
+          className: resClass.name,
+          userEmail: user.email,
+        });
+
+        if (!joinClass) throw new ApolloError("internal server error");
+
         return resClass;
       }
     ),
@@ -91,12 +100,18 @@ const ClassroomResolver = {
         message: `user ${user.email} has joined class ${classCode}`,
       };
     }),
-    createAssignment: combineResolvers(isAuthenticated, async(parent, args, context) => {
+    createAssignment: combineResolvers(
+      isAuthenticated,
+      isAccountType(["TEACHER"]),
+      async(parent, args, context) => {
       const user = context.session.user;
       const { name, description, classId } = args;
       
       const classroom = await Classroom.findById(classId);
       if (!classroom) throw new ConflictError('classroom does not exist');
+      
+      const inClass = await ClassroomUser.findOne({userEmail: user.email, classId});
+      if (!inClass) throw new ConflictError('user is not in classroom');
 
       const assignment = await Assignment.create({name, description, classId});
       if (!assignment) throw new ApolloError('internal server error');
