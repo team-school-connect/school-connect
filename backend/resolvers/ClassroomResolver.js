@@ -188,6 +188,30 @@ const ClassroomResolver = {
       });
       return { total, announcements: announceList };
     }),
+    getAssignments: combineResolvers(
+      isAuthenticated,
+      async (parent, args, context) => {
+        const { page, classId } = args;
+        if (page < 0) throw new UserInputError('page cannot be negative');
+        const user = context.session.user;
+        const isClass = await ClassroomUser.findOne({userEmail: user.email, classId});
+        if (!isClass) throw new ConflictError('user is not part of classroom');
+
+        const total = await Assignment.countDocuments({ classId });
+
+        const assignments = await Assignment.find({classId})
+          .sort({ createdAt: "desc" })
+          .skip(page * 10)
+          .limit(10)
+          .exec();
+
+        assignments.forEach((x) => {
+          x.date = x.createdAt;
+          x.id = x._id;
+        });
+
+        return {total, assignments};
+    })
   },
 };
 

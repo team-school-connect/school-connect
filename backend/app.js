@@ -123,6 +123,11 @@ const typeDefs = gql`
     announcements: [Announcement]
   }
 
+  type AssignmentPage {
+    total: Int
+    assignments: [Assignment]
+  }
+
   type AccountTypeResponse {
     type: AccountType
   }
@@ -144,6 +149,7 @@ const typeDefs = gql`
     getAnnouncements(page: Int, classId: String): AnnouncementPage
     getSchools: [School]
     getClassroom(classId: String): Classroom
+    getAssignments(classId: String, page: Int): AssignmentPage
   }
 
   type Mutation {
