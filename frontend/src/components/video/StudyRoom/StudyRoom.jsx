@@ -277,9 +277,13 @@ const StudyRoom = () => {
       {!roomFull && (
         <Grid container spacing={1} className="streamContainer">
           <Stream ref={myStreamRef} muted={true} name={"You"} />
-          {peers.map((peerObj) => {
-            return <PeerStream key={peerObj.id} peer={peerObj.peer} />;
-          })}
+          {peers
+            .filter((peerObj, index) => {
+              return peers.findIndex((p) => p.id === peerObj.id) === index;
+            })
+            .map((peerObj) => {
+              return <PeerStream key={peerObj.id} peer={peerObj.peer} />;
+            })}
         </Grid>
       )}
       <Whiteboard />

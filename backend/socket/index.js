@@ -14,7 +14,7 @@ const connect = (io) => {
       //only join room if it exists and is not full
 
       try {
-        const room = await StudyRoom.findById(id);
+        const room = await StudyRoom.findOne({ _id: id, participantCount: { $lt: 4 } });
 
         if (!room) {
           socket.emit("roomFull");
@@ -23,10 +23,15 @@ const connect = (io) => {
 
         //increment room count
         const count = await StudyRoom.updateOne(
-          { _id: id },
-          { participantCount: room.participantCount + 1 },
+          { _id: id, participantCount: { $lt: 4 } },
+          { $inc: { participantCount: 1 } },
           { runValidators: true }
         ).exec();
+
+        if (!room) {
+          socket.emit("roomFull");
+          return;
+        }
 
         console.log("Worked");
 
@@ -74,7 +79,7 @@ const connect = (io) => {
           io.to(participant.studyRoomId.toString()).emit("userLeftRoom", socket.id);
           await Participant.deleteOne({ socketId: socket.id });
           await StudyRoom.updateOne(
-            { _id: participant.studyRoomId },
+            { _id: participant.studyRoomId, participantCount: { $gt: 0 } },
             { $inc: { participantCount: -1 } },
             { runValidators: true }
           ).exec();
