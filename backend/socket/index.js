@@ -2,9 +2,6 @@ const StudyRoom = require("../models/StudyRoom");
 const Participant = require("../models/Participant");
 
 const connect = (io) => {
-  let rooms = {};
-
-  let users = {};
   return (socket) => {
     socket.emit("sendYourId", socket.id);
 
