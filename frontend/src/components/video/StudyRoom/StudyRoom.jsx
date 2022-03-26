@@ -266,7 +266,7 @@ const StudyRoom = () => {
             })}
         </Grid>
       )}
-      <Whiteboard />
+      {!roomFull && <Whiteboard />}
     </Box>
   );
 };
