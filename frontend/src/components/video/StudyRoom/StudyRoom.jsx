@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import {useAlert} from "react-alert";
+import { useAlert } from "react-alert";
 import { io } from "socket.io-client";
 import Stream from "../Stream/Stream";
 import PeerStream from "../PeerStream/PeerStream";
@@ -63,7 +63,6 @@ const StudyRoom = () => {
 
         socket.current.emit("joinStudyRoom", id);
       } catch (err) {
-        
         console.log(err);
         alert.error(err.toString());
       }
@@ -259,11 +258,11 @@ const StudyRoom = () => {
         <Grid container spacing={1} className="streamContainer">
           <Stream ref={myStreamRef} muted={true} name={"You"} />
           {peers
-            .filter((peerObj, index) => {
-              return peers.findIndex((p) => p.id === peerObj.id) === index;
+            .filter(({ id }, index) => {
+              return peers.findIndex((p) => p.id === id) === index;
             })
-            .map((peerObj) => {
-              return <PeerStream key={peerObj.id} peer={peerObj.peer} />;
+            .map(({ id, peer }) => {
+              return <PeerStream key={id} peer={peer} />;
             })}
         </Grid>
       )}
