@@ -9,10 +9,9 @@ const PeerStream = ({ peer }) => {
       console.log("recieved stream");
       streamRef.current.srcObject = stream;
     });
-
   }, []);
 
-  return <Stream streamRef={streamRef} muted={false} name={"another person"} />;
+  return <Stream ref={streamRef} muted={false} name={"another person"} />;
 };
 
 export default PeerStream;

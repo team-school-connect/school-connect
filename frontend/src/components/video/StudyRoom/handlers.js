@@ -38,7 +38,7 @@ export const handleLeaveRoom = (peers, socket) => {
   console.log("cleaning up");
 
   peers.forEach((peerObj) => {
-    peerObj.peer.destroy(true);
+    peerObj.peer.destroy();
   });
 
   socket.disconnect();

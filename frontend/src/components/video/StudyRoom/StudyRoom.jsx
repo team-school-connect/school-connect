@@ -202,14 +202,14 @@ const StudyRoom = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        
+
         width: "100%",
-        height:"fit-content",
+        height: "fit-content",
         minHeight: "100%",
         alignItems: "center",
         background: "#333333",
         paddingBottom: "1em",
-        paddingTop: "2em"
+        paddingTop: "2em",
       }}
     >
       {roomFull && (
@@ -256,7 +256,7 @@ const StudyRoom = () => {
       )}
       {!roomFull && (
         <Grid container spacing={1} className="streamContainer">
-          <Stream streamRef={myStreamRef} muted={true} name={"You"} />
+          <Stream ref={myStreamRef} muted={true} name={"You"} />
           {peers.map((peerObj) => {
             return <PeerStream key={peerObj.id} peer={peerObj.peer} />;
           })}
