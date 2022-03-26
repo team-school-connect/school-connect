@@ -2,6 +2,7 @@ const { UserInputError, ApolloError, ForbiddenError } = require("apollo-server-c
 const { ConflictError } = require("../apollo-errors");
 const Classroom = require("../models/Classroom");
 const Announcement = require("../models/Announcement");
+const Assignment = require("../models/Assignment");
 const ClassroomUser = require("../models/ClassroomUser");
 const { combineResolvers } = require("graphql-resolvers");
 const { isAuthenticated, isAccountType } = require("./AccountCheck");
@@ -33,6 +34,15 @@ const ClassroomResolver = {
 
         resClass.id = resClass._id;
         console.log(resClass);
+
+        const joinClass = await ClassroomUser.create({
+          classId: resClass._id,
+          className: resClass.name,
+          userEmail: user.email,
+        });
+
+        if (!joinClass) throw new ApolloError("internal server error");
+
         return resClass;
       }
     ),
@@ -90,6 +100,24 @@ const ClassroomResolver = {
         message: `user ${user.email} has joined class ${classCode}`,
       };
     }),
+    createAssignment: combineResolvers(
+      isAuthenticated,
+      isAccountType(["TEACHER"]),
+      async(parent, args, context) => {
+      const user = context.session.user;
+      const { name, description, classId } = args;
+      
+      const classroom = await Classroom.findById(classId);
+      if (!classroom) throw new ConflictError('classroom does not exist');
+      
+      const inClass = await ClassroomUser.findOne({userEmail: user.email, classId});
+      if (!inClass) throw new ConflictError('user is not in classroom');
+
+      const assignment = await Assignment.create({name, description, classId});
+      if (!assignment) throw new ApolloError('internal server error');
+      assignment.date = assignment.createdAt;
+      return assignment;
+    })
   },
   query: {
     getClassroom: combineResolvers(isAuthenticated, async (parent, args, context) => {
@@ -160,6 +188,30 @@ const ClassroomResolver = {
       });
       return { total, announcements: announceList };
     }),
+    getAssignments: combineResolvers(
+      isAuthenticated,
+      async (parent, args, context) => {
+        const { page, classId } = args;
+        if (page < 0) throw new UserInputError('page cannot be negative');
+        const user = context.session.user;
+        const isClass = await ClassroomUser.findOne({userEmail: user.email, classId});
+        if (!isClass) throw new ConflictError('user is not part of classroom');
+
+        const total = await Assignment.countDocuments({ classId });
+
+        const assignments = await Assignment.find({classId})
+          .sort({ createdAt: "desc" })
+          .skip(page * 10)
+          .limit(10)
+          .exec();
+
+        assignments.forEach((x) => {
+          x.date = x.createdAt;
+          x.id = x._id;
+        });
+
+        return {total, assignments};
+    })
   },
 };
 

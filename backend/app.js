@@ -110,9 +110,22 @@ const typeDefs = gql`
     date: String
   }
 
+  type Assignment {
+    id: ID
+    name: String
+    description: String
+    classId: ID
+    date: String
+  }
+
   type AnnouncementPage {
     total: Int
     announcements: [Announcement]
+  }
+
+  type AssignmentPage {
+    total: Int
+    assignments: [Assignment]
   }
 
   type AccountTypeResponse {
@@ -136,6 +149,7 @@ const typeDefs = gql`
     getAnnouncements(page: Int, classId: String): AnnouncementPage
     getSchools: [School]
     getClassroom(classId: String): Classroom
+    getAssignments(classId: String, page: Int): AssignmentPage
   }
 
   type Mutation {
@@ -166,6 +180,8 @@ const typeDefs = gql`
     joinClassroom(classCode: String): MutationResponse
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
+
+    createAssignment(name: String, description: String, classId: ID): Assignment
   }
 `;
 
