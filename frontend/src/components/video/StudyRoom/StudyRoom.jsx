@@ -22,6 +22,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Button, Toolbar, Typography, Box } from "@mui/material";
 import ToggleVideoButton from "../ToggleVideoButton/ToggleVideoButton";
 import ToggleSharingButton from "../ToggleSharingButton/ToggleSharingButton";
+import Whiteboard from "../Whiteboard/Whiteboard";
 
 /**Learned simple-peer from https://www.youtube.com/watch?v=R1sfHPwEH7A and https://www.youtube.com/watch?v=oxFr7we3LC8 */
 
@@ -64,21 +65,25 @@ const StudyRoom = () => {
 
     setup();
 
-    //handle when you get back your peers id when joining
+    //handle when you get back your peers id when joining, call each one of them
     socket.current.on("roomPeers", (roomPeersId) => {
       let roomPeers = [];
 
       roomPeersId.forEach((sendingToId) => {
         //connect to an already in room peer
-        const peer = createAlreadyInRoomPeer(
-          sendingToId,
-          myStreamRef.current.srcObject,
-          socket.current
-        );
-        const peerObj = { id: sendingToId, peer };
 
-        peersRef.current.push(peerObj);
-        roomPeers.push(peerObj);
+        //only create peer if they are not in the list
+        if (!peersRef.current.find((p) => p.id === id)) {
+          const peer = createAlreadyInRoomPeer(
+            sendingToId,
+            myStreamRef.current.srcObject,
+            socket.current
+          );
+          const peerObj = { id: sendingToId, peer };
+
+          peersRef.current.push(peerObj);
+          roomPeers.push(peerObj);
+        }
       });
 
       setPeers(roomPeers);
@@ -89,16 +94,19 @@ const StudyRoom = () => {
     socket.current.on("someoneJoined", ({ joinSignal, joinId }) => {
       console.log(`${joinId} joined the room`);
 
-      const joinPeer = createJoiningPeer(
-        joinSignal,
-        joinId,
-        myStreamRef.current.srcObject,
-        socket.current
-      );
+      //only create peer if they are not in the list
+      if (!peersRef.current.find((p) => p.id === id)) {
+        const joinPeer = createJoiningPeer(
+          joinSignal,
+          joinId,
+          myStreamRef.current.srcObject,
+          socket.current
+        );
 
-      //Update state and ref
-      peersRef.current.push({ id: joinId, peer: joinPeer });
-      setPeers((peers) => [...peers, { id: joinId, peer: joinPeer }]);
+        //Update state and ref
+        peersRef.current.push({ id: joinId, peer: joinPeer });
+        setPeers((peers) => [...peers, { id: joinId, peer: joinPeer }]);
+      }
     });
 
     //handle room full
@@ -126,6 +134,11 @@ const StudyRoom = () => {
       peersRef.current = removePeer(peersRef.current, leftRoomId);
 
       setPeers((peers) => removePeer(peers, leftRoomId));
+    });
+
+    //handle getting back stroke
+    socket.current.on("pathData", (path) => {
+      console.log(path);
     });
 
     //clean up function when leaving
@@ -252,6 +265,13 @@ const StudyRoom = () => {
             }}
           />
           <ToggleMuteButton onToggle={() => toggleMuteStream(stream)} />
+          <Button
+            onClick={() => {
+              socket.current.emit("strokePath", { roomId: id, path: "path" });
+            }}
+          >
+            Send Path
+          </Button>
         </Toolbar>
       )}
       {!roomFull && (
@@ -262,6 +282,7 @@ const StudyRoom = () => {
           })}
         </Grid>
       )}
+      <Whiteboard />
     </Box>
   );
 };

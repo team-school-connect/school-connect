@@ -59,6 +59,10 @@ const connect = (io) => {
       io.to(sendingToId).emit("userInRoomSignaledBack", { fromId: socket.id, signal });
     });
 
+    socket.on("strokePath", ({ roomId, path }) => {
+      io.to(roomId).emit("pathData", path);
+    });
+
     socket.on("disconnect", async () => {
       try {
         const participant = await Participant.findOne({ socketId: socket.id });
