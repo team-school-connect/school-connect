@@ -29,6 +29,7 @@ import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPa
 import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/VolunteerBoardPage";
 import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
+import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
+              <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
               <Route path="volunteerBoard/" element={<TeacherVolunteerBoardPage />} />
             </Route>

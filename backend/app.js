@@ -199,7 +199,7 @@ const typeDefs = gql`
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
 
-    createAssignment(name: String, description: String, classId: ID): Assignment
+    createAssignment(name: String, description: String, classId: String): Assignment
 
     createVolunteerPosition(positionName: String, positionDescription: String, schoolId: ID, location: String, startDate: String, endDate: String): VolunteerPosition
   }

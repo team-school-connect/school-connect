@@ -77,6 +77,11 @@ const TeacherClassroomPage = () => {
             New Announcement
           </Button>
         </Link>
+        <Link to="newAssignment">
+          <Button variant="contained" endIcon={<AddIcon />}>
+            New Assignment
+          </Button>
+        </Link>
       </CustomAppBar>
 
       <Box

@@ -102,6 +102,14 @@ export const CREATE_ANNOUNCEMENT_MUTATION = gql`
   }
 `;
 
+export const CREATE_ASSIGNMENT_MUTATION = gql`
+  mutation CreateAssignment($name: String, $description: String, $classId: String) {
+    createAssignment(name: $name, description: $description, classId: $classId) {
+      id
+    }
+  }
+`;
+
 // export const CREATE_VOLUNTEER_POSITION_MUTATION = gql`
 //   mutation CreateVolunteerPosition(
 //     organizationName: String!,
