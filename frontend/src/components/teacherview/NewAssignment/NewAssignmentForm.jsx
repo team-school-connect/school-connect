@@ -24,10 +24,10 @@ const NewAssignmentForm = ({ id }) => {
   const submit = async (values) => {
     console.log(values);
     console.log(id);
-    const { title, content } = values;
+    const { title, content, duedate } = values;
     try {
       const announcement = await createAssignment({
-        variables: { name: title, description: content, classId: id },
+        variables: { name: title, description: content, classId: id, dueDate: duedate },
       });
 
       alert.success("Added assignment successfully!");
