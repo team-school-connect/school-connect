@@ -103,8 +103,8 @@ export const CREATE_ANNOUNCEMENT_MUTATION = gql`
 `;
 
 export const CREATE_ASSIGNMENT_MUTATION = gql`
-  mutation CreateAssignment($name: String, $description: String, $classId: String) {
-    createAssignment(name: $name, description: $description, classId: $classId) {
+  mutation CreateAssignment($name: String, $description: String, $classId: String, $dueDate: String) {
+    createAssignment(name: $name, description: $description, classId: $classId, dueDate: $dueDate) {
       id
     }
   }

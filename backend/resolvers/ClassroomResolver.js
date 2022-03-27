@@ -105,7 +105,10 @@ const ClassroomResolver = {
       isAccountType(["TEACHER"]),
       async(parent, args, context) => {
       const user = context.session.user;
-      const { name, description, classId } = args;
+      const { name, description, classId, dueDate } = args;
+
+      if (!validator.isISO8601(dueDate)) throw new UserInputError('invalid date');
+      if (validator.isBefore(dueDate)) throw new UserInputError('date is before now');
       
       const classroom = await Classroom.findById(classId);
       if (!classroom) throw new ConflictError('classroom does not exist');
@@ -113,7 +116,7 @@ const ClassroomResolver = {
       const inClass = await ClassroomUser.findOne({userEmail: user.email, classId});
       if (!inClass) throw new ConflictError('user is not in classroom');
 
-      const assignment = await Assignment.create({name, description, classId});
+      const assignment = await Assignment.create({name, description, classId, dueDate});
       if (!assignment) throw new ApolloError('internal server error');
       assignment.date = assignment.createdAt;
       return assignment;
