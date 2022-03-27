@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAlert } from "react-alert";
-import { io } from "socket.io-client";
 import Stream from "../Stream/Stream";
 import PeerStream from "../PeerStream/PeerStream";
 import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
+import { io } from "socket.io-client";
 import {
   createAlreadyInRoomPeer,
   createJoiningPeer,
@@ -21,7 +21,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Button, Toolbar, Typography, Box } from "@mui/material";
 import ToggleVideoButton from "../ToggleVideoButton/ToggleVideoButton";
 import ToggleSharingButton from "../ToggleSharingButton/ToggleSharingButton";
-import Whiteboard from "../Whiteboard/Whiteboard";
+import SocketWhiteboard from "../SocketWhiteboard/SocketWhiteboard";
 
 /**Learned simple-peer from https://www.youtube.com/watch?v=R1sfHPwEH7A and https://www.youtube.com/watch?v=oxFr7we3LC8 */
 
@@ -34,6 +34,10 @@ const StudyRoom = () => {
   const [camera, setCamera] = useState(null);
   const [screen, setScreen] = useState(null);
   const myStreamRef = useRef();
+
+  //Whiteboard controls
+  const whiteboardRef = useRef();
+  const [whiteBoardLoaded, setWhiteBoardLoaded] = useState(false);
 
   //Peers
   const [peers, setPeers] = useState([]);
@@ -104,6 +108,16 @@ const StudyRoom = () => {
       //Update ref and state
       peersRef.current.push({ id: joinId, peer: joinPeer });
       setPeers([...peersRef.current]);
+
+      //send them the content on your whiteboard
+      whiteboardRef.current
+        .exportPaths()
+        .then((paths) => {
+          socket.current.emit("sendWhiteboard", { to: id, paths });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
 
     //handle room full
@@ -126,9 +140,22 @@ const StudyRoom = () => {
       setPeers([...peersRef.current]);
     });
 
-    //handle getting back stroke
+    //draw remote path on whiteboard
     socket.current.on("pathData", (path) => {
-      console.log(path);
+      whiteboardRef.current.loadPaths([path]);
+    });
+
+    //clear whiteboard
+    socket.current.on("clearWhiteboard", () => {
+      whiteboardRef.current.clearCanvas();
+    });
+
+    //load the current whiteboard
+    socket.current.on("sentBackWhiteboard", (paths) => {
+      if (!whiteBoardLoaded) {
+        whiteboardRef.current.resetCanvas();
+        whiteboardRef.current.loadPaths(paths);
+      }
     });
 
     //clean up function when leaving
@@ -219,7 +246,9 @@ const StudyRoom = () => {
       }}
     >
       {!isAuth && (
-        <Typography sx={{ color: "white" }}>Sorry you are not authorized. Please sign in.</Typography>
+        <Typography sx={{ color: "white" }}>
+          Sorry you are not authorized. Please sign in.
+        </Typography>
       )}
       {roomFull && (
         <Typography sx={{ color: "white" }}>Sorry this room is full or does not exist.</Typography>
@@ -254,13 +283,6 @@ const StudyRoom = () => {
             }}
           />
           <ToggleMuteButton onToggle={() => toggleMuteStream(camera)} />
-          <Button
-            onClick={() => {
-              socket.current.emit("strokePath", { roomId: id, path: "path" });
-            }}
-          >
-            Send Path
-          </Button>
         </Toolbar>
       )}
       {!roomFull && (
@@ -275,7 +297,17 @@ const StudyRoom = () => {
             })}
         </Grid>
       )}
-      {isAuth && !roomFull && <Whiteboard />}
+      {isAuth && !roomFull && (
+        <SocketWhiteboard
+          ref={whiteboardRef}
+          onStroke={(path) => {
+            socket.current.emit("strokePath", { roomId: id, path });
+          }}
+          onClear={() => {
+            socket.current.emit("clearWhiteboard", id);
+          }}
+        />
+      )}
     </Box>
   );
 };

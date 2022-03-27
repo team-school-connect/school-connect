@@ -1,14 +1,15 @@
 import { Box, Toolbar, Button, Slider, Typography } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import ColorPicker from "./ColorPicker/ColorPicker";
-import "./Whiteboard.css";
+import "./SocketWhiteboard.css";
 
-const Whiteboard = () => {
-  const ref = useRef();
+const SocketWhiteboard = forwardRef(({ onStroke, onClear }, ref) => {
   const [strokeColor, setStrokeColor] = useState("black");
   const [strokeWidth, setStrokeWidth] = useState(5);
   const [eraserWidth, setEraserWidth] = useState(5);
+
+  useEffect(() => {}, []);
 
   return (
     <Box>
@@ -37,23 +38,8 @@ const Whiteboard = () => {
         <Button
           variant="contained"
           onClick={() => {
-            ref.current.undo();
-          }}
-        >
-          Undo
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            ref.current.redo();
-          }}
-        >
-          Redo
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
             ref.current.clearCanvas();
+            onClear();
           }}
         >
           Clear
@@ -93,11 +79,11 @@ const Whiteboard = () => {
         strokeWidth={strokeWidth}
         eraserWidth={eraserWidth}
         onStroke={(path, isEraser) => {
-          console.log(path);
+          onStroke(path);
         }}
       />
     </Box>
   );
-};
+});
 
-export default Whiteboard;
+export default SocketWhiteboard;

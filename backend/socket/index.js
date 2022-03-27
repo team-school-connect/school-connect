@@ -53,7 +53,15 @@ const connect = (io) => {
     });
 
     socket.on("strokePath", ({ roomId, path }) => {
-      io.to(roomId).emit("pathData", path);
+      socket.to(roomId).emit("pathData", path);
+    });
+
+    socket.on("clearWhiteboard", (roomId) => {
+      socket.to(roomId).emit("clearWhiteboard");
+    });
+
+    socket.on("sendWhiteboard", ({ to, paths }) => {
+      io.to(to).emit("sentBackWhiteboard", paths);
     });
 
     socket.on("disconnect", async () => {
