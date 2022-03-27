@@ -101,3 +101,27 @@ export const CREATE_ANNOUNCEMENT_MUTATION = gql`
     }
   }
 `;
+
+// export const CREATE_VOLUNTEER_POSITION_MUTATION = gql`
+//   mutation CreateVolunteerPosition(
+//     organizationName: String!,
+//     $positionName: String!, 
+//     $positionDescription: String!, 
+//     $location: String!, 
+//     $startDate: String!,
+//     $endDate: String!) 
+//   {
+//     createVolunteerPosition(
+//       organizationName: $organizationName,
+//       positionName: $positionName,
+//       positionDescription: $positionDescription,
+//       location: $location,
+//       startDate: $startDate,
+//       endDate: $endDate)
+//     {
+//       code
+//       success
+//       message
+//     }
+//   }
+// `;

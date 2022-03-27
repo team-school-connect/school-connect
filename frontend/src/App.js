@@ -26,6 +26,9 @@ import NewClassroomPage from "./components/teacherview/NewClassroom/NewClassroom
 import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroomPage";
 import NewAnnouncementPage from "./components/teacherview/NewAnnouncement/NewAnnouncementPage";
 import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPage/NewTeacherFormPage";
+import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/VolunteerBoardPage";
+import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
+import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
 
 function App() {
   return (
@@ -47,6 +50,7 @@ function App() {
               <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
               <Route path="classrooms/:id" element={<ClassroomPage />} />
+              <Route path="volunteerBoard" element={<VolunteerBoardPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>
               <Route path="home" element={<TeacherClassroomListingPage />} />
@@ -54,6 +58,7 @@ function App() {
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
+              <Route path="volunteerBoard/" element={<TeacherVolunteerBoardPage />} />
             </Route>
             <Route path="/admin" element={<AdministrationView />}>
               <Route path="home" element={<NewTeacherFormPage />} />

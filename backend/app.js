@@ -26,11 +26,13 @@ const validator = require("validator");
 const Classroom = require("./models/Classroom");
 const User = require("./models/User");
 const School = require("./models/School");
+const VolunteerPosition = require("./models/VolunteerPosition");
 
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
 const ClassroomResolver = require("./resolvers/ClassroomResolver");
 const { isAuthenticated, isAccountType } = require("./resolvers/AccountCheck");
+const VolunteerPositionResolver = require("./resolvers/VolunteerPositionResolver");
 
 const { NotFoundError, ConflictError } = require("./apollo-errors");
 
@@ -87,6 +89,17 @@ const typeDefs = gql`
     totalRows: Int
     studyRooms: [StudyRoom]
   }
+
+  type VolunteerPosition {
+    id: ID
+    organizationName: String
+    positionName: String
+    positionDescription: String
+    location: String
+    startDate: String
+    endDate: String
+  }
+
 
   type Classroom {
     id: ID
@@ -187,6 +200,8 @@ const typeDefs = gql`
     createStudyRoom(roomName: String, subject: String): MutationResponse
 
     createAssignment(name: String, description: String, classId: ID): Assignment
+
+    createVolunteerPosition(positionName: String, positionDescription: String, schoolId: ID, location: String, startDate: String, endDate: String): VolunteerPosition
   }
 `;
 
@@ -297,6 +312,7 @@ const resolvers = {
     },
     createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
     ...ClassroomResolver.mutation,
+    ...VolunteerPositionResolver.mutation,
   },
 };
 

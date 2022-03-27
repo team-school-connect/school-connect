@@ -5,6 +5,7 @@ import ClassIcon from "@mui/icons-material/Class";
 import HomeIcon from "@mui/icons-material/Home";
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { Link, useNavigate } from "react-router-dom";
 import { SIGNOUT_MUTATION } from "../../../graphql/Mutations";
 import { useMutation } from "@apollo/client";
@@ -15,6 +16,7 @@ const styles = {
   signout: { color: "#ff5e5e" },
   myclasses: { color: "#5e94ff" },
   studygroups: { color: "#5effa1" },
+  volunteer: { color: "red" },
 };
 
 const StudentSideNav = () => {
@@ -58,6 +60,13 @@ const StudentSideNav = () => {
           <Link to="studyRooms">
             <Tooltip title="Browse Study Groups" placement="right">
               <WorkspacesIcon sx={styles.studygroups} />
+            </Tooltip>
+          </Link>
+        </ListItem>
+        <ListItem button key={"Browse Volunteer Positions"}>
+          <Link to="volunteerBoard">
+            <Tooltip title="Browse Volunteer Positions" placement="right">
+              <VolunteerActivismIcon sx={styles.volunteer} />
             </Tooltip>
           </Link>
         </ListItem>
