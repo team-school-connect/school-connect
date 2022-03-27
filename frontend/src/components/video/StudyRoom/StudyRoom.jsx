@@ -42,16 +42,16 @@ const StudyRoom = () => {
   //checks
   const [roomFull, setRoomFull] = useState(false);
   const [inRoom, setInRoom] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
 
   //controls
   const [isShowingVideo, setIsShowingVideo] = useState(true);
   const [isSharingScreen, setIsSharingScreen] = useState(false);
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
-
     const setup = async () => {
       try {
+        socket.current = io("http://localhost:5000", { withCredentials: true });
         const myCamera = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true,
@@ -69,6 +69,12 @@ const StudyRoom = () => {
     };
 
     setup();
+
+    //when you are not allowed to connect
+    socket.current.on("connect_error", (err) => {
+      alert.error(err.toString());
+      setIsAuth(false);
+    });
 
     //when you get back your peers id when joining, call each one of them
     socket.current.on("roomPeers", (roomPeersId) => {
@@ -212,10 +218,13 @@ const StudyRoom = () => {
         paddingTop: "2em",
       }}
     >
+      {!isAuth && (
+        <Typography sx={{ color: "white" }}>Sorry you are not authorized. Please sign in.</Typography>
+      )}
       {roomFull && (
         <Typography sx={{ color: "white" }}>Sorry this room is full or does not exist.</Typography>
       )}
-      {inRoom && myStreamRef && !roomFull && (
+      {isAuth && inRoom && myStreamRef && !roomFull && (
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Link to="/student/studyRooms">
             <Button variant="contained" color="error" endIcon={<ExitToAppIcon />}>
@@ -266,7 +275,7 @@ const StudyRoom = () => {
             })}
         </Grid>
       )}
-      {!roomFull && <Whiteboard />}
+      {isAuth && !roomFull && <Whiteboard />}
     </Box>
   );
 };
