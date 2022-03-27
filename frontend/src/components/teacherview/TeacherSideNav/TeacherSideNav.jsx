@@ -2,6 +2,7 @@ import { Drawer, List, ListItem, Tooltip } from "@mui/material";
 
 import React from "react";
 import ClassIcon from "@mui/icons-material/Class";
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import HomeIcon from "@mui/icons-material/Home";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ const styles = {
   signout: { color: "#ff5e5e" },
   myclasses: { color: "#5e94ff" },
   studygroups: { color: "#5effa1" },
+  volunteer: { color: "red" },
 };
 
 const TeacherSideNav = () => {
@@ -49,6 +51,13 @@ const TeacherSideNav = () => {
           <Link to="classrooms">
             <Tooltip title="My Classes" placement="right">
               <ClassIcon sx={styles.myclasses} />
+            </Tooltip>
+          </Link>
+        </ListItem>
+        <ListItem button key={"Volunteer Board"}>
+          <Link to="volunteerBoard">
+            <Tooltip title="Volunteer Board" placement="right">
+              <VolunteerActivismIcon sx={styles.volunteer} />
             </Tooltip>
           </Link>
         </ListItem>
