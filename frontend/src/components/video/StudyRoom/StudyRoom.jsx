@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAlert } from "react-alert";
 import { io } from "socket.io-client";
 import Stream from "../Stream/Stream";
 import PeerStream from "../PeerStream/PeerStream";
@@ -8,9 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import {
   createAlreadyInRoomPeer,
   createJoiningPeer,
-  handleLeaveRoom,
   hideStream,
-  removePeer,
   showStream,
   stopStream,
   toggleMuteStream,
@@ -22,73 +21,79 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { Button, Toolbar, Typography, Box } from "@mui/material";
 import ToggleVideoButton from "../ToggleVideoButton/ToggleVideoButton";
 import ToggleSharingButton from "../ToggleSharingButton/ToggleSharingButton";
+import Whiteboard from "../Whiteboard/Whiteboard";
 
 /**Learned simple-peer from https://www.youtube.com/watch?v=R1sfHPwEH7A and https://www.youtube.com/watch?v=oxFr7we3LC8 */
 
 const StudyRoom = () => {
   const { id } = useParams();
   const socket = useRef();
-  const myStreamRef = useRef();
-  const [stream, setStream] = useState(null);
+  const alert = useAlert();
+
+  //My video streams
+  const [camera, setCamera] = useState(null);
   const [screen, setScreen] = useState(null);
-  const [roomFull, setRoomFull] = useState(false);
+  const myStreamRef = useRef();
+
+  //Peers
   const [peers, setPeers] = useState([]);
   const peersRef = useRef([]);
+
+  //checks
+  const [roomFull, setRoomFull] = useState(false);
   const [inRoom, setInRoom] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
 
   //controls
-  const [isMuted, setIsMuted] = useState(false);
   const [isShowingVideo, setIsShowingVideo] = useState(true);
   const [isSharingScreen, setIsSharingScreen] = useState(false);
 
   useEffect(() => {
-    //setup the socket
-    socket.current = io("http://localhost:5000");
-
     const setup = async () => {
       try {
-        const myStream = await navigator.mediaDevices.getUserMedia({
+        socket.current = io("http://localhost:5000", { withCredentials: true });
+        const myCamera = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true,
           video: { width: 640, height: 360 },
         });
-        myStreamRef.current.srcObject = myStream;
+        myStreamRef.current.srcObject = myCamera;
 
-        setStream(myStream);
+        setCamera(myCamera);
 
         socket.current.emit("joinStudyRoom", id);
       } catch (err) {
         console.log(err);
+        alert.error(err.toString());
       }
     };
 
     setup();
 
-    //handle when you get back your peers id when joining
-    socket.current.on("roomPeers", (roomPeersId) => {
-      let roomPeers = [];
+    //when you are not allowed to connect
+    socket.current.on("connect_error", (err) => {
+      alert.error(err.toString());
+      setIsAuth(false);
+    });
 
+    //when you get back your peers id when joining, call each one of them
+    socket.current.on("roomPeers", (roomPeersId) => {
       roomPeersId.forEach((sendingToId) => {
-        //connect to an already in room peer
         const peer = createAlreadyInRoomPeer(
           sendingToId,
           myStreamRef.current.srcObject,
           socket.current
         );
-        const peerObj = { id: sendingToId, peer };
 
-        peersRef.current.push(peerObj);
-        roomPeers.push(peerObj);
+        peersRef.current.push({ id: sendingToId, peer });
       });
 
-      setPeers(roomPeers);
+      setPeers([...peersRef.current]);
       setInRoom(true);
     });
 
     //handle when someone joins the room
     socket.current.on("someoneJoined", ({ joinSignal, joinId }) => {
-      console.log(`${joinId} joined the room`);
-
       const joinPeer = createJoiningPeer(
         joinSignal,
         joinId,
@@ -96,9 +101,9 @@ const StudyRoom = () => {
         socket.current
       );
 
-      //Update state and ref
+      //Update ref and state
       peersRef.current.push({ id: joinId, peer: joinPeer });
-      setPeers((peers) => [...peers, { id: joinId, peer: joinPeer }]);
+      setPeers([...peersRef.current]);
     });
 
     //handle room full
@@ -109,40 +114,44 @@ const StudyRoom = () => {
     //handle when someone sends you back their signal when you join
     socket.current.on("userInRoomSignaledBack", ({ fromId, signal }) => {
       peersRef.current
-        .find((peerObj) => {
-          return peerObj.id === fromId;
+        .find((p) => {
+          return p.id === fromId;
         })
         .peer.signal(signal);
     });
 
     socket.current.on("userLeftRoom", (leftRoomId) => {
-      console.log("USER LEFT THE ROOM");
-      const destroyingPeer = peersRef.current.find((p) => {
-        return p.id === leftRoomId;
-      });
+      peersRef.current = peersRef.current.filter((p) => p.id !== leftRoomId);
 
-      destroyingPeer.peer.destroy();
+      setPeers([...peersRef.current]);
+    });
 
-      peersRef.current = removePeer(peersRef.current, leftRoomId);
-
-      setPeers((peers) => removePeer(peers, leftRoomId));
+    //handle getting back stroke
+    socket.current.on("pathData", (path) => {
+      console.log(path);
     });
 
     //clean up function when leaving
     return () => {
-      handleLeaveRoom(peersRef.current, socket.current);
+      socket.current.disconnect();
     };
   }, []);
 
   useEffect(() => {
     return () => {
-      stopStream(stream);
+      stopStream(camera);
     };
-  }, [stream]);
+  }, [camera]);
+
+  useEffect(() => {
+    return () => {
+      stopStream(screen);
+    };
+  }, [screen]);
 
   useEffect(() => {
     if (roomFull) {
-      stopStream(stream);
+      stopStream(camera);
     }
   }, [roomFull]);
 
@@ -150,7 +159,6 @@ const StudyRoom = () => {
     try {
       let myScreen = await navigator.mediaDevices.getDisplayMedia();
       setScreen(myScreen);
-      socket.current.emit("shareScreen");
 
       peersRef.current.forEach((p) => {
         p.peer.replaceTrack(
@@ -165,13 +173,12 @@ const StudyRoom = () => {
       };
 
       myStreamRef.current.srcObject = myScreen;
-      console.log("sharing");
 
       setIsSharingScreen(true);
     } catch (err) {
       console.log(err);
       setIsSharingScreen(false);
-      myStreamRef.current.srcObject = stream;
+      myStreamRef.current.srcObject = camera;
     }
   };
 
@@ -180,20 +187,19 @@ const StudyRoom = () => {
       peersRef.current.forEach((p) => {
         p.peer.replaceTrack(
           p.peer.streams[0].getVideoTracks()[0],
-          stream.getVideoTracks()[0],
+          camera.getVideoTracks()[0],
           p.peer.streams[0]
         );
       });
-      console.log("stopped sharing");
 
-      myStreamRef.current.srcObject = stream;
+      myStreamRef.current.srcObject = camera;
       screen.getTracks().forEach((track) => {
         return track.stop();
       });
       setIsSharingScreen(false);
     } catch (err) {
       console.log(err);
-      myStreamRef.current.srcObject = stream;
+      myStreamRef.current.srcObject = camera;
     }
   };
 
@@ -212,20 +218,16 @@ const StudyRoom = () => {
         paddingTop: "2em",
       }}
     >
+      {!isAuth && (
+        <Typography sx={{ color: "white" }}>Sorry you are not authorized. Please sign in.</Typography>
+      )}
       {roomFull && (
         <Typography sx={{ color: "white" }}>Sorry this room is full or does not exist.</Typography>
       )}
-      {inRoom && myStreamRef && !roomFull && (
+      {isAuth && inRoom && myStreamRef && !roomFull && (
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
           <Link to="/student/studyRooms">
-            <Button
-              variant="contained"
-              color="error"
-              endIcon={<ExitToAppIcon />}
-              onClick={() => {
-                handleLeaveRoom(peersRef.current, socket.current);
-              }}
-            >
+            <Button variant="contained" color="error" endIcon={<ExitToAppIcon />}>
               Leave
             </Button>
           </Link>
@@ -243,25 +245,37 @@ const StudyRoom = () => {
             showingVideo={isShowingVideo}
             onToggle={() => {
               if (isShowingVideo) {
-                hideStream(stream);
+                hideStream(camera);
                 setIsShowingVideo(false);
               } else {
-                showStream(stream);
+                showStream(camera);
                 setIsShowingVideo(true);
               }
             }}
           />
-          <ToggleMuteButton onToggle={() => toggleMuteStream(stream)} />
+          <ToggleMuteButton onToggle={() => toggleMuteStream(camera)} />
+          <Button
+            onClick={() => {
+              socket.current.emit("strokePath", { roomId: id, path: "path" });
+            }}
+          >
+            Send Path
+          </Button>
         </Toolbar>
       )}
       {!roomFull && (
         <Grid container spacing={1} className="streamContainer">
           <Stream ref={myStreamRef} muted={true} name={"You"} />
-          {peers.map((peerObj) => {
-            return <PeerStream key={peerObj.id} peer={peerObj.peer} />;
-          })}
+          {peers
+            .filter(({ id }, index) => {
+              return peers.findIndex((p) => p.id === id) === index;
+            })
+            .map(({ id, peer }) => {
+              return <PeerStream key={id} peer={peer} />;
+            })}
         </Grid>
       )}
+      {isAuth && !roomFull && <Whiteboard />}
     </Box>
   );
 };

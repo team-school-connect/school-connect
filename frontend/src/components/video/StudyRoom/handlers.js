@@ -33,17 +33,6 @@ export const createAlreadyInRoomPeer = (sendingToId, myStream, socket) => {
   return peer;
 };
 
-//Destroy all connections when leaving a room
-export const handleLeaveRoom = (peers, socket) => {
-  console.log("cleaning up");
-
-  peers.forEach((peerObj) => {
-    peerObj.peer.destroy();
-  });
-
-  socket.disconnect();
-};
-
 export const stopStream = (stream) => {
   if (stream) {
     console.log("stopping stream");
@@ -56,11 +45,6 @@ export const stopStream = (stream) => {
   }
 };
 
-export const removePeer = (peers, peerId) => {
-  return peers.filter((peer) => {
-    return peer.id !== peerId;
-  });
-};
 
 export const toggleMuteStream = (stream) => {
   const muted = stream.getAudioTracks()[0].enabled;

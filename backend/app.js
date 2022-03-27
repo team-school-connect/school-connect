@@ -6,10 +6,15 @@ const {
   ApolloError,
 } = require("apollo-server-core");
 const express = require("express");
-const session = require("express-session");
+require("dotenv").config();
+const session = require("express-session")({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+});
+const sharedsession = require("express-socket.io-session");
 const http = require("http");
 const db = require("./db");
-const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const { combineResolvers } = require("graphql-resolvers");
 const app = express();
@@ -319,13 +324,7 @@ async function startApolloServer(typeDefs, resolvers) {
     context: ({ req }) => req,
   });
 
-  app.use(
-    session({
-      secret: process.env.SECRET,
-      resave: false,
-      saveUninitialized: true,
-    })
-  );
+  app.use(session);
 
   await server.start();
   server.applyMiddleware({
@@ -338,9 +337,17 @@ async function startApolloServer(typeDefs, resolvers) {
   console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
 }
 
-dotenv.config();
 db.connect();
 
 startApolloServer(typeDefs, resolvers);
+
+io.use(sharedsession(session));
+io.use((socket, next) => {
+  console.log("SOCKET AUTH");
+  if (!socket.handshake.session.user) {
+    next(new Error("User is not signed in"));
+  }
+  next();
+});
 
 io.on("connection", socketHandler.connect(io));
