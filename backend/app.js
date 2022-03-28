@@ -21,6 +21,9 @@ const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
 const validator = require("validator");
+const { GraphQLUpload, graphqlUploadExpress } = require('graphql-upload');
+const ShortUniqueId = require("short-unique-id");
+const { finished } = require('stream/promises');
 
 //models
 const Classroom = require("./models/Classroom");
@@ -50,6 +53,14 @@ const io = require("socket.io")(httpServer, {
 app.use(cors(corsOptions));
 
 const typeDefs = gql`
+  scalar Upload
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
   type MutationResponse {
     code: String!
     success: Boolean!
@@ -203,10 +214,14 @@ const typeDefs = gql`
     createAssignment(name: String, description: String, classId: String, dueDate: String): Assignment
 
     createVolunteerPosition(positionName: String, positionDescription: String, schoolId: ID, location: String, startDate: String, endDate: String): VolunteerPosition
+
+    # submitAssignment(assignmentId: String, file: Upload!): MutationResponse
+    testUpload(file: Upload!): Boolean
   }
 `;
 
 const resolvers = {
+  Upload: GraphQLUpload,
   Announcement: {
     class: async (parent) => {
       const classroom = await Classroom.findOne({ _id: parent.classId });
@@ -314,6 +329,16 @@ const resolvers = {
     createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
     ...ClassroomResolver.mutation,
     ...VolunteerPositionResolver.mutation,
+    testUpload: async (parent, { file }, context) => {
+      const { createReadStream, filename, mimetype, encoding } = await file;
+      const stream = createReadStream();
+      const uid = new ShortUniqueId({ length: 10 });
+      const out = require('fs').createWriteStream(`./uploads/${uid()}`);
+      stream.pipe(out);
+      await finished(out);
+      
+      return true;
+    }
   },
 };
 
@@ -326,6 +351,8 @@ async function startApolloServer(typeDefs, resolvers) {
   });
 
   app.use(session);
+
+  app.use(graphqlUploadExpress());
 
   await server.start();
   server.applyMiddleware({

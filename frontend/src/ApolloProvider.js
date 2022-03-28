@@ -7,8 +7,9 @@ import {
     ApolloProvider,
 } from '@apollo/client';
 import { CookiesProvider } from "react-cookie";
+import { createUploadLink } from "apollo-upload-client";
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
     uri: 'http://localhost:5000/',
     credentials: 'include',
 });

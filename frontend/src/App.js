@@ -30,6 +30,7 @@ import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/Vo
 import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
+import { TestUpload } from "./components/TestUpload";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/test" element={<TestUpload/>}/>
             <Route path="/credits" element={<Credits />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
