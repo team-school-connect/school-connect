@@ -2,8 +2,8 @@ import React from "react";
 import { gql, useMutation } from "@apollo/client";
 
 const MUTATION = gql`
-  mutation ($file: Upload!) {
-    testUpload(file: $file)
+  mutation ($assignmentId: String, $file: Upload!) {
+    submitAssignment(assignmentId: $assignmentId, file: $file)
   }
 `;
 
@@ -17,7 +17,7 @@ export function TestUpload() {
         },
       }) {
         console.log(file);
-        if (validity.valid) mutate({ variables: { file } });
+        if (validity.valid) mutate({ variables: { assignmentId: String("6240d51b35cbd6b83920f833"), file } });
     }
 
     return (

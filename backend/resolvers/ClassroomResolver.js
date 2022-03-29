@@ -4,10 +4,13 @@ const Classroom = require("../models/Classroom");
 const Announcement = require("../models/Announcement");
 const Assignment = require("../models/Assignment");
 const ClassroomUser = require("../models/ClassroomUser");
+const Submission = require("../models/Submission");
 const { combineResolvers } = require("graphql-resolvers");
 const { isAuthenticated, isAccountType } = require("./AccountCheck");
 const ShortUniqueId = require("short-unique-id");
 const validator = require("validator");
+const fs = require('fs');
+const { finished } = require('stream/promises');
 
 const ClassroomResolver = {
   mutation: {
@@ -120,7 +123,41 @@ const ClassroomResolver = {
       if (!assignment) throw new ApolloError('internal server error');
       assignment.date = assignment.createdAt;
       return assignment;
-    })
+    }),
+    submitAssignment: combineResolvers(
+      isAuthenticated,
+      isAccountType(["STUDENT"]),
+      async (parent, args, context) => {
+        const user = context.session.user;
+        const assignmentId = args.assignmentId;
+        const file = args.file;
+        const { createReadStream, filename, mimetype, encoding } = await file;
+
+        // check if assignment exists
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) throw new ConflictError('assignment does not exist');
+
+        const inClass = await ClassroomUser.findOne({userEmail: user.email, classId: assignment.classId});
+        if (!inClass) throw new ConflictError('user is not in classroom');
+
+        if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
+
+        const sub = await Submission.findOne({userId: user._id, assignmentId});
+        if (sub) await Submission.deleteOne(sub);
+
+        const stream = createReadStream();
+        const uid = new ShortUniqueId({ length: 10 });
+        const id = uid();
+        console.log(id);
+        const out = fs.createWriteStream(`./uploads/${id}`);
+        stream.pipe(out);
+        await finished(out);
+        const submission = await Submission.create({userId: user._id, filename, mimetype, encoding, assignmentId, path: `./uploads/${id}`});
+        if (!submission) throw new ConflictError('internal server error');
+
+        return true;
+      }
+    )
   },
   query: {
     getClassroom: combineResolvers(isAuthenticated, async (parent, args, context) => {

@@ -215,7 +215,7 @@ const typeDefs = gql`
 
     createVolunteerPosition(positionName: String, positionDescription: String, schoolId: ID, location: String, startDate: String, endDate: String): VolunteerPosition
 
-    # submitAssignment(assignmentId: String, file: Upload!): MutationResponse
+    submitAssignment(assignmentId: String, file: Upload!): Boolean
     testUpload(file: Upload!): Boolean
   }
 `;
