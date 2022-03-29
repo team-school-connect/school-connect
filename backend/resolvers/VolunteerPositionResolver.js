@@ -18,6 +18,7 @@ const VolunteerPositionResolver = {
 
                 const resVolunteerPosition = await VolunteerPosition.create({
                     posterId: user._id,
+                    organizationName,
                     positionName,
                     positionDescription,
                     schoolId: user.schoolId,

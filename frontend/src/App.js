@@ -63,6 +63,7 @@ function App() {
               <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
               <Route path="volunteerBoard/" element={<TeacherVolunteerBoardPage />} />
+              <Route path="volunteerBoard/new" element={<NewVolunteerPositionPage />} />
             </Route>
             <Route path="/admin" element={<AdministrationView />}>
               <Route path="home" element={<NewTeacherFormPage />} />

@@ -52,7 +52,7 @@ const TeacherVolunteerBoardPage = () => {
       }}
     >
       <CustomAppBar title="Volunteer Board" icon={<VolunteerActivismIcon sx={{ color: "red" }} />}>
-        <Link to="/teacher/classrooms/new">
+        <Link to="/teacher/volunteerBoard/new">
           <Button variant="contained" endIcon={<AddIcon />}>
             Create New Volunteer Position
           </Button>

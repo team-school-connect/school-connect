@@ -29,7 +29,7 @@ const { finished } = require('stream/promises');
 const Classroom = require("./models/Classroom");
 const User = require("./models/User");
 const School = require("./models/School");
-const VolunteerPosition = require("./models/VolunteerPosition");
+// const VolunteerPosition = require("./models/VolunteerPosition");
 
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
@@ -213,7 +213,7 @@ const typeDefs = gql`
 
     createAssignment(name: String, description: String, classId: String, dueDate: String): Assignment
 
-    createVolunteerPosition(positionName: String, positionDescription: String, schoolId: ID, location: String, startDate: String, endDate: String): VolunteerPosition
+    createVolunteerPosition(organizationName: String, positionName: String, positionDescription: String, location: String, startDate: String, endDate: String): MutationResponse
 
     submitAssignment(assignmentId: String, file: Upload!): Boolean
     testUpload(file: Upload!): Boolean
