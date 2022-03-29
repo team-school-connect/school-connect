@@ -7,7 +7,6 @@ import AlertTemplate from "react-alert-template-basic";
 import { Login } from "./components/login/Login";
 import { Signup } from "./components/signup/Signup";
 import { StudentSignupForm } from "./components/signup/StudentSignupForm";
-import { TeacherSignupForm } from "./components/signup/TeacherSignupForm";
 import { AdministrationSignupForm } from "./components/signup/AdministrationSignupForm";
 import { Home } from "./components/home/Home";
 import Credits from "./components/credits/Credits";

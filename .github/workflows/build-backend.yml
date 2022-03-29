@@ -2,9 +2,9 @@ name: Publish Backend to GHCR
 
 on:
   push:
-    # Only run this workflow if it is a commit to master.
+    # Only run this workflow if it is a commit to main.
     branches:
-      - master
+      - main
     # Only run this workflow if the commit has modified files from backend
     paths:
       - backend/**
@@ -42,7 +42,7 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
+          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION

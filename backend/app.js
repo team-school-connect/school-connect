@@ -25,7 +25,7 @@ const { GraphQLUpload, graphqlUploadExpress } = require("graphql-upload");
 const ShortUniqueId = require("short-unique-id");
 const { finished } = require("stream/promises");
 
-//port
+//server port
 const PORT = 5000;
 
 //models
