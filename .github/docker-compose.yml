@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme:/etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=yusuf.khan@mail.utoronto.ca
+
+  frontend:
+    image: ghcr.io/utscc09/school-connect-frontend
+    container_name: frontend
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=schoolconnect.tech
+      - LETSENCRYPT_HOST=schoolconnect.tech
+      - REACT_APP_API_URI=https://api.schoolconnect.tech
+
+  backend:
+    image: ghcr.io/utscc09/school-connect-backend
+    container_name: backend
+    restart: always
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=api.schoolconnect.tech
+      - LETSENCRYPT_HOST=api.schoolconnect.tech
+      - SECRET=${SECRET}
+      - ORIGIN=https://schoolconnect.tech
+      - DB_CONNECTION_STRING=${DB_CONNECTION_STRING}

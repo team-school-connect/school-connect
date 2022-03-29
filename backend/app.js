@@ -21,9 +21,12 @@ const app = express();
 const httpServer = http.createServer(app);
 const socketHandler = require("./socket");
 const validator = require("validator");
-const { GraphQLUpload, graphqlUploadExpress } = require('graphql-upload');
+const { GraphQLUpload, graphqlUploadExpress } = require("graphql-upload");
 const ShortUniqueId = require("short-unique-id");
-const { finished } = require('stream/promises');
+const { finished } = require("stream/promises");
+
+//port
+const PORT = 5000;
 
 //models
 const Classroom = require("./models/Classroom");
@@ -42,7 +45,7 @@ const { NotFoundError, ConflictError } = require("./apollo-errors");
 //Temporary for socket io
 const cors = require("cors");
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+  origin: process.env.ORIGIN,
   credentials: true,
 };
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
@@ -110,7 +113,6 @@ const typeDefs = gql`
     startDate: String
     endDate: String
   }
-
 
   type Classroom {
     id: ID
@@ -211,9 +213,21 @@ const typeDefs = gql`
 
     createStudyRoom(roomName: String, subject: String): MutationResponse
 
-    createAssignment(name: String, description: String, classId: String, dueDate: String): Assignment
+    createAssignment(
+      name: String
+      description: String
+      classId: String
+      dueDate: String
+    ): Assignment
 
-    createVolunteerPosition(organizationName: String, positionName: String, positionDescription: String, location: String, startDate: String, endDate: String): MutationResponse
+    createVolunteerPosition(
+      organizationName: String
+      positionName: String
+      positionDescription: String
+      location: String
+      startDate: String
+      endDate: String
+    ): MutationResponse
 
     submitAssignment(assignmentId: String, file: Upload!): Boolean
     testUpload(file: Upload!): Boolean
@@ -333,12 +347,12 @@ const resolvers = {
       const { createReadStream, filename, mimetype, encoding } = await file;
       const stream = createReadStream();
       const uid = new ShortUniqueId({ length: 10 });
-      const out = require('fs').createWriteStream(`./uploads/${uid()}`);
+      const out = require("fs").createWriteStream(`./uploads/${uid()}`);
       stream.pipe(out);
       await finished(out);
-      
+
       return true;
-    }
+    },
   },
 };
 
@@ -361,8 +375,8 @@ async function startApolloServer(typeDefs, resolvers) {
     cors: corsOptions,
   });
 
-  await new Promise((resolve) => httpServer.listen({ port: process.env.PORT }, resolve));
-  console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
+  await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
 }
 
 db.connect();

@@ -1,0 +1,30 @@
+#Adapted from https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_run
+name: Deploy Application
+
+on:
+  workflow_run:
+    workflows: [Publish Frontend to GHCR, Publish Backend to GHCR]
+    types:
+      - completed
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd project/
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+            rm .env
+            touch .env
+            echo "DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}" >> .env
+            echo "SECRET=${{ secrets.SECRET }}" >> .env
+            docker-compose pull && docker-compose up -d
