@@ -9,7 +9,6 @@ const connect = (io) => {
       console.log("joining room " + id);
 
       //only join room if it exists and is not full
-
       try {
         //increment room count
         const res = await StudyRoom.findOneAndUpdate(
