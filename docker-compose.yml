@@ -33,7 +33,9 @@ services:
     environment:
       - VIRTUAL_HOST=schoolconnect.tech
       - LETSENCRYPT_HOST=schoolconnect.tech
-      - REACT_APP_API_URI=https://api.schoolconnect.tech
+    build:
+      args:
+        - REACT_APP_API_URI=https://api.schoolconnect.tech
 
   backend:
     image: ghcr.io/utscc09/school-connect-backend
