@@ -4,6 +4,7 @@ FROM node:16
 
 # Create app directory
 WORKDIR /usr/src/app
+CMD ["ls"]
 
 RUN npm install
 

@@ -55,7 +55,10 @@ const StudyRoom = () => {
   useEffect(() => {
     const setup = async () => {
       try {
-        socket.current = io("http://localhost:5000", { withCredentials: true });
+        socket.current = io(
+          process.env.REACT_APP_API_URI ? process.env.REACT_APP_API_URI : "http://localhost:3000/",
+          { withCredentials: true }
+        );
         const myCamera = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: true,

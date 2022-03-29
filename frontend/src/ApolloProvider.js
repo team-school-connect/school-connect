@@ -5,7 +5,7 @@ import { CookiesProvider } from "react-cookie";
 import { createUploadLink } from "apollo-upload-client";
 
 const httpLink = createUploadLink({
-  uri: process.env.REACT_APP_API_URI ? process.env.REACT_APP_API_URI : "http://localhost:5000/",
+  uri: process.env.REACT_APP_API_URI ? process.env.REACT_APP_API_URI : "http://localhost:3000/",
   credentials: "include",
 });
 
