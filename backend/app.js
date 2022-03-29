@@ -26,8 +26,7 @@ const ShortUniqueId = require("short-unique-id");
 const { finished } = require("stream/promises");
 
 //server port
-const PORT = 5000;
-
+const PORT = 3000;
 
 //models
 const Classroom = require("./models/Classroom");
