@@ -5,10 +5,11 @@
 # basically, this compiles the React jsx to static HTML and js files.
 FROM node:14-alpine3.14 as build
 WORKDIR /app
-CMD ["ls"]
 ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json ./
 RUN npm i
 RUN npm install react-scripts@3.4.1 -g
+COPY . ./
 RUN export PORT=80
 RUN npm run build
 
