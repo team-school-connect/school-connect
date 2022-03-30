@@ -184,6 +184,21 @@ const typeDefs = gql`
     Schools: [School]
   }
 
+  type VolunteerPosition {
+    id: ID
+    organizationName: String
+    positionName: String
+    positionDescription: String
+    location: String
+    startDate: String
+    endDate: String
+  }
+
+  type VolunteerPositionPage {
+    total: Int
+    VolunteerPositions: [VolunteerPosition]
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
@@ -196,6 +211,7 @@ const typeDefs = gql`
     getClassroom(classId: String): Classroom
     getAssignments(classId: String, page: Int): AssignmentPage
     getStudentSubmissions(classId: String, assignmentId: String, page: Int): SubmissionPage
+    getVolunteerPositions(page: Int): VolunteerPositionPage
   }
 
   type Mutation {
@@ -284,6 +300,7 @@ const resolvers = {
     getStudyRooms: getStudyRoomsQuery,
 
     ...ClassroomResolver.query,
+    ...VolunteerPositionResolver.query,
 
     getSchools: async (parent, args, context) => {
       const schools = await School.find({}).sort({ name: "asc" });

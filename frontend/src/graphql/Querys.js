@@ -85,3 +85,20 @@ export const GET_CLASSROOM_ANNOUCEMENTS = gql`
     }
   }
 `;
+
+export const GET_VOLUNTEER_POSITIONS = gql`
+  query Query($page: Int) {
+    getVolunteerPositions(page: $page) {
+      total
+      VolunteerPositions {
+        id
+        organizationName
+        positionName
+        positionDescription
+        location
+        startDate
+        endDate
+      }
+    }
+  }
+`;
