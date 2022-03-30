@@ -22,7 +22,6 @@ jobs:
           script: |
             cd project/
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
-
             rm .env
             touch .env
             echo "DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}" >> .env
