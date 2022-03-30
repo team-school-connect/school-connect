@@ -11,8 +11,7 @@ RUN npm i
 RUN npm install react-scripts@3.4.1 -g
 COPY . ./
 ENV PORT=80
-ARG REACT_APP_API_URI
-ENV REACT_APP_API_URI=$REACT_APP_API_URI
+ENV REACT_APP_API_URI=https://api.schoolconnect.tech
 RUN npm run build
 
 # Serve these static files with NGINX.
