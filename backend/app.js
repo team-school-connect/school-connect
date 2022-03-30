@@ -151,6 +151,13 @@ const typeDefs = gql`
     date: String
   }
 
+  type Submission {
+    id: ID
+    assignmentId: ID
+    userId: ID
+    date: String
+  }
+
   type AnnouncementPage {
     total: Int
     announcements: [Announcement]
@@ -159,6 +166,11 @@ const typeDefs = gql`
   type AssignmentPage {
     total: Int
     assignments: [Assignment]
+  }
+
+  type SubmissionPage {
+    total: Int
+    submissions: [Submission]
   }
 
   type AccountTypeResponse {
@@ -183,6 +195,7 @@ const typeDefs = gql`
     getSchools: [School]
     getClassroom(classId: String): Classroom
     getAssignments(classId: String, page: Int): AssignmentPage
+    getStudentSubmissions(classId: String, assignmentId: String, page: Int): SubmissionPage
   }
 
   type Mutation {

@@ -251,6 +251,32 @@ const ClassroomResolver = {
         });
 
         return {total, assignments};
+    }),
+    getStudentSubmissions: combineResolvers(
+      isAuthenticated,
+      isAccountType(["TEACHER"]),
+      async (parent, args, context) => {
+        const { classId, assignmentId, page } = args;
+        const user = context.session.user;
+
+        const isClass = await ClassroomUser.findOne({userEmail: user.email, classId});
+        if (!isClass) throw new ConflictError('user is not part of classroom');
+
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) throw new ConflictError('assignment does not exist');
+
+        const total = await Announcement.countDocuments({ classId });
+
+        const submissions = await Submission.find({assignmentId})
+          .sort({ createdAt: "desc" })
+          .skip(page * 10)
+          .limit(10)
+          .exec();
+        submissions.forEach((x) => {
+          x.date = x.createdAt;
+          x.id = x._id;
+        });
+        return {total, submissions};
     })
   },
 };
