@@ -44,8 +44,7 @@ services:
       - VIRTUAL_HOST=api.schoolconnect.tech
       - LETSENCRYPT_HOST=api.schoolconnect.tech
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
       args:
         - SECRET=$SECRET
         - ORIGIN=https://schoolconnect.tech
