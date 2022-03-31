@@ -51,6 +51,8 @@ const corsOptions = {
 };
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const res = require("express/lib/response");
+const Submission = require("./models/Submission");
+const ClassroomUser = require("./models/ClassroomUser");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -397,7 +399,23 @@ async function startApolloServer(typeDefs, resolvers) {
 
   app.use(session);
 
-  app.use(graphqlUploadExpress());
+  app.use(graphqlUploadExpress({maxFileSize: 5000000}));
+
+  app.get('/submission/:submitId', async (req, res, next) => {
+    const user = req.session.user;
+    if (!user) return res.status(401).end('user not logged in');
+
+    if (user.type !== "TEACHER") res.status(401).end('unauthorized');
+
+    if (!validator.isMongoId(req.params.submitId)) return res.status(400).end('invalid id');
+    const submission = await Submission.findById(req.params.submitId);
+    if (!submission) return res.status(404).end('submission not found');
+    
+    const inClass = await ClassroomUser.findOne({userEmail: user.email, classId: submission.classId});
+    if (!inClass) return res.status(401).end('user is not in classroom');
+
+    res.download(submission.path, submission.filename, {headers: {'Content-Type': submission.mimetype}});
+  });
 
   await server.start();
   server.applyMiddleware({
