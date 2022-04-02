@@ -103,6 +103,19 @@ export const GET_VOLUNTEER_POSITIONS = gql`
   }
 `;
 
+export const GET_SINGLE_VOLUNTEER_POSITION = gql`
+  query Query($_id: ID) {
+    getSingleVolunteerPosition(_id: $_id) {
+      id
+      organizationName
+      positionName
+      positionDescription
+      location
+      startDate
+      endDate
+    }
+  }
+`;
 export const GET_ASSIGNMENTS = gql`
   query Query($classId: String, $page: Int) {
     getAssignments(classId: $classId, page: $page) {

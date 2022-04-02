@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
+import { DataGrid } from "@mui/x-data-grid";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import Collapse from '@mui/material/Collapse';
 import Table from '@mui/material/Table';
@@ -82,7 +83,7 @@ const TeacherVolunteerBoardPage = () => {
         </Link>
       </CustomAppBar>
 
-      <DataGridPro
+      <DataGrid
         page={pageNum}
         onPageChange={(nextPageNum) => setPageNum(nextPageNum)}
         pageSize={10}
@@ -93,7 +94,23 @@ const TeacherVolunteerBoardPage = () => {
           { field: "Position", flex: 1, headerAlign: "center", align: "center"},
           { field: "Location", flex: 1, headerAlign: "center", align: "center"},
           { field: "Start Date", flex: 1, headerAlign: "center", align: "center"},
-          { field: "End Date", flex: 1, headerAlign: "center", align: "center"},
+          { field: "End Date", flex: 1, headerAlign: "center", align: "center"},{
+            field: "View",
+            flex: 1,
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params) => {
+              return (
+                <Link to={`/teacher/volunteerBoard/${params.row.id}`}>
+                  <Button variant="outlined" color="success">
+                    View
+                  </Button>
+                </Link>
+              );
+            },
+            disableColumnMenu: true,
+            disableReorder: true,
+          },
         ]}
         //make each row expandable and show the description
         expandableRows={true}

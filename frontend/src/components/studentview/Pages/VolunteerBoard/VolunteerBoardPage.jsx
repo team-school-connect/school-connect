@@ -74,6 +74,23 @@ const VolunteerBoardPage = () => {
           { field: "Location", flex: 1, headerAlign: "center", align: "center"},
           { field: "Start Date", flex: 1, headerAlign: "center", align: "center"},
           { field: "End Date", flex: 1, headerAlign: "center", align: "center"},
+          // {
+          //   field: "View",
+          //   flex: 1,
+          //   headerAlign: "center",
+          //   align: "center",
+          //   renderCell: (params) => {
+          //     return (
+          //       <Link to={`/student/classrooms/${params.row.id}`}>
+          //         <Button variant="outlined" color="success">
+          //           View
+          //         </Button>
+          //       </Link>
+          //     );
+          //   },
+          //   disableColumnMenu: true,
+          //   disableReorder: true,
+          // },
         ]}
         //make each row expandable and show the description
         expandableRows={true}

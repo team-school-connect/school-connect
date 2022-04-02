@@ -216,6 +216,7 @@ const typeDefs = gql`
     getAssignments(classId: String, page: Int): AssignmentPage
     getStudentSubmissions(classId: String, assignmentId: String, page: Int): SubmissionPage
     getVolunteerPositions(page: Int): VolunteerPositionPage
+    getSingleVolunteerPosition(_id: ID): VolunteerPosition
   }
 
   type Mutation {

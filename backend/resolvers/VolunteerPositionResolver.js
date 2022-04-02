@@ -61,6 +61,20 @@ const VolunteerPositionResolver = {
                 return { total, VolunteerPositions: volunteerPositions };
             }
         ),
+
+        getSingleVolunteerPosition: combineResolvers(
+            isAuthenticated,
+            isAccountType(["STUDENT", "TEACHER", "SCHOOL_ADMIN"]),
+            async (parent, args, context) => {
+                const { id } = args;
+
+                const singleVolunteerPosition = await VolunteerPosition.find({_id: id}).exec();
+                
+                if (!singleVolunteerPosition) throw new ApolloError("internal server error");
+
+                return { SingleVolunteerPosition: singleVolunteerPosition };
+            }
+        ),
     },
 };
 

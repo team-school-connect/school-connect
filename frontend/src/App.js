@@ -27,6 +27,7 @@ import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPa
 import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/VolunteerBoardPage";
 import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
+import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerPositionPage";
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 import { TestUpload } from "./components/TestUpload";
 import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
@@ -64,6 +65,7 @@ function App() {
               <Route path="classrooms/new" element={<NewClassroomPage />} />
               <Route path="volunteerBoard/" element={<TeacherVolunteerBoardPage />} />
               <Route path="volunteerBoard/new" element={<NewVolunteerPositionPage />} />
+              <Route path="volunteerBoard/:id" element={<TeacherVolunteerPositionPage />} />
             </Route>
             <Route path="/admin" element={<AdministrationView />}>
               <Route path="home" element={<NewTeacherFormPage />} />
