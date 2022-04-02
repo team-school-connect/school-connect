@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const ParticipantSchema = new Schema({
   studyRoomId: { type: mongoose.Schema.Types.ObjectId, ref: "StudyRoom", required: true },
   socketId: { type: String, required: true },
-  // participantId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+  participantId: { type: mongoose.Schema.Types.ObjectId, ref: "Users", required: true },
 });
 
 module.exports = mongoose.model("Participant", ParticipantSchema);

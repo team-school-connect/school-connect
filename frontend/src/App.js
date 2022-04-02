@@ -30,6 +30,7 @@ import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteer
 import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerPositionPage";
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 import { TestUpload } from "./components/TestUpload";
+import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
               <Route path="home" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
+              <Route path="classrooms/:id/assignments" element={<ViewAssignment/>}/>
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />

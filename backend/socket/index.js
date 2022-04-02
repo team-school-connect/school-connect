@@ -23,19 +23,35 @@ const connect = (io) => {
         }
 
         //add participant to room
-        let newParticipant = Participant({ studyRoomId: id, socketId: socket.id });
+        let newParticipant = Participant({
+          studyRoomId: id,
+          socketId: socket.id,
+          participantId: socket.handshake.session.user._id,
+        });
         await newParticipant.save();
 
         //get all participants in room
-        const roomPeers = await Participant.find({ studyRoomId: id });
+        const roomPeers = await Participant.find({ studyRoomId: id })
+          .populate("participantId")
+          .exec();
 
         //join the room on the server
         socket.join(id);
         console.log("joined room");
 
+        console.log(roomPeers);
+
         socket.emit(
           "roomPeers",
-          roomPeers.map((peer) => peer.socketId).filter((socketId) => socketId !== socket.id)
+          roomPeers
+            .map((peer) => {
+              const {
+                participantId: { firstName, lastName },
+                socketId,
+              } = peer;
+              return { name: `${firstName} ${lastName}`, socketId: socketId };
+            })
+            .filter((p) => p.socketId !== socket.id)
         );
       } catch (err) {
         console.log(err);
@@ -44,11 +60,19 @@ const connect = (io) => {
     });
 
     socket.on("signalUserInRoom", ({ sendingToId, signal }) => {
-      io.to(sendingToId).emit("someoneJoined", { joinSignal: signal, joinId: socket.id });
+      const { firstName, lastName } = socket.handshake.session.user;
+      io.to(sendingToId).emit("someoneJoined", {
+        joinSignal: signal,
+        joinId: socket.id,
+        name: `${firstName} ${lastName}`,
+      });
     });
 
     socket.on("signalJoiningUser", ({ sendingToId, signal }) => {
-      io.to(sendingToId).emit("userInRoomSignaledBack", { fromId: socket.id, signal });
+      io.to(sendingToId).emit("userInRoomSignaledBack", {
+        fromId: socket.id,
+        signal,
+      });
     });
 
     socket.on("strokePath", ({ roomId, path }) => {
@@ -68,9 +92,6 @@ const connect = (io) => {
         const participant = await Participant.findOne({ socketId: socket.id });
 
         if (participant) {
-          console.log(participant);
-          console.log("STUDY ROOM ID");
-          console.log(participant.studyRoomId.toString());
           io.to(participant.studyRoomId.toString()).emit("userLeftRoom", socket.id);
           await Participant.deleteOne({ socketId: socket.id });
           await StudyRoom.findOneAndUpdate(

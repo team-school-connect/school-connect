@@ -84,15 +84,15 @@ const StudyRoom = () => {
     });
 
     //when you get back your peers id when joining, call each one of them
-    socket.current.on("roomPeers", (roomPeersId) => {
-      roomPeersId.forEach((sendingToId) => {
+    socket.current.on("roomPeers", (roomPeers) => {
+      roomPeers.forEach(({ name, socketId: sendingToId }) => {
         const peer = createAlreadyInRoomPeer(
           sendingToId,
           myStreamRef.current.srcObject,
           socket.current
         );
 
-        peersRef.current.push({ id: sendingToId, peer });
+        peersRef.current.push({ id: sendingToId, peer, name });
       });
 
       setPeers([...peersRef.current]);
@@ -100,7 +100,7 @@ const StudyRoom = () => {
     });
 
     //handle when someone joins the room
-    socket.current.on("someoneJoined", ({ joinSignal, joinId }) => {
+    socket.current.on("someoneJoined", ({ joinSignal, joinId, name }) => {
       const joinPeer = createJoiningPeer(
         joinSignal,
         joinId,
@@ -109,7 +109,7 @@ const StudyRoom = () => {
       );
 
       //Update ref and state
-      peersRef.current.push({ id: joinId, peer: joinPeer });
+      peersRef.current.push({ id: joinId, peer: joinPeer, name });
       setPeers([...peersRef.current]);
 
       //send them the content on your whiteboard
@@ -295,8 +295,8 @@ const StudyRoom = () => {
             .filter(({ id }, index) => {
               return peers.findIndex((p) => p.id === id) === index;
             })
-            .map(({ id, peer }) => {
-              return <PeerStream key={id} peer={peer} />;
+            .map(({ id, peer, name }) => {
+              return <PeerStream key={id} peer={peer} name={name} />;
             })}
         </Grid>
       )}

@@ -116,3 +116,19 @@ export const GET_SINGLE_VOLUNTEER_POSITION = gql`
     }
   }
 `;
+export const GET_ASSIGNMENTS = gql`
+  query Query($classId: String, $page: Int) {
+    getAssignments(classId: $classId, page: $page) {
+      total
+      assignments {
+        id
+        name
+        description
+        classId
+        dueDate
+        date
+      }
+    }
+  }
+`;
+
