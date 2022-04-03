@@ -16,5 +16,14 @@ class ConflictError extends ApolloError {
   }
 }
 
+class UnverifiedError extends ApolloError {
+  constructor(message) {
+    super(message, "403");
+
+    Object.defineProperty(this, "name", { value: "UnverifiedError" });
+  }
+}
+
 exports.NotFoundError = NotFoundError;
 exports.ConflictError = ConflictError;
+exports.UnverifiedError = UnverifiedError;

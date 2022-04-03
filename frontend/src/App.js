@@ -27,8 +27,12 @@ import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPa
 import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/VolunteerBoardPage";
 import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
+import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerPositionPage";
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 import { TestUpload } from "./components/TestUpload";
+import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
+import VerifyMessage from "./components/verify/VerifyMessage";
+import Verify from "./components/verify/Verify";
 
 function App() {
   return (
@@ -37,9 +41,11 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/test" element={<TestUpload/>}/>
+            <Route path="/test" element={<TestUpload />} />
             <Route path="/credits" element={<Credits />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/verify" element={<VerifyMessage />} />
+            <Route path="/verify/:code" element={<Verify />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup/student" element={<StudentSignupForm />} />
             <Route path="/signup/administration" element={<AdministrationSignupForm />} />
@@ -57,11 +63,13 @@ function App() {
               <Route path="home" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
+              <Route path="classrooms/:id/assignments" element={<ViewAssignment />} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
               <Route path="volunteerBoard/" element={<TeacherVolunteerBoardPage />} />
               <Route path="volunteerBoard/new" element={<NewVolunteerPositionPage />} />
+              <Route path="volunteerBoard/:id" element={<TeacherVolunteerPositionPage />} />
             </Route>
             <Route path="/admin" element={<AdministrationView />}>
               <Route path="home" element={<NewTeacherFormPage />} />

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.2",
     "apollo-server-core": "^3.6.3",
     "apollo-server-express": "^3.6.3",
     "bcrypt": "^5.0.1",
@@ -21,6 +22,7 @@
     "graphql-resolvers": "^0.4.2",
     "graphql-upload": "^13.0.0",
     "mongoose": "^6.2.4",
+    "nodemailer": "^6.7.3",
     "short-unique-id": "^4.4.4",
     "socket.io": "^4.4.1",
     "validator": "^13.7.0"

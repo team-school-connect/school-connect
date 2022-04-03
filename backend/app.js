@@ -28,7 +28,6 @@ const { finished } = require("stream/promises");
 //server port
 const PORT = 3000;
 
-
 //models
 const Classroom = require("./models/Classroom");
 const User = require("./models/User");
@@ -41,7 +40,7 @@ const ClassroomResolver = require("./resolvers/ClassroomResolver");
 const { isAuthenticated, isAccountType } = require("./resolvers/AccountCheck");
 const VolunteerPositionResolver = require("./resolvers/VolunteerPositionResolver");
 
-const { NotFoundError, ConflictError } = require("./apollo-errors");
+const { NotFoundError, ConflictError, UnverifiedError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
@@ -51,6 +50,10 @@ const corsOptions = {
 };
 const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const res = require("express/lib/response");
+const Submission = require("./models/Submission");
+const ClassroomUser = require("./models/ClassroomUser");
+const VerificationCode = require("./models/VerificationCode");
+const { sendVerificationCode, onVerificationCodeSentError } = require("./verification");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -151,6 +154,13 @@ const typeDefs = gql`
     date: String
   }
 
+  type Submission {
+    id: ID
+    assignmentId: ID
+    userId: ID
+    date: String
+  }
+
   type AnnouncementPage {
     total: Int
     announcements: [Announcement]
@@ -159,6 +169,11 @@ const typeDefs = gql`
   type AssignmentPage {
     total: Int
     assignments: [Assignment]
+  }
+
+  type SubmissionPage {
+    total: Int
+    submissions: [Submission]
   }
 
   type AccountTypeResponse {
@@ -172,6 +187,21 @@ const typeDefs = gql`
     Schools: [School]
   }
 
+  type VolunteerPosition {
+    id: ID
+    organizationName: String
+    positionName: String
+    positionDescription: String
+    location: String
+    startDate: String
+    endDate: String
+  }
+
+  type VolunteerPositionPage {
+    total: Int
+    VolunteerPositions: [VolunteerPosition]
+  }
+
   type Query {
     checkLogin: String
     checkTeacherOnly: String
@@ -183,6 +213,9 @@ const typeDefs = gql`
     getSchools: [School]
     getClassroom(classId: String): Classroom
     getAssignments(classId: String, page: Int): AssignmentPage
+    getStudentSubmissions(classId: String, assignmentId: String, page: Int): SubmissionPage
+    getVolunteerPositions(page: Int): VolunteerPositionPage
+    getSingleVolunteerPosition(_id: ID): VolunteerPosition
   }
 
   type Mutation {
@@ -207,6 +240,8 @@ const typeDefs = gql`
     signin(email: String, password: String): MutationResponse
 
     signout: MutationResponse
+
+    verifyAccount(code: String): MutationResponse
 
     createClassroom(name: String): Classroom
     createAnnouncement(title: String, content: String, classId: String): Announcement
@@ -271,6 +306,7 @@ const resolvers = {
     getStudyRooms: getStudyRoomsQuery,
 
     ...ClassroomResolver.query,
+    ...VolunteerPositionResolver.query,
 
     getSchools: async (parent, args, context) => {
       const schools = await School.find({}).sort({ name: "asc" });
@@ -298,7 +334,15 @@ const resolvers = {
       if (!resUser) throw new ApolloError("Something went wrong");
       const resSchool = await School.create({ name: schoolName });
       if (!resSchool) throw new ApolloError("Something went wrong");
-      context.session.user = resUser;
+
+      try {
+        await sendVerificationCode(resUser._id, email);
+      } catch (err) {
+        console.log(err);
+        onVerificationCodeSentError(resUser._id, schoolName);
+        throw new ApolloError("internal server error");
+      }
+
       return { code: 200, success: true, message: "user and school created" };
     },
     signup: async (parent, args, context) => {
@@ -320,10 +364,39 @@ const resolvers = {
       if (!hash) throw new ApolloError("internal server error");
       const resUser = await User.create({ firstName, lastName, email, hash, type, schoolId });
       if (!resUser) throw new ApolloError("internal server error");
-      if (user && user.type !== "SCHOOL_ADMIN") {
-        context.session.user = resUser;
+      // if (user && user.type !== "SCHOOL_ADMIN") {
+      //   context.session.user = resUser;
+      // }
+      //Create the verification code
+      try {
+        await sendVerificationCode(resUser._id, email);
+      } catch (err) {
+        console.log(err);
+        onVerificationCodeSentError(resUser._id);
+        throw new ApolloError("internal server error");
       }
+
       return { code: 200, success: true, message: "user created" };
+    },
+
+    verifyAccount: async (parent, args, context) => {
+      const { code: inputCode } = args;
+
+      //Check if code exists
+      const verifyRes = await VerificationCode.findOne({ code: inputCode });
+
+      if (verifyRes === null) throw new NotFoundError("The verification link does not exist.");
+
+      //Activate the userisVerified
+
+      const user = await User.findByIdAndUpdate(verifyRes.userId, {
+        isVerified: true,
+      }).exec();
+
+      //Delete code from database
+      VerificationCode.deleteOne({ code: inputCode }).exec();
+
+      return { code: 200, success: true, message: "user verified" };
     },
     signin: async (parent, args, context) => {
       const { email, password } = args;
@@ -335,6 +408,11 @@ const resolvers = {
       context.session.user = user;
       console.log(context.session.user);
       console.log("LOGGEDIN");
+
+      if (!user.isVerified)
+        throw new UnverifiedError(
+          "Your account is not verified! Check your email for a verification link."
+        );
       return { code: 200, success: true, message: "user logged in" };
     },
     signout: (parent, args, context) => {
@@ -367,7 +445,28 @@ async function startApolloServer(typeDefs, resolvers) {
 
   app.use(session);
 
-  app.use(graphqlUploadExpress());
+  app.use(graphqlUploadExpress({ maxFileSize: 5000000 }));
+
+  app.get("/submission/:submitId", async (req, res, next) => {
+    const user = req.session.user;
+    if (!user) return res.status(401).end("user not logged in");
+
+    if (user.type !== "TEACHER") res.status(401).end("unauthorized");
+
+    if (!validator.isMongoId(req.params.submitId)) return res.status(400).end("invalid id");
+    const submission = await Submission.findById(req.params.submitId);
+    if (!submission) return res.status(404).end("submission not found");
+
+    const inClass = await ClassroomUser.findOne({
+      userEmail: user.email,
+      classId: submission.classId,
+    });
+    if (!inClass) return res.status(401).end("user is not in classroom");
+
+    res.download(submission.path, submission.filename, {
+      headers: { "Content-Type": submission.mimetype },
+    });
+  });
 
   await server.start();
   server.applyMiddleware({

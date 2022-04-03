@@ -72,13 +72,13 @@ const TeacherClassroomPage = () => {
         title={!classLoading && classData.getClassroom.name}
         icon={<ClassIcon sx={{ color: "#5e94ff" }} />}
       >
-        <Link to="newAnnouncement">
-          <Button variant="contained" endIcon={<AddIcon />}>
+        <Link to="newAnnouncement" style={{ textDecoration: 'none' }}>
+          <Button variant="contained" endIcon={<AddIcon />} sx={{margin: "1em"}}>
             New Announcement
           </Button>
         </Link>
-        <Link to="newAssignment">
-          <Button variant="contained" endIcon={<AddIcon />}>
+        <Link to="newAssignment" style={{ textDecoration: 'none' }}>
+          <Button variant="contained" endIcon={<AddIcon />} sx={{margin: "1em"}}>
             New Assignment
           </Button>
         </Link>

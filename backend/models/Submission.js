@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const SubmissionSchema = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
     assignmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Assignment"},
+    classId: { type: mongoose.Schema.Types.ObjectId, ref: "Classroom"},
     filename: { type: String, required: true },
     mimetype: { type: String, required: true },
     encoding: { type: String, required: true},

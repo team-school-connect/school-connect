@@ -41,7 +41,7 @@ export function AdministrationSignupForm() {
           schoolName: schoolName,
         },
       });
-      navigate("/admin/home");
+      navigate("/verify");
     } catch (err) {
       setIsButtonDisabled(false);
       console.log(err);

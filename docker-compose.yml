@@ -46,3 +46,6 @@ services:
       - SECRET=$SECRET
       - ORIGIN=https://schoolconnect.tech
       - DB_CONNECTION_STRING=$DB_CONNECTION_STRING
+      - SMTP_HOST=$SMTP_HOST
+      - EMAIL_USER=$EMAIL_USER
+      - EMAIL_PASS=$EMAIL_PASS

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Stream from "../Stream/Stream";
 
-const PeerStream = ({ peer }) => {
+const PeerStream = ({ peer, name }) => {
   const streamRef = useRef();
 
   useEffect(() => {
@@ -11,7 +11,7 @@ const PeerStream = ({ peer }) => {
     });
   }, []);
 
-  return <Stream ref={streamRef} muted={false} name={"another person"} />;
+  return <Stream ref={streamRef} muted={false} name={name} />;
 };
 
 export default PeerStream;

@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { DataGrid } from "@mui/x-data-grid";
-import { GET_MY_CLASSROOMS } from "../../../graphql/Querys";
+import { DataGridPro } from "@mui/x-data-grid-pro";
+import Collapse from '@mui/material/Collapse';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { GET_VOLUNTEER_POSITIONS } from "../../../graphql/Querys";
 import { Link } from "react-router-dom";
 import CustomAppBar from "../../appbar/CustomAppBar";
 
@@ -13,7 +24,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useAlert } from "react-alert";
 
 const TeacherVolunteerBoardPage = () => {
-  const { data, loading, error, fetchMore } = useQuery(GET_MY_CLASSROOMS, {
+  const { data, loading, error, fetchMore } = useQuery(GET_VOLUNTEER_POSITIONS, {
     variables: {
       page: 0,
     },
@@ -24,20 +35,33 @@ const TeacherVolunteerBoardPage = () => {
 
   const alert = useAlert();
 
+  const [detailPanelExpandedRowIds, setDetailPanelExpandedRowIds] = React.useState(
+    [],
+  );
+
+  const handleDetailPanelExpandedRowIdsChange = React.useCallback((newIds) => {
+    setDetailPanelExpandedRowIds(newIds);
+  }, []);
+
+  const [open, setOpen] = React.useState(false);
+
   useEffect(() => {
     fetchMore({ variables: { page: pageNum } }).then((data) => {
-      console.log(data);
       setPageData(
-        data.data.getMyClassrooms.classrooms.map(({ id, name, code }) => {
+        data.data.getVolunteerPositions.VolunteerPositions.map(({ id, organizationName, positionName, positionDescription, location, startDate, endDate }) => {
           return {
             id,
-            "Class Name": name,
-            "Class Code": code,
+            "Organization": organizationName,
+            "Position": positionName,
+            "Description": positionDescription,
+            "Location": location,
+            "Start Date": startDate,
+            "End Date": endDate
           };
         })
       );
 
-      setTotalRows(data.data.getMyClassrooms.total);
+      setTotalRows(data.data.getVolunteerPositions.total);
     });
   }, [pageNum]);
 
@@ -65,29 +89,12 @@ const TeacherVolunteerBoardPage = () => {
         pageSize={10}
         pagination
         columns={[
-          { field: "Class Name", flex: 1, headerAlign: "center", align: "center" },
-          {
-            field: "Class Code",
-            flex: 1,
-            headerAlign: "center",
-            align: "center",
-            renderCell: (params) => {
-              return (
-                <div>
-                  <span>{params.row["Class Code"]}</span>
-                  <CopyToClipboard
-                    text={params.row["Class Code"]}
-                    onCopy={() => alert.show("Copied to clipboard")}
-                  >
-                    <IconButton>
-                      <ContentCopyIcon />
-                    </IconButton>
-                  </CopyToClipboard>
-                </div>
-              );
-            },
-          },
-          {
+          //Make the fields expandable
+          { field: "Organization", flex: 1, headerAlign: "center", align: "center", expandable: true },
+          { field: "Position", flex: 1, headerAlign: "center", align: "center"},
+          { field: "Location", flex: 1, headerAlign: "center", align: "center"},
+          { field: "Start Date", flex: 1, headerAlign: "center", align: "center"},
+          { field: "End Date", flex: 1, headerAlign: "center", align: "center"},{
             field: "View",
             flex: 1,
             headerAlign: "center",
@@ -105,10 +112,46 @@ const TeacherVolunteerBoardPage = () => {
             disableReorder: true,
           },
         ]}
+        //make each row expandable and show the description
+        expandableRows={true}
         rows={pageData}
         paginationMode="server"
         rowCount={totalRows}
+        getDetailPanelContent={({ row }) => (
+          <Box sx={{ p: 2 }}>{`Description: ${row.Description}`}</Box>
+        )}
+        getDetailPanelHeight={() => 50}
+        detailPanelExpandedRowIds={detailPanelExpandedRowIds}
+        onDetailPanelExpandedRowIdsChange={handleDetailPanelExpandedRowIdsChange}
       />
+
+      {/* <TableContainer>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Organization</TableCell>
+              <TableCell>Position</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pageData.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.Organization}</TableCell>
+                <TableCell>{row.Position}</TableCell>
+                <TableCell>{row.Location}</TableCell>
+                <TableCell>{row["Start Date"]}</TableCell>
+                <TableCell>{row["End Date"]}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer> */}
+
+      
+      
     </Box>
   );
 };

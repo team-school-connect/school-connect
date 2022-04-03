@@ -15,32 +15,9 @@ import { GET_ACCOUNT_TYPE_QUERY } from "../../graphql/Querys";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 
-// const useStyles = makeStyles((theme) => ({
-//   loginFormContainer: {
-//     padding: 20,
-//     height: "300px",
-//     width: 280,
-//     margin: "100px auto",
-//   },
-//   lockIcon: {
-//     backgroundColor: "#1bbd7e",
-//   },
-//   loginButton: {
-//     justifyContent: "center",
-//     marginTop: "10px",
-//     padding: "10px",
-//     backgroundColor: "#1bbd7e",
-//     color: "white",
-//     "&:hover": {
-//       backgroundColor: "#1bbd7e",
-//       color: "white",
-//     },
-//   },
-// }));
 
 export function Login() {
   const [userType, setUserType] = useState("");
-  // const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signin, { error }] = useMutation(SIGNIN_MUTATION);
@@ -77,7 +54,7 @@ export function Login() {
     } catch (err) {
       setIsButtonDisabled(false);
       console.log(err);
-      alert.error("Login information is invalid");
+      alert.error(err.toString());
     }
   };
 
