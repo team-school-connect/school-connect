@@ -28,9 +28,6 @@ const { finished } = require("stream/promises");
 //server port
 const PORT = 3000;
 
-//Import email functions
-const { sendVerificationEmail } = require("./email");
-
 //models
 const Classroom = require("./models/Classroom");
 const User = require("./models/User");
@@ -43,7 +40,7 @@ const ClassroomResolver = require("./resolvers/ClassroomResolver");
 const { isAuthenticated, isAccountType } = require("./resolvers/AccountCheck");
 const VolunteerPositionResolver = require("./resolvers/VolunteerPositionResolver");
 
-const { NotFoundError, ConflictError } = require("./apollo-errors");
+const { NotFoundError, ConflictError, UnverifiedError } = require("./apollo-errors");
 
 //Temporary for socket io
 const cors = require("cors");
@@ -55,6 +52,8 @@ const getStudyRoomsQuery = require("./socket/queries/getStudyRoomsQuery");
 const res = require("express/lib/response");
 const Submission = require("./models/Submission");
 const ClassroomUser = require("./models/ClassroomUser");
+const VerificationCode = require("./models/VerificationCode");
+const { sendVerificationCode, onVerificationCodeSentError } = require("./verification");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -242,6 +241,8 @@ const typeDefs = gql`
 
     signout: MutationResponse
 
+    verifyAccount(code: String): MutationResponse
+
     createClassroom(name: String): Classroom
     createAnnouncement(title: String, content: String, classId: String): Announcement
     joinClassroom(classCode: String): MutationResponse
@@ -333,7 +334,15 @@ const resolvers = {
       if (!resUser) throw new ApolloError("Something went wrong");
       const resSchool = await School.create({ name: schoolName });
       if (!resSchool) throw new ApolloError("Something went wrong");
-      context.session.user = resUser;
+
+      try {
+        await sendVerificationCode(resUser._id, email);
+      } catch (err) {
+        console.log(err);
+        onVerificationCodeSentError(resUser._id, schoolName);
+        throw new ApolloError("internal server error");
+      }
+
       return { code: 200, success: true, message: "user and school created" };
     },
     signup: async (parent, args, context) => {
@@ -355,10 +364,39 @@ const resolvers = {
       if (!hash) throw new ApolloError("internal server error");
       const resUser = await User.create({ firstName, lastName, email, hash, type, schoolId });
       if (!resUser) throw new ApolloError("internal server error");
-      if (user && user.type !== "SCHOOL_ADMIN") {
-        context.session.user = resUser;
+      // if (user && user.type !== "SCHOOL_ADMIN") {
+      //   context.session.user = resUser;
+      // }
+      //Create the verification code
+      try {
+        await sendVerificationCode(resUser._id, email);
+      } catch (err) {
+        console.log(err);
+        onVerificationCodeSentError(resUser._id);
+        throw new ApolloError("internal server error");
       }
+
       return { code: 200, success: true, message: "user created" };
+    },
+
+    verifyAccount: async (parent, args, context) => {
+      const { code: inputCode } = args;
+
+      //Check if code exists
+      const verifyRes = await VerificationCode.findOne({ code: inputCode });
+
+      if (verifyRes === null) throw new NotFoundError("The verification link does not exist.");
+
+      //Activate the userisVerified
+
+      const user = await User.findByIdAndUpdate(verifyRes.userId, {
+        isVerified: true,
+      }).exec();
+
+      //Delete code from database
+      VerificationCode.deleteOne({ code: inputCode }).exec();
+
+      return { code: 200, success: true, message: "user verified" };
     },
     signin: async (parent, args, context) => {
       const { email, password } = args;
@@ -370,6 +408,11 @@ const resolvers = {
       context.session.user = user;
       console.log(context.session.user);
       console.log("LOGGEDIN");
+
+      if (!user.isVerified)
+        throw new UnverifiedError(
+          "Your account is not verified! Check your email for a verification link."
+        );
       return { code: 200, success: true, message: "user logged in" };
     },
     signout: (parent, args, context) => {

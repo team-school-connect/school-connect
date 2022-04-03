@@ -12,23 +12,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendVerificationEmail = (to, link) => {
+const sendVerificationEmail = (to, code) => {
+  const link = `${process.env.ORIGIN}/#/verify/${code}`;
   let message = {
     from: process.env.EMAIL_USER,
     to,
     subject: "Verify your SchoolConnect Account",
-    text: "Thank you for signing up for SchoolConnect. Please verify your account by clicking the link below",
-    html: `<div><p>Thank you for signing up for SchoolConnect. Please verify by clicking the link below.</p> <a href="https://www.google.ca">google.ca</a></div>`,
+    text: `Thank you for signing up for SchoolConnect. Please verify your account by clicking the link below ${link}`,
+    html: `<div><p>Thank you for signing up for SchoolConnect. Please verify by clicking the link below.</p> <a href="${link}">${link}</a></div>`,
   };
 
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    console.log("Sent Email");
-    console.log(info);
-  });
+  return transporter.sendMail(message);
 };
 
 exports.sendVerificationEmail = sendVerificationEmail;

@@ -16,8 +16,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
 
-
-
 export function TeacherSignupForm() {
   const [signup, { error }] = useMutation(SIGNUP_MUTATION);
   const [getUsersSchool, { loading, data }] = useLazyQuery(GET_USERS_SCHOOL_QUERY);
@@ -65,9 +63,12 @@ export function TeacherSignupForm() {
           type: "TEACHER",
         },
       });
-      alert.success("Created teacher successfully!");
+      alert.success("Verification email sent to teacher!");
       setIsButtonDisabled(false);
-      navigate("/admin/home");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
     } catch (err) {
       setIsButtonDisabled(false);
       console.log(err);
@@ -86,6 +87,7 @@ export function TeacherSignupForm() {
           onChange={(e) => {
             setFirstName(e.target.value);
           }}
+          value={firstName}
           fullWidth
           required
         />
@@ -96,6 +98,7 @@ export function TeacherSignupForm() {
           onChange={(e) => {
             setLastName(e.target.value);
           }}
+          value={lastName}
           fullWidth
           required
         />
@@ -106,6 +109,7 @@ export function TeacherSignupForm() {
           onChange={(e) => {
             setEmail(e.target.value);
           }}
+          value={email}
           fullWidth
           required
         />
@@ -117,6 +121,7 @@ export function TeacherSignupForm() {
           onChange={(e) => {
             setPassword(e.target.value);
           }}
+          value={password}
           fullWidth
           required
         />

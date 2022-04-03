@@ -103,7 +103,12 @@ export const CREATE_ANNOUNCEMENT_MUTATION = gql`
 `;
 
 export const CREATE_ASSIGNMENT_MUTATION = gql`
-  mutation CreateAssignment($name: String, $description: String, $classId: String, $dueDate: String) {
+  mutation CreateAssignment(
+    $name: String
+    $description: String
+    $classId: String
+    $dueDate: String
+  ) {
     createAssignment(name: $name, description: $description, classId: $classId, dueDate: $dueDate) {
       id
     }
@@ -112,21 +117,31 @@ export const CREATE_ASSIGNMENT_MUTATION = gql`
 
 export const CREATE_VOLUNTEER_POSITION_MUTATION = gql`
   mutation CreateVolunteerPosition(
-    $organizationName: String,
-    $positionName: String, 
-    $positionDescription: String, 
-    $location: String, 
-    $startDate: String,
-    $endDate: String) 
-  {
+    $organizationName: String
+    $positionName: String
+    $positionDescription: String
+    $location: String
+    $startDate: String
+    $endDate: String
+  ) {
     createVolunteerPosition(
-      organizationName: $organizationName,
-      positionName: $positionName,
-      positionDescription: $positionDescription,
-      location: $location,
-      startDate: $startDate,
-      endDate: $endDate)
-    {
+      organizationName: $organizationName
+      positionName: $positionName
+      positionDescription: $positionDescription
+      location: $location
+      startDate: $startDate
+      endDate: $endDate
+    ) {
+      code
+      success
+      message
+    }
+  }
+`;
+
+export const VERIFY_ACCOUNT_MUTATION = gql`
+  mutation VerifyAccount($code: String) {
+    verifyAccount(code: $code) {
       code
       success
       message
