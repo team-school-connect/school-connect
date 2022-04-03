@@ -6,19 +6,18 @@ import { Link, useParams } from "react-router-dom";
 import CustomAppBar from "../../appbar/CustomAppBar";
 
 import { Box, Button, Grid, TablePagination } from "@mui/material";
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import { useAlert } from "react-alert";
 
 const TeacherVolunteerPositionPage = (props) => {
   const { id } = useParams();
-//   console.log("props id:: "+ props.match.params.id);
-  console.log("id:: "+id);
+
   const { data, loading, error, fetchMore } = useQuery(GET_SINGLE_VOLUNTEER_POSITION, {
     variables: {
       _id: id,
     },
   });
-  console.log("data:: "+data);
+
   const [pageNum, setPageNum] = useState(0);
   const [pageData, setPageData] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
@@ -38,8 +37,7 @@ const TeacherVolunteerPositionPage = (props) => {
       <CustomAppBar
         title={"Volunteer Position"}
         icon={<VolunteerActivismIcon sx={{ color: "red" }} />}
-      >
-      </CustomAppBar>
+      ></CustomAppBar>
 
       <Box
         sx={{
@@ -52,22 +50,20 @@ const TeacherVolunteerPositionPage = (props) => {
       >
         <Grid container sx={{ paddingLeft: "5em", paddingRight: "5em" }}>
           {/* Show the volunteer position data */}
+          {!loading && data && data.getSingleVolunteerPosition && (
             <Grid item xs={12}>
-                <Box sx={{ padding: "1em" }}>
-                    <h2>{data.getSingleVolunteerPosition.organizationName}</h2>
-                    <h2>{data.getSingleVolunteerPosition.positionName}</h2>
-                    <p>{data.getSingleVolunteerPosition.positionDescription}</p>
-                    <p>{data.getSingleVolunteerPosition.location}</p>
-                    <p>{data.getSingleVolunteerPosition.startDate}</p>
-                    <p>{data.getSingleVolunteerPosition.endDate}</p>
-                </Box>
-                    
-                
-                </Grid>
-
+              <Box sx={{ padding: "1em" }}>
+                <h2>{data.getSingleVolunteerPosition.organizationName}</h2>
+                <h2>{data.getSingleVolunteerPosition.positionName}</h2>
+                <p>{data.getSingleVolunteerPosition.positionDescription}</p>
+                <p>{data.getSingleVolunteerPosition.location}</p>
+                <p>{data.getSingleVolunteerPosition.startDate}</p>
+                <p>{data.getSingleVolunteerPosition.endDate}</p>
+              </Box>
+            </Grid>
+          )}
         </Grid>
       </Box>
-
     </Box>
   );
 };

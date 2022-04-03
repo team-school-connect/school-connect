@@ -303,7 +303,7 @@ const resolvers = {
       return "user not logged in";
     },
 
-    getStudyRooms: getStudyRoomsQuery,
+    getStudyRooms: combineResolvers(isAuthenticated, getStudyRoomsQuery),
 
     ...ClassroomResolver.query,
     ...VolunteerPositionResolver.query,
