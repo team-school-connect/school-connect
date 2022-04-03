@@ -132,3 +132,17 @@ export const GET_ASSIGNMENTS = gql`
   }
 `;
 
+export const GET_SUBMISSIONS = gql`
+  query Query($classId: String, $assignmentId: String, $page: Int) {
+    getStudentSubmissions(classId: $classId, assignmentId: $assignmentId, page: $page) {
+      total
+      submissions {
+        id
+        assignmentId
+        userId
+        date
+      }
+    }
+  }
+`;
+

@@ -72,7 +72,7 @@ const ViewAssignment = () => {
             align: "center",
             renderCell: (params) => {
               return (
-                <Link to={`/teacher/classrooms/${params.row.id}`}>
+                <Link to={`/teacher/classrooms/${id}/assignments/${params.row.id}`}>
                   <Button variant="outlined" color="success">
                     View
                   </Button>
