@@ -42,7 +42,7 @@ const AssignmentCard = ({assignId, title, description, date}) => {
           date > Date.now() &&
           <Button variant="contained" component="label">
             Upload
-            <input type="file" required hidden onChange={onChange}/>
+            <input type="file" required hidden accept=".pdf" onChange={onChange}/>
           </Button>
         }
         

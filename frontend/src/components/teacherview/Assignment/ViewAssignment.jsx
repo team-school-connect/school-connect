@@ -93,6 +93,7 @@ const ViewAssignment = () => {
         rows={pageData}
         paginationMode="server"
         rowCount={totalRows}
+        rowsPerPageOptions={[10]}
       />
     </Box>
   );

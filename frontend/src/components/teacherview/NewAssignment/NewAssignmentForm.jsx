@@ -48,6 +48,7 @@ const NewAssignmentForm = ({ id }) => {
         initialValues={{
           title: "",
           content: "",
+          duedate: ""
         }}
       >
         {({ handleSubmit, handleChange, values, errors, touched }) => (
