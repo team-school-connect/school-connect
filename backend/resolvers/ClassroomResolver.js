@@ -142,7 +142,7 @@ const ClassroomResolver = {
 
         if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
 
-        const sub = await Submission.findOne({userId: user._id, assignmentId});
+        const sub = await Submission.findOne({userId: user.email, assignmentId});
         if (sub) await Submission.deleteOne(sub);
 
         const stream = createReadStream();
@@ -152,7 +152,7 @@ const ClassroomResolver = {
         const out = fs.createWriteStream(`./uploads/${id}`);
         stream.pipe(out);
         await finished(out);
-        const submission = await Submission.create({userId: user._id, filename, mimetype, encoding, assignmentId, path: `./uploads/${id}`});
+        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, path: `./uploads/${id}`});
         if (!submission) throw new ConflictError('internal server error');
 
         return true;
