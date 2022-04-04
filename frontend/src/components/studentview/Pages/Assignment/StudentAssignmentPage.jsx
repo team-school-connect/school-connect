@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import CustomAppBar from "../../../appbar/CustomAppBar";
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { Pagination, TablePagination } from "@mui/material";
+import { TablePagination } from "@mui/material";
 import AssignmentCard from "./AssignmentCard";
 import { useParams } from "react-router-dom";
 import { GET_ASSIGNMENTS } from "../../../../graphql/Querys";
@@ -35,6 +35,15 @@ const StudentAssignmentPage = () => {
     });
   }, [pageNum]);
 
+  const updateAssignment = () => {
+    fetchMore({ variables: { classId: id, page: pageNum } }).then((data) => {
+      console.log(data);
+      setPageData(
+        data.data.getAssignments.assignments
+      );
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -57,9 +66,16 @@ const StudentAssignmentPage = () => {
         }}>
         {pageData.length > 0 &&
           !loading &&
-          pageData.map((assign) => {
-            return <AssignmentCard key={assign.id} assignId={assign.id} title={assign.name} description={assign.description} date={assign.dueDate}/>
-          })}
+          pageData.map((assign) =>
+            <AssignmentCard key={assign.id} 
+                assignId={assign.id} 
+                title={assign.name} 
+                description={assign.description} 
+                date={assign.dueDate}
+                submitted={assign.submitted}
+                updateAssign={updateAssignment}
+              />
+          )}
           <TablePagination
             sx={{ paddingBottom: "1em" }}
             component="div"

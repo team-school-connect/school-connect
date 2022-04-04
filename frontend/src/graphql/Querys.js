@@ -141,6 +141,7 @@ export const GET_ASSIGNMENTS = gql`
         classId
         dueDate
         date
+        submitted
       }
     }
   }

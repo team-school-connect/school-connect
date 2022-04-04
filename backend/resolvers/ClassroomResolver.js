@@ -245,9 +245,15 @@ const ClassroomResolver = {
           .limit(10)
           .exec();
 
+        const submissions = await Submission.find({userId: user.email, 
+          assignmentId: {$in: assignments.map(x => x.id)}});
+
+        const submittedAssignments = submissions.map(x => x.assignmentId.toString());
+
         assignments.forEach((x) => {
           x.date = x.createdAt;
           x.id = x._id;
+          x.submitted = submittedAssignments.includes(x.id.toString());
         });
 
         return {total, assignments};
@@ -264,6 +270,9 @@ const ClassroomResolver = {
         const inClass = await ClassroomUser.findOne({userEmail: user.email, classId: assignment.classId});
         if (!inClass) throw new ForbiddenError('user not in classroom');
 
+        const submission = await Submission.findOne({userId: user.email, assignmentId});
+
+        assignment.submmited = (submission) ? true : false;
         assignment.date = assignment.createdAt;
         return assignment;
     }),

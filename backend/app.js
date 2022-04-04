@@ -152,6 +152,7 @@ const typeDefs = gql`
     classId: ID
     dueDate: String
     date: String
+    submitted: Boolean
   }
 
   type Submission {

@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { SUBMIT_ASSIGNMENT } from "../../../../graphql/Mutations";
 import { useAlert } from "react-alert";
 
-const AssignmentCard = ({assignId, title, description, date}) => {
+const AssignmentCard = ({assignId, title, description, date, submitted, updateAssign}) => {
   const alert = useAlert();
   const dateString = new Date(parseInt(date));
   const [mutate] = useMutation(SUBMIT_ASSIGNMENT);
@@ -20,13 +20,15 @@ const AssignmentCard = ({assignId, title, description, date}) => {
       if (validity.valid) {
         await mutate({ variables: { assignmentId: assignId, file}});
         alert.success('Sucessfully Submitted Assignment');
+        updateAssign();
       }
     } catch (err) {
+      console.log(err);
       alert.error('Error submitting assignment');
     }
   };
 
-  return (console.log(date),
+  return (
     <Card sx={{ margin: "1em", padding: "1em", width: "100%" }}>
       <CardHeader title={title} />
       <CardContent>
@@ -35,6 +37,9 @@ const AssignmentCard = ({assignId, title, description, date}) => {
         </Typography>
         <Typography sx={{ textAlign: "center" }} variant="caption">
           Due Date: {`${dateString.toDateString()} ${dateString.toLocaleTimeString()}`}
+        </Typography>
+        <Typography sx={{ textAlign: "center" }} variant="body2">
+          {(submitted) ? 'Submitted' : 'Not Submitted'}
         </Typography>
       </CardContent>
       <CardActions>
