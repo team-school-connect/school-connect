@@ -6,7 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import CustomAppBar from "../../../appbar/CustomAppBar";
 
 import { Box, Button, Grid, TablePagination, Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import ClassIcon from "@mui/icons-material/Class";
 import { useAlert } from "react-alert";
 import Announcement from "../../../annoucement/Announcement";
@@ -71,16 +71,24 @@ const TeacherClassroom = () => {
       <CustomAppBar
         title={!classLoading && classData.getClassroom.name}
         icon={<ClassIcon sx={{ color: "#5e94ff" }} />}
+        
       >
-        <Typography
-          sx={{
-            fontWeight: 600,
-            color: "white",
-          }}
-          variant="h5"
-        >
-          Annoucements
-        </Typography>
+        <Box>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: "white",
+            }}
+            variant="h5"
+          >
+            Annoucements
+          </Typography>
+          <Link to="assignments" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" endIcon={<AssignmentIcon />} sx={{margin: "1em"}}>
+              Assignments
+            </Button>
+          </Link>
+        </Box>
       </CustomAppBar>
 
       <Box
