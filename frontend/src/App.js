@@ -34,6 +34,7 @@ import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
 import AssignmentPage from "./components/teacherview/Assignment/AssignmentPage"
 import VerifyMessage from "./components/verify/VerifyMessage";
 import Verify from "./components/verify/Verify";
+import StudentAssignmentPage from "./components/studentview/Pages/Assignment/StudentAssignmentPage";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
               <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
               <Route path="classrooms/:id" element={<ClassroomPage />} />
+              <Route path="classrooms/:id/assignments" element={<StudentAssignmentPage/>} />
               <Route path="volunteerBoard" element={<VolunteerBoardPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>

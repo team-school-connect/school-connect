@@ -152,7 +152,7 @@ const ClassroomResolver = {
         const out = fs.createWriteStream(`./uploads/${id}`);
         stream.pipe(out);
         await finished(out);
-        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, path: `./uploads/${id}`});
+        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: `./uploads/${id}`});
         if (!submission) throw new ConflictError('internal server error');
 
         return true;

@@ -148,3 +148,9 @@ export const VERIFY_ACCOUNT_MUTATION = gql`
     }
   }
 `;
+
+export const SUBMIT_ASSIGNMENT = gql`
+  mutation SubmitAssignment($assignmentId: String, $file: Upload!) {
+    submitAssignment(assignmentId: $assignmentId, file: $file)
+  }
+`;
