@@ -4,8 +4,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link, useParams } from "react-router-dom";
 import CustomAppBar from "../../appbar/CustomAppBar";
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import { Box, Button } from "@mui/material";
-import { GET_SUBMISSIONS } from "../../../graphql/Querys";
+import { Box, Button, Typography } from "@mui/material";
+import { GET_SUBMISSIONS, GET_ASSIGNMENT } from "../../../graphql/Querys";
 
 const AssignmentPage = () => {
   const uri = process.env.REACT_APP_API_URI ? process.env.REACT_APP_API_URI : "http://localhost:3000/";
@@ -21,6 +21,20 @@ const AssignmentPage = () => {
   const [pageNum, setPageNum] = useState(0);
   const [pageData, setPageData] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
+
+  const {
+    data: assignData,
+    loading: assignLoading,
+    error: assignError,
+  } = useQuery(GET_ASSIGNMENT, {
+    variables: {
+      assignmentId: assignId,
+    },
+  });
+
+  useEffect(() => {
+    console.log(assignData);
+  }, [assignData]);
 
   useEffect(() => {
     fetchMore({ variables: { page: pageNum, classId: id, assignmentId: assignId } }).then((data) => {
@@ -41,6 +55,7 @@ const AssignmentPage = () => {
   }, [pageNum]);
 
   return (
+    !assignLoading &&
     <Box
       sx={{
         display: "flex",
@@ -50,9 +65,19 @@ const AssignmentPage = () => {
       }}
     >
       <CustomAppBar
-        title="Assignments"
+        title={assignData.getAssignment.name}
         icon={<AssignmentIcon />}
-      ></CustomAppBar>
+      >
+        <Box>
+          <Typography>
+            {assignData.getAssignment.description}
+          </Typography>
+          <Typography>
+            Due Date: {`${new Date(parseInt(assignData.getAssignment.dueDate)).toDateString()} 
+            ${new Date(parseInt(assignData.getAssignment.dueDate)).toLocaleTimeString()}`}
+          </Typography>
+        </Box>
+      </CustomAppBar>
       <DataGrid
         page={pageNum}
         onPageChange={(nextPageNum) => setPageNum(nextPageNum)}

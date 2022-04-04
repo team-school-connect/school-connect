@@ -1,5 +1,5 @@
 const { UserInputError, ApolloError, ForbiddenError } = require("apollo-server-core");
-const { ConflictError } = require("../apollo-errors");
+const { ConflictError, NotFoundError } = require("../apollo-errors");
 const Classroom = require("../models/Classroom");
 const Announcement = require("../models/Announcement");
 const Assignment = require("../models/Assignment");
@@ -251,6 +251,21 @@ const ClassroomResolver = {
         });
 
         return {total, assignments};
+    }),
+    getAssignment: combineResolvers(
+      isAuthenticated,
+      async (parent, args, context) => {
+        const { assignmentId } = args;
+        const user = context.session.user;
+
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) throw new NotFoundError('assignment not found');
+
+        const inClass = await ClassroomUser.findOne({userEmail: user.email, classId: assignment.classId});
+        if (!inClass) throw new ForbiddenError('user not in classroom');
+
+        assignment.date = assignment.createdAt;
+        return assignment;
     }),
     getStudentSubmissions: combineResolvers(
       isAuthenticated,
