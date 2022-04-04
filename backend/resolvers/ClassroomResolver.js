@@ -250,13 +250,22 @@ const ClassroomResolver = {
 
         const submittedAssignments = submissions.map(x => x.assignmentId.toString());
 
-        assignments.forEach((x) => {
-          x.date = x.createdAt;
-          x.id = x._id;
-          x.submitted = submittedAssignments.includes(x.id.toString());
+        const newAssign = assignments.map((x) => {
+          const index = submittedAssignments.indexOf(x.id.toString());
+
+          return {
+            name: x.name,
+            description: x.description,
+            classId: x.classId,
+            dueDate: x.dueDate,
+            date: x.createdAt,
+            id: x._id,
+            name: x.name,
+            submitted: (index >= 0) ? submissions[index].createdAt : null
+          }
         });
 
-        return {total, assignments};
+        return {total, assignments: newAssign};
     }),
     getAssignment: combineResolvers(
       isAuthenticated,
@@ -272,7 +281,7 @@ const ClassroomResolver = {
 
         const submission = await Submission.findOne({userId: user.email, assignmentId});
 
-        assignment.submmited = (submission) ? true : false;
+        assignment.submmited = (submission) ? submission.createdAt : null;
         assignment.date = assignment.createdAt;
         return assignment;
     }),
