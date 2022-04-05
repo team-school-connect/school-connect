@@ -12,6 +12,8 @@ RUN npm install react-scripts@3.4.1 -g
 COPY . ./
 ENV PORT=80
 ENV REACT_APP_API_URI=https://api.schoolconnect.tech
+# This key is restricted
+ENV REACT_APP_GOOGLE_MAPS_API_KEY=AIzaSyDTihwgzYdvRceQS9A_D_9DT_AOve3H1uc
 RUN npm run build
 
 # Serve these static files with NGINX.
