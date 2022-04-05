@@ -144,7 +144,10 @@ const ClassroomResolver = {
         if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
 
         const sub = await Submission.findOne({userId: user.email, assignmentId});
-        if (sub) await Submission.deleteOne(sub);
+        if (sub) {
+          await Submission.deleteOne(sub);
+          fs.unlinkSync(sub.path);
+        }
 
         const stream = createReadStream();
         const uid = new ShortUniqueId({ length: 10 });
