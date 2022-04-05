@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
+    "@sentry/node": "^6.19.4",
+    "@sentry/tracing": "^6.19.4",
     "apollo-server-core": "^3.6.3",
     "apollo-server-express": "^3.6.3",
     "bcrypt": "^5.0.1",
