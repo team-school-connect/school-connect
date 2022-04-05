@@ -93,7 +93,7 @@ const AssignmentPage = () => {
             align: "center",
             renderCell: (params) => {
               return (
-                <Button variant="contained" color="success" href={`${uri}submission/${params.row.id}`}>
+                <Button variant="contained" color="success" href={`${uri}/submission/${params.row.id}`}>
                   Download
                 </Button>
               );
