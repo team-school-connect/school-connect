@@ -54,6 +54,7 @@ const Submission = require("./models/Submission");
 const ClassroomUser = require("./models/ClassroomUser");
 const VerificationCode = require("./models/VerificationCode");
 const { sendVerificationCode, onVerificationCodeSentError } = require("./verification");
+const { sentryPlugin } = require("./sentry-plugin");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -441,7 +442,7 @@ async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), sentryPlugin],
     context: ({ req }) => req,
   });
 
