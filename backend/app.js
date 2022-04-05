@@ -24,6 +24,7 @@ const validator = require("validator");
 const { GraphQLUpload, graphqlUploadExpress } = require("graphql-upload");
 const ShortUniqueId = require("short-unique-id");
 const { finished } = require("stream/promises");
+const fs = require('fs');
 
 //server port
 const PORT = 3000;
@@ -480,6 +481,8 @@ async function startApolloServer(typeDefs, resolvers) {
   await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
 }
+
+if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads');
 
 db.connect();
 
