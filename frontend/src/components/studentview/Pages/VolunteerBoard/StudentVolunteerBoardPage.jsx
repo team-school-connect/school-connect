@@ -1,14 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
+import { DataGrid } from "@mui/x-data-grid";
 import { DataGridPro } from "@mui/x-data-grid-pro";
+import Collapse from '@mui/material/Collapse';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { GET_VOLUNTEER_POSITIONS } from "../../../../graphql/Querys";
+import { Link } from "react-router-dom";
 import CustomAppBar from "../../../appbar/CustomAppBar";
 
-import { Box } from "@mui/material";
+import { AppBar, Box, Button, IconButton } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useAlert } from "react-alert";
 
-const VolunteerBoardPage = () => {
+const StudentVolunteerBoardPage = () => {
   const { data, loading, error, fetchMore } = useQuery(GET_VOLUNTEER_POSITIONS, {
     variables: {
       page: 0,
@@ -60,9 +75,12 @@ const VolunteerBoardPage = () => {
         width: "100%",
       }}
     >
-      <CustomAppBar title="Volunteer Board" icon={<VolunteerActivismIcon sx={{ color: "red" }} />}/>
+    <CustomAppBar
+        title={"Volunteer Position"}
+        icon={<VolunteerActivismIcon sx={{ color: "red" }} />}
+    ></CustomAppBar>
 
-      <DataGridPro
+      <DataGrid
         page={pageNum}
         onPageChange={(nextPageNum) => setPageNum(nextPageNum)}
         pageSize={10}
@@ -73,24 +91,23 @@ const VolunteerBoardPage = () => {
           { field: "Position", flex: 1, headerAlign: "center", align: "center"},
           { field: "Location", flex: 1, headerAlign: "center", align: "center"},
           { field: "Start Date", flex: 1, headerAlign: "center", align: "center"},
-          { field: "End Date", flex: 1, headerAlign: "center", align: "center"},
-          // {
-          //   field: "View",
-          //   flex: 1,
-          //   headerAlign: "center",
-          //   align: "center",
-          //   renderCell: (params) => {
-          //     return (
-          //       <Link to={`/student/classrooms/${params.row.id}`}>
-          //         <Button variant="outlined" color="success">
-          //           View
-          //         </Button>
-          //       </Link>
-          //     );
-          //   },
-          //   disableColumnMenu: true,
-          //   disableReorder: true,
-          // },
+          { field: "End Date", flex: 1, headerAlign: "center", align: "center"},{
+            field: "View",
+            flex: 1,
+            headerAlign: "center",
+            align: "center",
+            renderCell: (params) => {
+              return (
+                <Link to={`/student/volunteerBoard/${params.row.id}`}>
+                  <Button variant="outlined" color="success">
+                    View
+                  </Button>
+                </Link>
+              );
+            },
+            disableColumnMenu: true,
+            disableReorder: true,
+          },
         ]}
         //make each row expandable and show the description
         expandableRows={true}
@@ -136,4 +153,4 @@ const VolunteerBoardPage = () => {
   );
 };
 
-export default VolunteerBoardPage;
+export default StudentVolunteerBoardPage;

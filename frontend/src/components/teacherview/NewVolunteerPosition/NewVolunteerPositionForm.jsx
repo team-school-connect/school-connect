@@ -6,23 +6,65 @@ import { CREATE_VOLUNTEER_POSITION_MUTATION } from "../../../graphql/Mutations";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
-import { Button, TextField, Box, TextBox } from "@mui/material";
+import { Button, TextField, Box, TextBox, Autocomplete } from "@mui/material";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
 import { useAlert } from "react-alert";
+import {
+  useLoadScript,
+} from "@react-google-maps/api";
+import usePlacesAutocomplete from "use-places-autocomplete";
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
+const libraries = ["places"];
 const NewVolunteerPositionForm = () => {
   const [createVolunteerPosition, { error }] = useMutation(CREATE_VOLUNTEER_POSITION_MUTATION);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [value, setValue] = useState(null);
+
 
   const navigate = useNavigate();
   const alert = useAlert();
+
+  // const { init } = usePlacesAutocomplete({
+  //   initOnMount: false, // Disable initializing when the component mounts, default is true
+  // });
+
+  
+
+
+
+  
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "",
+    libraries,
+  });
+  // const [loading] = useGoogleMapsApi({
+  //   library: "places",
+  //   onLoad: () => init(), // Lazily initializing the hook when the script is ready
+  // });
+  // if(!ready) return "Loading...";
+  // // if (loadError) return "Error loading maps";
+  // // if (!isLoaded) return "Loading Maps";
+  // // init();
+
+  if (loadError) return "Error loading maps";
+  if (!isLoaded) return "Loading Maps";
+  // init();
 
   const schema = yup.object().shape({
     organization: yup.string().label("Organization Position").required(),
     position: yup.string().label("Volunteer Position").required(),
   });
 
+
   const submit = async (values) => {
-    console.log(values);
     setIsButtonDisabled(true);
     try {
       await createVolunteerPosition({
@@ -62,7 +104,7 @@ const NewVolunteerPositionForm = () => {
             endDate: "",
         }}
       >
-        {({ handleSubmit, handleChange, values, errors, touched }) => (
+        {({ handleSubmit, handleChange, setFieldValue, values, errors, touched }) => (
           <form style={{ width: "40em" }} onSubmit={handleSubmit}>
             <FormControl fullWidth sx={{ margin: "1em" }}>
               <TextField
@@ -99,17 +141,15 @@ const NewVolunteerPositionForm = () => {
                 fullWidth
                 multiline
               />
-              <TextField
-                id="location"
-                name="location"
-                label="Volunteer Loaction"
-                value={values.location}
-                onChange={handleChange}
-                error={touched.location && Boolean(errors.location)}
-                helperText={errors.location}
-                margin="normal"
-                fullWidth
+              <GooglePlacesAutocomplete
+                selectProps={
+                  {
+                  onChange: (value)=>(setFieldValue("location", value.label)),
+                  placeholder: "Volunteer Location",
+                }}
               />
+                
+              {/* </TextField> */}
               <TextField
                 id="startDate"
                 name="startDate"
