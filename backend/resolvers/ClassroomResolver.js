@@ -10,6 +10,7 @@ const { isAuthenticated, isAccountType } = require("./AccountCheck");
 const ShortUniqueId = require("short-unique-id");
 const validator = require("validator");
 const fs = require('fs');
+const path = require('path');
 const { finished } = require('stream/promises');
 
 const ClassroomResolver = {
@@ -143,16 +144,19 @@ const ClassroomResolver = {
         if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
 
         const sub = await Submission.findOne({userId: user.email, assignmentId});
-        if (sub) await Submission.deleteOne(sub);
+        if (sub) {
+          await Submission.deleteOne(sub);
+          fs.unlinkSync(sub.path);
+        }
 
         const stream = createReadStream();
         const uid = new ShortUniqueId({ length: 10 });
         const id = uid();
-        console.log(id);
-        const out = fs.createWriteStream(`./uploads/${id}`);
+        const dest = path.join(process.cwd(), `/uploads/${id}`);
+        const out = fs.createWriteStream(dest);
         stream.pipe(out);
         await finished(out);
-        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: `./uploads/${id}`});
+        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: dest});
         if (!submission) throw new ConflictError('internal server error');
 
         return true;
