@@ -1,15 +1,15 @@
 import { useQuery } from "@apollo/client";
-import { GET_SINGLE_VOLUNTEER_POSITION } from "../../../graphql/Querys";
+import { GET_SINGLE_VOLUNTEER_POSITION } from "../../../../graphql/Querys";
 import { useParams } from "react-router-dom";
-import CustomAppBar from "../../appbar/CustomAppBar";
-import Map from "../../map/Map";
+import CustomAppBar from "../../../appbar/CustomAppBar";
+import Map from "../../../map/Map";
 
 
 import { Box, Grid, Paper, List, ListItem, Divider, ListItemText } from "@mui/material";
 import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import { useAlert } from "react-alert";
 
-const TeacherVolunteerPositionPage = (props) => {
+const StudentVolunteerPositionPage = (props) => {
   const { id } = useParams();
   const { data, loading, error, fetchMore } = useQuery(GET_SINGLE_VOLUNTEER_POSITION, {
     variables: {
@@ -137,4 +137,4 @@ const TeacherVolunteerPositionPage = (props) => {
   );
 };
 
-export default TeacherVolunteerPositionPage;
+export default StudentVolunteerPositionPage;

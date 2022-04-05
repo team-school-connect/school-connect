@@ -24,7 +24,8 @@ import NewClassroomPage from "./components/teacherview/NewClassroom/NewClassroom
 import TeacherClassroomPage from "./components/teacherview/Classroom/TeacherClassroomPage";
 import NewAnnouncementPage from "./components/teacherview/NewAnnouncement/NewAnnouncementPage";
 import NewTeacherFormPage from "./components/administrationview/NewTeacherFormPage/NewTeacherFormPage";
-import VolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/VolunteerBoardPage";
+import StudentVolunteerPositionPage from "./components/studentview/Pages/VolunteerBoard/StudentVolunteerPositionPage";
+import StudentVolunteerBoardPage from "./components/studentview/Pages/VolunteerBoard/StudentVolunteerBoardPage";
 import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosition/NewVolunteerPositionPage";
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
 import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerPositionPage";
@@ -60,7 +61,8 @@ function App() {
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
               <Route path="classrooms/:id" element={<ClassroomPage />} />
               <Route path="classrooms/:id/assignments" element={<StudentAssignmentPage/>} />
-              <Route path="volunteerBoard" element={<VolunteerBoardPage />} />
+              <Route path="volunteerBoard/" element={<StudentVolunteerBoardPage />} />
+              <Route path="volunteerBoard/:id" element={<StudentVolunteerPositionPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>
               <Route path="home" element={<TeacherClassroomListingPage />} />
