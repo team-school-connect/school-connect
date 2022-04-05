@@ -116,6 +116,20 @@ export const GET_SINGLE_VOLUNTEER_POSITION = gql`
     }
   }
 `;
+
+export const GET_ASSIGNMENT = gql`
+  query Query($assignmentId: String) {
+    getAssignment(assignmentId: $assignmentId) {
+      id
+      name
+      description
+      classId
+      dueDate
+      date
+    }
+  }
+`;
+
 export const GET_ASSIGNMENTS = gql`
   query Query($classId: String, $page: Int) {
     getAssignments(classId: $classId, page: $page) {
@@ -126,6 +140,21 @@ export const GET_ASSIGNMENTS = gql`
         description
         classId
         dueDate
+        date
+        submitted
+      }
+    }
+  }
+`;
+
+export const GET_SUBMISSIONS = gql`
+  query Query($classId: String, $assignmentId: String, $page: Int) {
+    getStudentSubmissions(classId: $classId, assignmentId: $assignmentId, page: $page) {
+      total
+      submissions {
+        id
+        assignmentId
+        userId
         date
       }
     }

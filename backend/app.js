@@ -152,6 +152,7 @@ const typeDefs = gql`
     classId: ID
     dueDate: String
     date: String
+    submitted: String
   }
 
   type Submission {
@@ -212,6 +213,7 @@ const typeDefs = gql`
     getAnnouncements(page: Int, classId: String): AnnouncementPage
     getSchools: [School]
     getClassroom(classId: String): Classroom
+    getAssignment(assignmentId: String): Assignment
     getAssignments(classId: String, page: Int): AssignmentPage
     getStudentSubmissions(classId: String, assignmentId: String, page: Int): SubmissionPage
     getVolunteerPositions(page: Int): VolunteerPositionPage
@@ -303,7 +305,7 @@ const resolvers = {
       return "user not logged in";
     },
 
-    getStudyRooms: getStudyRoomsQuery,
+    getStudyRooms: combineResolvers(isAuthenticated, getStudyRoomsQuery),
 
     ...ClassroomResolver.query,
     ...VolunteerPositionResolver.query,

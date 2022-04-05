@@ -1,5 +1,5 @@
 const { UserInputError, ApolloError, ForbiddenError } = require("apollo-server-core");
-const { ConflictError } = require("../apollo-errors");
+const { ConflictError, NotFoundError } = require("../apollo-errors");
 const Classroom = require("../models/Classroom");
 const Announcement = require("../models/Announcement");
 const Assignment = require("../models/Assignment");
@@ -142,7 +142,7 @@ const ClassroomResolver = {
 
         if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
 
-        const sub = await Submission.findOne({userId: user._id, assignmentId});
+        const sub = await Submission.findOne({userId: user.email, assignmentId});
         if (sub) await Submission.deleteOne(sub);
 
         const stream = createReadStream();
@@ -152,7 +152,7 @@ const ClassroomResolver = {
         const out = fs.createWriteStream(`./uploads/${id}`);
         stream.pipe(out);
         await finished(out);
-        const submission = await Submission.create({userId: user._id, filename, mimetype, encoding, assignmentId, path: `./uploads/${id}`});
+        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: `./uploads/${id}`});
         if (!submission) throw new ConflictError('internal server error');
 
         return true;
@@ -245,12 +245,45 @@ const ClassroomResolver = {
           .limit(10)
           .exec();
 
-        assignments.forEach((x) => {
-          x.date = x.createdAt;
-          x.id = x._id;
+        const submissions = await Submission.find({userId: user.email, 
+          assignmentId: {$in: assignments.map(x => x.id)}});
+
+        const submittedAssignments = submissions.map(x => x.assignmentId.toString());
+
+        const newAssign = assignments.map((x) => {
+          const index = submittedAssignments.indexOf(x.id.toString());
+
+          return {
+            name: x.name,
+            description: x.description,
+            classId: x.classId,
+            dueDate: x.dueDate,
+            date: x.createdAt,
+            id: x._id,
+            name: x.name,
+            submitted: (index >= 0) ? submissions[index].createdAt : null
+          }
         });
 
-        return {total, assignments};
+        return {total, assignments: newAssign};
+    }),
+    getAssignment: combineResolvers(
+      isAuthenticated,
+      async (parent, args, context) => {
+        const { assignmentId } = args;
+        const user = context.session.user;
+
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) throw new NotFoundError('assignment not found');
+
+        const inClass = await ClassroomUser.findOne({userEmail: user.email, classId: assignment.classId});
+        if (!inClass) throw new ForbiddenError('user not in classroom');
+
+        const submission = await Submission.findOne({userId: user.email, assignmentId});
+
+        assignment.submmited = (submission) ? submission.createdAt : null;
+        assignment.date = assignment.createdAt;
+        return assignment;
     }),
     getStudentSubmissions: combineResolvers(
       isAuthenticated,

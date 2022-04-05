@@ -7,6 +7,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { DataGrid } from "@mui/x-data-grid";
 import { GET_ASSIGNMENTS } from "../../../graphql/Querys";
 import { useAlert } from "react-alert";
+import AddIcon from "@mui/icons-material/Add";
 
 const ViewAssignment = () => {
   const { id } = useParams();
@@ -55,7 +56,13 @@ const ViewAssignment = () => {
       <CustomAppBar
         title="Assignments"
         icon={<AssignmentIcon />}
-      ></CustomAppBar>
+      >
+        <Link to={`/teacher/classrooms/${id}/newAssignment`} style={{ textDecoration: 'none' }}>
+          <Button variant="contained" endIcon={<AddIcon />} sx={{margin: "1em"}}>
+            New Assignment
+          </Button>
+        </Link>
+      </CustomAppBar>
       <DataGrid
         page={pageNum}
         onPageChange={(nextPageNum) => setPageNum(nextPageNum)}
@@ -72,7 +79,7 @@ const ViewAssignment = () => {
             align: "center",
             renderCell: (params) => {
               return (
-                <Link to={`/teacher/classrooms/${params.row.id}`}>
+                <Link to={`/teacher/classrooms/${id}/assignments/${params.row.id}`}>
                   <Button variant="outlined" color="success">
                     View
                   </Button>
@@ -86,6 +93,7 @@ const ViewAssignment = () => {
         rows={pageData}
         paginationMode="server"
         rowCount={totalRows}
+        rowsPerPageOptions={[10]}
       />
     </Box>
   );

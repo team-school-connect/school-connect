@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CustomAppBar from "../../appbar/CustomAppBar";
-import NewAssignmentFrom from "./NewAssignmentForm";
+import NewAssignmentForm from "./NewAssignmentForm";
 import { useParams } from "react-router-dom";
 
 const NewAssignmentPage = () => {
@@ -17,7 +17,7 @@ const NewAssignmentPage = () => {
       }}
     >
       <CustomAppBar title="New Assignment" icon={<AssignmentIcon />}></CustomAppBar>
-      <NewAssignmentFrom id={id} />
+      <NewAssignmentForm id={id} />
     </Box>
   );
 };

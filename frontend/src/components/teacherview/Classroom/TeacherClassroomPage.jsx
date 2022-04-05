@@ -7,6 +7,7 @@ import CustomAppBar from "../../appbar/CustomAppBar";
 
 import { Box, Button, Grid, TablePagination } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import ClassIcon from "@mui/icons-material/Class";
 import { useAlert } from "react-alert";
 import Announcement from "../../annoucement/Announcement";
@@ -77,9 +78,9 @@ const TeacherClassroomPage = () => {
             New Announcement
           </Button>
         </Link>
-        <Link to="newAssignment" style={{ textDecoration: 'none' }}>
-          <Button variant="contained" endIcon={<AddIcon />} sx={{margin: "1em"}}>
-            New Assignment
+        <Link to="assignments" style={{ textDecoration: 'none' }}>
+          <Button variant="contained" endIcon={<AssignmentIcon />} sx={{margin: "1em"}}>
+            Assignments
           </Button>
         </Link>
       </CustomAppBar>

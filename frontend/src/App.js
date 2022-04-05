@@ -31,8 +31,10 @@ import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunt
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 import { TestUpload } from "./components/TestUpload";
 import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
+import AssignmentPage from "./components/teacherview/Assignment/AssignmentPage"
 import VerifyMessage from "./components/verify/VerifyMessage";
 import Verify from "./components/verify/Verify";
+import StudentAssignmentPage from "./components/studentview/Pages/Assignment/StudentAssignmentPage";
 
 function App() {
   return (
@@ -57,6 +59,7 @@ function App() {
               <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
               <Route path="classrooms/:id" element={<ClassroomPage />} />
+              <Route path="classrooms/:id/assignments" element={<StudentAssignmentPage/>} />
               <Route path="volunteerBoard" element={<VolunteerBoardPage />} />
             </Route>
             <Route path="/teacher" element={<TeacherView />}>
@@ -64,6 +67,7 @@ function App() {
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
               <Route path="classrooms/:id/assignments" element={<ViewAssignment />} />
+              <Route path="classrooms/:id/assignments/:assignId" element={<AssignmentPage/>} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />
