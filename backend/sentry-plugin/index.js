@@ -3,6 +3,13 @@ require("dotenv").config();
 const Sentry = require("@sentry/node");
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+  beforeSend(event) {
+    if (event.extra.variables && event.extra.variables.password) {
+      delete event.extra.variables.password;
+    }
+
+    return event;
+  },
 });
 
 //Some of this code was sourced from https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
@@ -12,7 +19,6 @@ const sentryPlugin = {
       async didEncounterErrors(requestContext) {
         if (!requestContext.operation) return;
 
-        
         for (const error of requestContext.errors) {
           if (error.originalError instanceof ApolloError) {
             Sentry.withScope((scope) => {
