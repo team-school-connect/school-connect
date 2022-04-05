@@ -8,6 +8,7 @@ const AssignmentCard = ({assignId, title, description, date, submitted, updateAs
   const alert = useAlert();
   const dateString = new Date(parseInt(date));
   const [mutate] = useMutation(SUBMIT_ASSIGNMENT);
+  const submitString = (submitted !== null) ? new Date(parseInt(submitted)) : null;
 
   const onChange = async ({
     target: {
@@ -39,7 +40,7 @@ const AssignmentCard = ({assignId, title, description, date, submitted, updateAs
           Due Date: {`${dateString.toDateString()} ${dateString.toLocaleTimeString()}`}
         </Typography>
         <Typography sx={{ textAlign: "center" }} variant="body2">
-          {(submitted) ? 'Submitted' : 'Not Submitted'}
+          {(submitString !== null) ? `Submitted on ${submitString.toDateString()} ${submitString.toLocaleTimeString()}` : 'Not Submitted'}
         </Typography>
       </CardContent>
       <CardActions>

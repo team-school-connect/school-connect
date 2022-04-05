@@ -24,6 +24,7 @@ const validator = require("validator");
 const { GraphQLUpload, graphqlUploadExpress } = require("graphql-upload");
 const ShortUniqueId = require("short-unique-id");
 const { finished } = require("stream/promises");
+const fs = require('fs');
 
 //server port
 const PORT = 3000;
@@ -54,6 +55,7 @@ const Submission = require("./models/Submission");
 const ClassroomUser = require("./models/ClassroomUser");
 const VerificationCode = require("./models/VerificationCode");
 const { sendVerificationCode, onVerificationCodeSentError } = require("./verification");
+const { sentryPlugin } = require("./sentry-plugin");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -152,7 +154,7 @@ const typeDefs = gql`
     classId: ID
     dueDate: String
     date: String
-    submitted: Boolean
+    submitted: String
   }
 
   type Submission {
@@ -441,7 +443,7 @@ async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer }), sentryPlugin],
     context: ({ req }) => req,
   });
 
@@ -480,6 +482,8 @@ async function startApolloServer(typeDefs, resolvers) {
   await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
 }
+
+if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads');
 
 db.connect();
 

@@ -29,4 +29,5 @@ jobs:
             echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
             echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
             echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> .env
+            echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
             docker-compose pull && docker-compose up -d

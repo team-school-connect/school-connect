@@ -10,6 +10,7 @@ const { isAuthenticated, isAccountType } = require("./AccountCheck");
 const ShortUniqueId = require("short-unique-id");
 const validator = require("validator");
 const fs = require('fs');
+const path = require('path');
 const { finished } = require('stream/promises');
 
 const ClassroomResolver = {
@@ -143,16 +144,19 @@ const ClassroomResolver = {
         if (!validator.isAfter(assignment.dueDate.toString())) throw new ConflictError('due date has passed');
 
         const sub = await Submission.findOne({userId: user.email, assignmentId});
-        if (sub) await Submission.deleteOne(sub);
+        if (sub) {
+          await Submission.deleteOne(sub);
+          fs.unlinkSync(sub.path);
+        }
 
         const stream = createReadStream();
         const uid = new ShortUniqueId({ length: 10 });
         const id = uid();
-        console.log(id);
-        const out = fs.createWriteStream(`./uploads/${id}`);
+        const dest = path.join(process.cwd(), `/uploads/${id}`);
+        const out = fs.createWriteStream(dest);
         stream.pipe(out);
         await finished(out);
-        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: `./uploads/${id}`});
+        const submission = await Submission.create({userId: user.email, filename, mimetype, encoding, assignmentId, classId: assignment.classId, path: dest});
         if (!submission) throw new ConflictError('internal server error');
 
         return true;
@@ -250,13 +254,22 @@ const ClassroomResolver = {
 
         const submittedAssignments = submissions.map(x => x.assignmentId.toString());
 
-        assignments.forEach((x) => {
-          x.date = x.createdAt;
-          x.id = x._id;
-          x.submitted = submittedAssignments.includes(x.id.toString());
+        const newAssign = assignments.map((x) => {
+          const index = submittedAssignments.indexOf(x.id.toString());
+
+          return {
+            name: x.name,
+            description: x.description,
+            classId: x.classId,
+            dueDate: x.dueDate,
+            date: x.createdAt,
+            id: x._id,
+            name: x.name,
+            submitted: (index >= 0) ? submissions[index].createdAt : null
+          }
         });
 
-        return {total, assignments};
+        return {total, assignments: newAssign};
     }),
     getAssignment: combineResolvers(
       isAuthenticated,
@@ -272,7 +285,7 @@ const ClassroomResolver = {
 
         const submission = await Submission.findOne({userId: user.email, assignmentId});
 
-        assignment.submmited = (submission) ? true : false;
+        assignment.submmited = (submission) ? submission.createdAt : null;
         assignment.date = assignment.createdAt;
         return assignment;
     }),
