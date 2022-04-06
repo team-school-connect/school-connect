@@ -8,6 +8,7 @@ const {
 const express = require("express");
 require("dotenv").config();
 const session = require("express-session")({
+  proxy: true,
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
