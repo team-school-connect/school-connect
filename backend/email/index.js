@@ -17,8 +17,8 @@ const sendVerificationEmail = (to, code) => {
     from: process.env.EMAIL_USER,
     to,
     subject: "Verify your SchoolConnect Account",
-    text: `Thank you for signing up for SchoolConnect. Please verify your account by clicking the link below ${link}`,
-    html: `<div><p>Thank you for signing up for SchoolConnect. Please verify by clicking the link below.</p> <a href="${link}">${link}</a></div>`,
+    text: `Thank you for signing up for SchoolConnect. Please verify by copy and pasting the link into your browser ${link}`,
+    html: `<div><p>Thank you for signing up for SchoolConnect. Please verify by copy and pasting the link into your browser</p> <p>${link}</p></div>`,
   };
 
   return transporter.sendMail(message);
@@ -30,14 +30,12 @@ const sendPasswordResetEmail = (to, password) => {
     from: process.env.EMAIL_USER,
     to,
     subject: "Reset your SchoolConnect Account Password",
-    text: `You have requested to reset your SchoolConnect password. Please click the following link to reset your password. ${link}`,
-    html: `<div><p>You have requested to reset your SchoolConnect password. Please click the following link to reset your password.</p> <a href="${link}">${link}</a></div>`,
+    text: `You have requested to reset your SchoolConnect password. Please copy and paste the following link into your browser to reset your password. ${link}`,
+    html: `<div><p>You have requested to reset your SchoolConnect password. Please copy and paste the following link into your browser to reset your password.</p> <p>${link}</p></div>`,
   };
 
   return transporter.sendMail(message);
 };
-
-
 
 exports.sendVerificationEmail = sendVerificationEmail;
 exports.sendPasswordResetEmail = sendPasswordResetEmail;
