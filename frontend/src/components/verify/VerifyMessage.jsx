@@ -24,7 +24,7 @@ const VerifyMessage = () => {
         </Grid>
         <p>
           We have sent an email to you with a verification link. Your account will be deleted in 24h
-          if you do not verify it.
+          if you do not verify it. Allow 1 minute to recieve the email.
         </p>
         <p>Please check your Junk folder if you cannot find the email.</p>
       </Paper>
