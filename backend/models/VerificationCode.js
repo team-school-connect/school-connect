@@ -9,4 +9,4 @@ const VerificationCodeSchema = new Schema({
 
 module.exports = mongoose.model("VerificationCode", VerificationCodeSchema);
 
-//{email:"cwashofcwans3@gmail.com"}
+

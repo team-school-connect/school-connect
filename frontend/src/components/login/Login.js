@@ -6,15 +6,14 @@
  *
  * It has a button to login.
  * */
-import { Grid, Paper, Avatar, TextField, Button } from "@mui/material";
+import { Grid, Paper, Avatar, TextField, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { SIGNIN_MUTATION } from "../../graphql/Mutations";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { GET_ACCOUNT_TYPE_QUERY } from "../../graphql/Querys";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAlert } from "react-alert";
-
 
 export function Login() {
   const [userType, setUserType] = useState("");
@@ -63,7 +62,7 @@ export function Login() {
     <Grid>
       <Paper
         elevation={10}
-        sx={{ padding: 5, borderRadius: 2, height: 300, width: 280, margin: "100px auto" }}
+        sx={{textAlign:"center", padding: 5, borderRadius: 2, height: 300, width: 280, margin: "100px auto", }}
       >
         <Grid align="center">
           <Avatar>
@@ -100,9 +99,11 @@ export function Login() {
           variant="contained"
           onClick={onClickLogin}
           fullWidth
+          sx={{marginBottom: 2}}
         >
           Log in
         </Button>
+        <Link to="/forgotPassword">Forgot your password?</Link>
       </Paper>
     </Grid>
   );

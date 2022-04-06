@@ -154,3 +154,23 @@ export const SUBMIT_ASSIGNMENT = gql`
     submitAssignment(assignmentId: $assignmentId, file: $file)
   }
 `;
+
+export const REQUEST_RESET_PASSWORD_MUTATION = gql`
+  mutation RequestResetPassword($email: String) {
+    requestResetPassword(email: $email) {
+      code
+      success
+      message
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation RequestResetPassword($email: String, $tempPassword: String, $newPassword: String) {
+    resetPassword(email: $email, tempPassword: $tempPassword, newPassword: $newPassword) {
+      code
+      success
+      message
+    }
+  }
+`;
