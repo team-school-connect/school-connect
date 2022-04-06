@@ -23,8 +23,8 @@ const ResetPasswordMessage = () => {
           <h2>Password Reset Email Sent</h2>
         </Grid>
         <p>
-          We have sent an email to you with a link to reset your password if the account exists. The link will expire in
-          1h.
+          We have sent an email to you with a link to reset your password if the account exists. The
+          link will expire in 1h. Allow 1 minute to recieve the email.
         </p>
         <p>Please check your Junk folder if you cannot find the email.</p>
       </Paper>
