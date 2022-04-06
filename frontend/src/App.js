@@ -32,10 +32,13 @@ import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunt
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
 import { TestUpload } from "./components/TestUpload";
 import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
-import AssignmentPage from "./components/teacherview/Assignment/AssignmentPage"
+import AssignmentPage from "./components/teacherview/Assignment/AssignmentPage";
 import VerifyMessage from "./components/verify/VerifyMessage";
 import Verify from "./components/verify/Verify";
 import StudentAssignmentPage from "./components/studentview/Pages/Assignment/StudentAssignmentPage";
+import { RequestResetPassword } from "./components/resetPassword/RequestResetPassword";
+import ResetPasswordMessage from "./components/resetPassword/ResetPasswordMessage";
+import { ResetPassword } from "./components/resetPassword/ResetPassword";
 
 function App() {
   return (
@@ -49,6 +52,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/verify" element={<VerifyMessage />} />
             <Route path="/verify/:code" element={<Verify />} />
+            <Route path="/forgotPassword" element={<RequestResetPassword />} />
+            <Route path="/forgotPassword/sent" element={<ResetPasswordMessage />} />
+            <Route path="/resetPassword/:tempPassword" element={<ResetPassword />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup/student" element={<StudentSignupForm />} />
             <Route path="/signup/administration" element={<AdministrationSignupForm />} />
@@ -60,7 +66,7 @@ function App() {
               <Route path="classrooms" element={<ClassroomListingPage />} />
               <Route path="classrooms/join" element={<JoinClassroomPage />} />
               <Route path="classrooms/:id" element={<ClassroomPage />} />
-              <Route path="classrooms/:id/assignments" element={<StudentAssignmentPage/>} />
+              <Route path="classrooms/:id/assignments" element={<StudentAssignmentPage />} />
               <Route path="volunteerBoard/" element={<StudentVolunteerBoardPage />} />
               <Route path="volunteerBoard/:id" element={<StudentVolunteerPositionPage />} />
             </Route>
@@ -69,7 +75,7 @@ function App() {
               <Route path="classrooms" element={<TeacherClassroomListingPage />} />
               <Route path="classrooms/:id" element={<TeacherClassroomPage />} />
               <Route path="classrooms/:id/assignments" element={<ViewAssignment />} />
-              <Route path="classrooms/:id/assignments/:assignId" element={<AssignmentPage/>} />
+              <Route path="classrooms/:id/assignments/:assignId" element={<AssignmentPage />} />
               <Route path="classrooms/:id/newAnnouncement" element={<NewAnnouncementPage />} />
               <Route path="classrooms/:id/newAssignment" element={<NewAssignmentPage />} />
               <Route path="classrooms/new" element={<NewClassroomPage />} />

@@ -24,4 +24,20 @@ const sendVerificationEmail = (to, code) => {
   return transporter.sendMail(message);
 };
 
+const sendPasswordResetEmail = (to, password) => {
+  const link = `${process.env.ORIGIN}/#/resetPassword/${password}`;
+  let message = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: "Reset your SchoolConnect Account Password",
+    text: `You have requested to reset your SchoolConnect password. Please click the following link to reset your password. ${link}`,
+    html: `<div><p>You have requested to reset your SchoolConnect password. Please click the following link to reset your password.</p> <a href="${link}">${link}</a></div>`,
+  };
+
+  return transporter.sendMail(message);
+};
+
+
+
 exports.sendVerificationEmail = sendVerificationEmail;
+exports.sendPasswordResetEmail = sendPasswordResetEmail;

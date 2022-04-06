@@ -24,7 +24,7 @@ const validator = require("validator");
 const { GraphQLUpload, graphqlUploadExpress } = require("graphql-upload");
 const ShortUniqueId = require("short-unique-id");
 const { finished } = require("stream/promises");
-const fs = require('fs');
+const fs = require("fs");
 
 //server port
 const PORT = 3000;
@@ -56,6 +56,8 @@ const ClassroomUser = require("./models/ClassroomUser");
 const VerificationCode = require("./models/VerificationCode");
 const { sendVerificationCode, onVerificationCodeSentError } = require("./verification");
 const { sentryPlugin } = require("./sentry-plugin");
+const { sendPasswordReset, onPasswordResetSentError } = require("./resetPassword");
+const ResetPassword = require("./models/ResetPassword");
 const io = require("socket.io")(httpServer, {
   cors: corsOptions,
 });
@@ -247,6 +249,9 @@ const typeDefs = gql`
 
     verifyAccount(code: String): MutationResponse
 
+    requestResetPassword(email: String): MutationResponse
+    resetPassword(email: String, tempPassword: String, newPassword: String): MutationResponse
+
     createClassroom(name: String): Classroom
     createAnnouncement(title: String, content: String, classId: String): Announcement
     joinClassroom(classCode: String): MutationResponse
@@ -423,6 +428,57 @@ const resolvers = {
       context.session.destroy();
       return { code: 200, success: true, message: "user logged out" };
     },
+    requestResetPassword: async (parent, args, content) => {
+      const { email } = args;
+      if (!validator.isEmail(email)) throw new UserInputError(`${email} is not a valid email`);
+
+      const user = await User.findOne({ email });
+
+      if (user == null) {
+        return { code: 200, success: true, message: "email sent if valid" };
+      }
+
+      try {
+        await sendPasswordReset(user._id, email);
+        return { code: 200, success: true, message: "email sent if valid" };
+      } catch (err) {
+        console.log(err);
+        onPasswordResetSentError(user._id);
+        throw new ApolloError("Something went wrong. Try again later.");
+      }
+    },
+    resetPassword: async (parent, args, content) => {
+      const { email, tempPassword, newPassword } = args;
+
+      if (!newPassword) throw new UserInputError("New password is not valid.");
+
+      const user = await User.findOne({ email });
+
+      if (user == null) throw new NotFoundError("User with the email provided doesn't exist");
+
+      const passwordEntry = await ResetPassword.findOne({ userId: user._id });
+
+      if (passwordEntry == null)
+        throw new NotFoundError(
+          "Reset password expired or does not exist. Please request for a new password reset."
+        );
+
+      const isValid = await bcrypt.compare(tempPassword, passwordEntry.hash);
+      if (!isValid) {
+        throw new ForbiddenError("access denied");
+      }
+
+      //change the password
+      try {
+        const newHash = await bcrypt.hash(newPassword, 10);
+        await User.findByIdAndUpdate(user._id, { hash: newHash });
+        ResetPassword.deleteMany({ userId: user._id }).exec();
+        return { code: 200, success: true, message: "email sent if valid" };
+      } catch (err) {
+        console.log(err);
+        throw new ApolloError("internal server error");
+      }
+    },
     createStudyRoom: combineResolvers(isAuthenticated, createStudyRoomMutation),
     ...ClassroomResolver.mutation,
     ...VolunteerPositionResolver.mutation,
@@ -483,7 +539,7 @@ async function startApolloServer(typeDefs, resolvers) {
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
 }
 
-if (!fs.existsSync('./uploads')) fs.mkdirSync('./uploads');
+if (!fs.existsSync("./uploads")) fs.mkdirSync("./uploads");
 
 db.connect();
 

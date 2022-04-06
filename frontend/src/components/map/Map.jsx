@@ -61,7 +61,7 @@ const Map = (props) => {
     };
     const mapContainerStyle = {
         height: "50vh",
-        width: "80vw",
+        width: "70vw",
         // center the map
 
       };
