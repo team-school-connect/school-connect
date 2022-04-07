@@ -83,7 +83,19 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 
 ## Contributions
 
-**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number). 
+**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
+
+### Yusuf Khan
+- Video Chat (Everything)
+- Whiteboard Socket.IO integration
+- Classroom Listing and Announcement Pages and Forms (Frontend)
+- Home Page
+- Deployment
+- Account email verification
+- Account password reset
+- Left navigation bar for all pages
+- Sentry.io Error Tracking
+
 
 # One more thing? 
 
