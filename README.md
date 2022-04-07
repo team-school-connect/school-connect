@@ -98,9 +98,16 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 
 ### Rakshit Patel
 - Volunteer Board (Everything)
-- Login/Signup (Frontend)
 - Google Maps Integration
-- Setup Apollo on Frontend
+- Login/Signup (Frontend)
+- Setup Apollo (Frontend)
+
+### Raymond
+- Setup Apollo GraphQL (Backend)
+- Accounts (Everything except verification)
+- Classrooms
+	- Backend for everything
+	- Frontend for assignments
 
 
 # One more thing? 
