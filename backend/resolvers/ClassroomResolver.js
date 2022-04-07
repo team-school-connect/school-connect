@@ -129,6 +129,7 @@ const ClassroomResolver = {
       assignment.date = assignment.createdAt;
       return assignment;
     }),
+    // Some of this code was sourced from https://www.apollographql.com/docs/apollo-server/data/file-uploads/
     submitAssignment: combineResolvers(
       isAuthenticated,
       isAccountType(["STUDENT"]),
