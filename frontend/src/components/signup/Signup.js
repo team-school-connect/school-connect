@@ -1,13 +1,12 @@
 /**
  * This component is responsible for the signup form.
- * It will have 3 buttons:
+ * It will have 2 buttons:
  *  1. Student Login
  *  2. Administration Login
  *
  * Depending on which user type is chosen, the appropriate signup page will be shown.
  * */
 import { Grid, Paper, Button } from "@mui/material";
-//  import { useState } from 'react';
 import { Link } from "react-router-dom";
 
 export function Signup() {

@@ -110,7 +110,6 @@ export function TeacherSignupForm() {
           fullWidth
           required
         />
-        {/* <TextField label='School Name' inputProps={{readOnly: true}} defaultValue={schoolName} fullWidth required/> */}
         <Button
           disabled={isButtonDisabled}
           type="submit"

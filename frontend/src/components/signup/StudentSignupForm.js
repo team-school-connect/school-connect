@@ -9,7 +9,6 @@
  *
  * It has a button to login.
  * */
-//  import { makeStyles } from '@material-ui/core/styles';
 import {
   Grid,
   Paper,
@@ -43,7 +42,6 @@ export function StudentSignupForm() {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const alert = useAlert();
-  //make it async
   const onClickSignup = async () => {
     //Send request to server to check if user is valid
     try {
@@ -120,7 +118,7 @@ export function StudentSignupForm() {
           fullWidth
           required
         />
-        {/* Have a Drop down selection for the school*/}
+        {/* Drop down selection for the school*/}
         <FormControl fullWidth sx={{ marginBottom: "1em" }}>
           <InputLabel id="label">Select School</InputLabel>
           <Select

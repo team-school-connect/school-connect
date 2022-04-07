@@ -86,7 +86,6 @@ const StudentVolunteerBoardPage = () => {
         pageSize={10}
         pagination
         columns={[
-          //Make the fields expandable
           { field: "Organization", flex: 1, headerAlign: "center", align: "center", expandable: true },
           { field: "Position", flex: 1, headerAlign: "center", align: "center"},
           { field: "Location", flex: 1, headerAlign: "center", align: "center"},
@@ -109,7 +108,6 @@ const StudentVolunteerBoardPage = () => {
             disableReorder: true,
           },
         ]}
-        //make each row expandable and show the description
         expandableRows={true}
         rows={pageData}
         paginationMode="server"
@@ -121,34 +119,6 @@ const StudentVolunteerBoardPage = () => {
         detailPanelExpandedRowIds={detailPanelExpandedRowIds}
         onDetailPanelExpandedRowIdsChange={handleDetailPanelExpandedRowIdsChange}
       />
-
-      {/* <TableContainer>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Organization</TableCell>
-              <TableCell>Position</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pageData.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.Organization}</TableCell>
-                <TableCell>{row.Position}</TableCell>
-                <TableCell>{row.Location}</TableCell>
-                <TableCell>{row["Start Date"]}</TableCell>
-                <TableCell>{row["End Date"]}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
-
-      
-      
     </Box>
   );
 };

@@ -7,13 +7,7 @@ import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
 import { Button, TextField, Box, TextBox, Autocomplete } from "@mui/material";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from "@reach/combobox";
+
 import "@reach/combobox/styles.css";
 import { useAlert } from "react-alert";
 import {
@@ -32,31 +26,13 @@ const NewVolunteerPositionForm = () => {
   const navigate = useNavigate();
   const alert = useAlert();
 
-  // const { init } = usePlacesAutocomplete({
-  //   initOnMount: false, // Disable initializing when the component mounts, default is true
-  // });
-
-  
-
-
-
-  
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "",
     libraries,
   });
-  // const [loading] = useGoogleMapsApi({
-  //   library: "places",
-  //   onLoad: () => init(), // Lazily initializing the hook when the script is ready
-  // });
-  // if(!ready) return "Loading...";
-  // // if (loadError) return "Error loading maps";
-  // // if (!isLoaded) return "Loading Maps";
-  // // init();
 
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
-  // init();
 
   const schema = yup.object().shape({
     organization: yup.string().label("Organization Position").required(),
@@ -147,8 +123,6 @@ const NewVolunteerPositionForm = () => {
                   placeholder: "Volunteer Location",
                 }}
               />
-                
-              {/* </TextField> */}
               <TextField
                 id="startDate"
                 name="startDate"
