@@ -56,7 +56,7 @@ The whiteboard itself is a third-party component called [react-sketch-canvas](ht
 
 Our application is deployed to a Digital Ocean VM with Docker, nginx and acme-companion to handle our SSL certificate.
 
-We have also have continous deployment using Github Actions.
+We have also have continuous deployment using Github Actions.
 If our frontend or backend is modified when pushing to main, our auto deployment action runs. It publishes each of them to the Github Container Registry. Then a deployment action goes into our VM, pulls, builds and runs our containers using ssh-action. All of our sensitive data is stored in Github secrets and we pass them into the containers as environment variables. A lot of the code is based off of lab 10, as our project has a similar structure. 
 
 
@@ -68,9 +68,18 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 
 **Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items. 
 
-1.
-2.
-3. 
+1. Video Chat
+	
+	There were a lot of different edge cases to handle. For example, streams would sometimes be duplicated or the room participant limit wouldn't work if too many people join at the same time. 
+
+2. Account System
+
+	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage all of them.
+
+
+3. Email Verification
+
+	Our domain is blacklisted by UofT, so it was difficult to send emails to a UofT address. Certain words are also blacklisted by UofT including the word "account", which we couldn't use in our account verification email. 
 
 ## Contributions
 
