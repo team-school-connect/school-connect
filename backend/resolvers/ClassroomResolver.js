@@ -1,10 +1,5 @@
 const { UserInputError, ApolloError, ForbiddenError } = require("apollo-server-core");
 const { ConflictError, NotFoundError } = require("../apollo-errors");
-const Classroom = require("../models/Classroom");
-const Announcement = require("../models/Announcement");
-const Assignment = require("../models/Assignment");
-const ClassroomUser = require("../models/ClassroomUser");
-const Submission = require("../models/Submission");
 const { combineResolvers } = require("graphql-resolvers");
 const { isAuthenticated, isAccountType } = require("./AccountCheck");
 const ShortUniqueId = require("short-unique-id");
@@ -12,6 +7,15 @@ const validator = require("validator");
 const fs = require('fs');
 const path = require('path');
 const { finished } = require('stream/promises');
+
+// Models
+const Classroom = require("../models/Classroom");
+const Announcement = require("../models/Announcement");
+const Assignment = require("../models/Assignment");
+const ClassroomUser = require("../models/ClassroomUser");
+const Submission = require("../models/Submission");
+const School = require("../models/School");
+
 
 const ClassroomResolver = {
   mutation: {
@@ -37,7 +41,6 @@ const ClassroomResolver = {
         if (!resClass) throw new ApolloError("internal server error");
 
         resClass.id = resClass._id;
-        console.log(resClass);
 
         const joinClass = await ClassroomUser.create({
           classId: resClass._id,
@@ -125,6 +128,7 @@ const ClassroomResolver = {
       assignment.date = assignment.createdAt;
       return assignment;
     }),
+    // Some of this code was sourced from https://www.apollographql.com/docs/apollo-server/data/file-uploads/
     submitAssignment: combineResolvers(
       isAuthenticated,
       isAccountType(["STUDENT"]),
@@ -164,6 +168,10 @@ const ClassroomResolver = {
     )
   },
   query: {
+    getSchools: async (parent, args, context) => {
+      const schools = await School.find({}).sort({ name: "asc" });
+      return schools;
+    },
     getClassroom: combineResolvers(isAuthenticated, async (parent, args, context) => {
       const { classId } = args;
 

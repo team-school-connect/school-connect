@@ -17,16 +17,7 @@ const StudentVolunteerPositionPage = (props) => {
     },
   });
 
-
   const alert = useAlert();
-
-  // const styles = theme => ({
-  //   root: {
-  //     width: '100%',
-  //     maxWidth: 360,
-  //     backgroundColor: theme.palette.background.paper,
-  //   },
-  // });
 
   return (
     <Box
@@ -58,14 +49,10 @@ const StudentVolunteerPositionPage = (props) => {
           {!loading && data && data.getSingleVolunteerPosition && (
             <Grid sx={ {padding: "1em"}} xs={12}>
               <Box sx={{ padding: "1em" }}>
-                {/* Display the data in an organized manner on a paper*/}
                 <Paper>
                   <Box sx={{ padding: "1em" }}>
                   <List>
                     <ListItem>
-                      {/* <Avatar>
-                        <ImageIcon />
-                      </Avatar> */}
                       <ListItemText primary="Organization:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.organizationName} />
                     </ListItem>
@@ -73,61 +60,35 @@ const StudentVolunteerPositionPage = (props) => {
                       <Divider variant="inset" />
                     </li>
                     <ListItem>
-                      {/* <Avatar>
-                        <WorkIcon />
-                      </Avatar> */}
                       <ListItemText primary="Position:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.positionName} />
                     </ListItem>
                     <Divider variant="inset" component="li" />
                     <ListItem>
-                      {/* <Avatar>
-                        <WorkIcon />
-                      </Avatar> */}
                       <ListItemText primary="Description:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.positionDescription} />
                     </ListItem>
                     <Divider variant="inset" component="li" />
                     <ListItem>
-                      {/* <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar> */}
                       <ListItemText primary="Location:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.location} />
                     </ListItem>
                     <Divider variant="inset" component="li" />
                     <ListItem>
-                      {/* <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar> */}
                       <ListItemText primary="Start Date:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.startDate} />
                     </ListItem>
                     <Divider variant="inset" component="li" />
                     <ListItem>
-                      {/* <Avatar>
-                        <BeachAccessIcon />
-                      </Avatar> */}
                       <ListItemText primary="End Date:" />
                       <ListItemText primary={data.getSingleVolunteerPosition.endDate} />
                     </ListItem>
                   </List>
-                  {/* Show map */}
-                  
                   </Box>
-                  {/* put the map in the center of the box */}
-
                   <Box sx={{ padding: "1em"}}>
                     <Map location={data.getSingleVolunteerPosition.location}></Map>  
                   </Box>
                 </Paper>
-
-                {/* <h2>{data.getSingleVolunteerPosition.organizationName}</h2>
-                <h2>{data.getSingleVolunteerPosition.positionName}</h2>
-                <p>{data.getSingleVolunteerPosition.positionDescription}</p>
-                <p>{data.getSingleVolunteerPosition.location}</p>
-                <p>{data.getSingleVolunteerPosition.startDate}</p>
-                <p>{data.getSingleVolunteerPosition.endDate}</p> */}
               </Box>
             </Grid>
           )}

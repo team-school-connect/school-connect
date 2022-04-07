@@ -11,7 +11,6 @@ import { Typography } from "@material-ui/core";
 
 import studygroupImg from "./homeImages/studygroup.png";
 import classroomImg from "./homeImages/classroom.png";
-import schoolClubImg from "./homeImages/schoolclub.png";
 import volunterImg from "./homeImages/volunteer.png";
 
 export function Home() {
@@ -63,13 +62,6 @@ export function Home() {
           <CardContent>
             <Typography variant="h6">Volunteer Board</Typography>
             <Typography>Post volunteer positions so students from your school can complete their volunteer hours</Typography>
-          </CardContent>
-        </Card>
-        <Card sx={{ margin: "1em", width: 300 }}>
-          <CardMedia sx={{ width: 300, height: 300 }} title="School Clubs" image={schoolClubImg} />
-          <CardContent>
-            <Typography variant="h6">School Clubs</Typography>
-            <Typography>Student can connect with each other through school clubs</Typography>
           </CardContent>
         </Card>
       </Grid>

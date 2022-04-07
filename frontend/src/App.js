@@ -30,7 +30,6 @@ import NewVolunteerPositionPage from "./components/teacherview/NewVolunteerPosit
 import TeacherVolunteerBoardPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerBoardPage";
 import TeacherVolunteerPositionPage from "./components/teacherview/TeacherVolunteerBoard/TeacherVolunteerPositionPage";
 import NewAssignmentPage from "./components/teacherview/NewAssignment/NewAssignmentPage";
-import { TestUpload } from "./components/TestUpload";
 import ViewAssignment from "./components/teacherview/Assignment/ViewAssignment";
 import AssignmentPage from "./components/teacherview/Assignment/AssignmentPage";
 import VerifyMessage from "./components/verify/VerifyMessage";
@@ -47,7 +46,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/test" element={<TestUpload />} />
             <Route path="/credits" element={<Credits />} />
             <Route path="/login" element={<Login />} />
             <Route path="/verify" element={<VerifyMessage />} />

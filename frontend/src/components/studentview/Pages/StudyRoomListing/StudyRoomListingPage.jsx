@@ -22,11 +22,9 @@ const StudyRoomListingPage = () => {
 
   useEffect(() => {
     fetchMore({ variables: { page: pageNum } }).then((data) => {
-      console.log(data);
       setPageData(
         data.data.getStudyRooms.studyRooms.map(
           ({ _id, roomName, subject, participantCount, createdOn }) => {
-            console.log(createdOn);
             return {
               id: _id,
               "Room Name": roomName,

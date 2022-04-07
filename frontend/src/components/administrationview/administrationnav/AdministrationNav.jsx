@@ -25,7 +25,6 @@ const AdministrationNav = () => {
       navigate("/");
     }
     catch(err){
-      console.log(err);
       alert.error("Error signing out");
     }
   };

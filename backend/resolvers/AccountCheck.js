@@ -1,3 +1,4 @@
+// Adapted from https://www.robinwieruch.de/graphql-resolver-middleware/
 const { AuthenticationError, ForbiddenError} = require('apollo-server-core');
 const { skip } = require("graphql-resolvers");
 

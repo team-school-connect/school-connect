@@ -22,8 +22,6 @@ const NewAnnouncementForm = ({ id }) => {
   });
 
   const submit = async (values) => {
-    console.log(values);
-    console.log(id);
     const { title, content } = values;
     try {
       const announcement = await createAnnoucement({
@@ -33,7 +31,6 @@ const NewAnnouncementForm = ({ id }) => {
       alert.success("Added announcement successfully!");
       navigate(`/teacher/classrooms/${id}`);
     } catch (err) {
-      console.log(err);
       alert.error("Could not create announcement");
     }
   };

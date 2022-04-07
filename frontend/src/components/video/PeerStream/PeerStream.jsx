@@ -6,7 +6,6 @@ const PeerStream = ({ peer, name }) => {
 
   useEffect(() => {
     peer.on("stream", (stream) => {
-      console.log("recieved stream");
       streamRef.current.srcObject = stream;
     });
   }, []);

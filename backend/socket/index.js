@@ -6,7 +6,6 @@ const connect = (io) => {
     socket.emit("sendYourId", socket.id);
 
     socket.on("joinStudyRoom", async (id) => {
-      console.log("joining room " + id);
 
       //only join room if it exists and is not full
       try {
@@ -37,9 +36,6 @@ const connect = (io) => {
 
         //join the room on the server
         socket.join(id);
-        console.log("joined room");
-
-        console.log(roomPeers);
 
         socket.emit(
           "roomPeers",

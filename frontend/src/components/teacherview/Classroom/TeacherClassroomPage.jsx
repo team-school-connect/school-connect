@@ -38,12 +38,10 @@ const TeacherClassroomPage = () => {
   });
 
   useEffect(() => {
-    console.log(classData);
   }, [classData]);
 
   useEffect(() => {
     fetchMore({ variables: { classId: id, page: pageNum } }).then((data) => {
-      console.log(data);
       setPageData(
         data.data.getAnnouncements.announcements.map(({ id, title, content, date }) => {
           return {

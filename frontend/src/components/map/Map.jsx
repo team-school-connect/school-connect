@@ -9,22 +9,28 @@ import {
     GoogleMap,
     useLoadScript,
     Marker,
-    InfoWindow,
-  } from "@react-google-maps/api";
+} from "@react-google-maps/api";
 
-  import usePlacesAutocomplete, {
+import {
     getGeocode,
     getLatLng,
-  } from "use-places-autocomplete";
+} from "use-places-autocomplete";
+import { useAlert } from "react-alert";
 
 
 const libraries = ["places"];
-const Map = (props) => {
-    const {location} = props;
+const torontoCenter = {
+    lat: 43.6532,
+    lng: -79.3832,
+};
+const mapContainerStyle = {
+    height: "50vh",
+    width: "70vw",
+};
+
+const Map = ({location}) => {
     const [lat, setLat] = useState(0);
     const [lng, setLng] = useState(0);
-    console.log("Location: " + location);
-    console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "",
         libraries,
@@ -37,34 +43,24 @@ const Map = (props) => {
         mapRef.current.panTo({ lat, lng });
         mapRef.current.setZoom(16);
     }, []);
+
+    const alert = useAlert();
+    
     const panToAddressCoordinates = async (address) => {
         try {
             const results = await getGeocode({ 'address': location });
             const { lat, lng } = await getLatLng(results[0]);
             setLat(lat);
             setLng(lng);
-            console.log(lat, lng)
             panTo({ lat, lng });
-        } catch (error) {
-            console.log("Problem: ", error);
+        } catch (err) {
+            alert.error(err.toString());
         }
     };
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps";
 
-
-
     panToAddressCoordinates(location);
-    const torontoCenter = {
-        lat: 43.6532,
-        lng: -79.3832,
-    };
-    const mapContainerStyle = {
-        height: "50vh",
-        width: "70vw",
-        // center the map
-
-      };
     return (
         <GoogleMap
             id="map"
