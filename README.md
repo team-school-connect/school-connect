@@ -96,6 +96,12 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 - Left navigation bar for all pages
 - Sentry.io Error Tracking
 
+### Rakshit Patel
+- Volunteer Board (Everything)
+- Login/Signup (Frontend)
+- Google Maps Integration
+- Setup Apollo on Frontend
+
 
 # One more thing? 
 
