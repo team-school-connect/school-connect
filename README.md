@@ -1,149 +1,85 @@
 # SchoolConnect
 
-## Developers:
-- Rakshit Patel (rakshit.patel@mail.utoronto.ca)
-- Yusuf Khan (yusuf.khan@mail.utoronto.ca)
-- Raymond Ma (ray.ma@mail.utoronto.ca)
+## Project URL
 
-## Overview
-SchoolConnect is an online platform where high schools can connect with their students online. Teachers and Students will be part of class rooms where they will be able to share class material and chat with each other. Students also will be able to organize their schedules via a built in calender and view volunteering postions as well as join clubs!
+[https://schoolconnect.tech](https://schoolconnect.tech
+) 
 
-A description of our main features are listed below.
+## Project Video URL 
 
-### Account Types
-There will be three types of accounts:
-    
+**Task:** Provide the link to your youtube video. Please make sure the link works. 
 
-1.  Student Accounts
-    
+## Project Description
 
-	-   Can only be created by a school account
-    
+School Connect is an online education platform where schools can interact with their students. 
 
-2.  Teacher Accounts
-    
+We have three main features, including video study rooms, online classrooms and a volunteer board.
 
-	-   Can only be created by a school account
-    
-	-   Has CRUD abilities for calendar events, classes and clubs
-    
+### Study Rooms
+A place where students from different schools can study together. We implemented a video chat with screen sharing. We also have a collaborative whiteboard that students can do work on.
 
-3.  School Account
-    
-
-	-   Can create new teacher and student accounts
-    
-	-   Due to security matters the developers must be contacted to receive credentials to create a school account. A code will be sent which will allow the creation of a school account.
-    
-
-	-   Teachers can create a class and share an invite code with students to join
-    
-	-   Every class has a live chat area for students to talk to their classmates and teacher
-    
-	-   Students can join multiple classes
-    
-	-   An area where teachers can post volunteer positions available at the school, so students can get hours required for their diploma
-    
-
-### Login Page
-    
-1.  Sign in for students (requires email + password)
-    
-2.  Sign In for teachers (requires email + password)
-    
-3.  School account creation (requires email + password + code)
-    
-
-### Calendar Feature
-
--   Teachers and students get a calendar section in which they can place events. Teachers will be allowed to place events that are public for their chosen classes. These public events will appear on the calendar of all students in that class.
-    
--   Students will also be allowed to subscribe to club events. If a club owner posts an event on the calendar, then all of their subscribers will also have that even show on their calendar.
-    
--   Everyone can add private events that only show up on their own calendar.
-    
--   To add events, the user will have to fill out a form with the start time and end time along with a title and description. If they are a teacher and wish to make the post public, then they can select which class and clubs can see it.
-    
--   Calendar events can also be deleted.
-    
-
-### Clubs
-
--   Teachers can create clubs and club events. Using a form, the teacher can create a new club with a title and description of the club.
-    
--   There will be a separate section that lists all the available clubs students can join where they can read descriptions about the club and see which other students are in that club.
-    
--   If a student wishes to join a club, they can click on “Join” and the club's events will be populated on that student's calendar.
-    
+### Online Classrooms
+---add here---
 
 ### Volunteer Board
+---add here--- 
 
--   Students in high school need to complete 40 hours of volunteer service to graduate
-    
--   Many students have a hard time finding hours to complete
-    
--   This area of our application gives teachers the ability to ask students for help with tasks that they might not be able to complete on their own
-    
--   A teacher first fills out a form which describes the position, how many students they need and how many hours each student will get
-    
--   Then a post is created on the school volunteer board
-    
--   A student then can browse the different postings and contact the teacher through email
-    
 
-### Classroom
 
--   A teacher can create a class interact with their students
-    
--   The teacher first creates their class using a form
-    
--   Once the class is created, a unique code is generated which lets students join the teachers class
-    
--   Then teachers can post announcements, create events and share class assignments and files with their students
-    
 
-### Chat
 
--   Each class room has a chat page
-    
+## Development
 
--   There is only 1 chat for the entire classroom where students can chat with their classmates and teacher in a live chat area
-    
--   Solely text based chat
-    
-## Features Completed in Beta Version
-- Login and Account Types
-- Classroom
-- Calendar Features
-## Features Completed in Final Version
-- Clubs
-- Volunteer Board
-- Chat
-## Tech Stack
+**Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used.
 
--   React
-    
--   MongoDB
-    
--   Express
-    
--   NodeJS
-    
--   Google Cloud for Deployment
-    
--   GraphQL
-    
+`Technolgoies Used: React, Apollo GraphQL, Express, Socket.IO, simple-peer, MongoDB, MUI, react-sketch-canvas, Nodemailer, Mailgun and the Google Maps API.`
 
-  
+### Backend
+On the backend, we use apollo-server-express to run our GraphQL server using Express. We also have a GET endpoint to retrieve student assignment submissions.
+
+Both GraphQL and Socket.IO are run on the same server. A single express-session is shared between GraphQL and Socket.IO for authentication.
+
+To send account verification and password reset emails we Nodemailer with Mailgun.
+
+### Frontend
+Our React frontend uses React Router for client side routing. Most of our components are from the MUI library. 
+
+The video study rooms use simple-peer to share video streams between students. The signal is first sent to the other students in the room using Socket.IO, so the peers can establish a connection. 
+
+The whiteboard itself is a third-party component called [react-sketch-canvas](https://www.npmjs.com/package/react-sketch-canvas), but we used Socket.IO to make it collaborative.
+
+---Add about volunteer board and classrooms---
+
+
+
+## Deployment
+
+**Task:** Explain how you have deployed your application. 
+
+Our application is deployed to a Digital Ocean VM with Docker, nginx and acme-companion to handle our SSL certificate.
+
+We have also have continous deployment using Github Actions.
+If our frontend or backend is modified when pushing to main, our auto deployment action runs. It publishes each of them to the Github Container Registry. Then a deployment action goes into our VM, pulls, builds and runs our containers using ssh-action. All of our sensitive data is stored in Github secrets and we pass them into the containers as environment variables. A lot of the code is based off of lab 10, as our project has a similar structure. 
+
+
+## Maintenance
+
+**Task:** Explain how you monitor your deployed app to make sure that everything is working as expected.
+
+We connected our GraphQL server to Sentry.io for error tracking. Anytime an error happens, it is sent to us. We can track different  
 
 ## Challenges
 
--   Deployment: none of us have experience deploying a web application on a vm.
-    
--   Implementing publisher subscriber system for the calendar events
-    
--   Setting up the account system: There are many different types of accounts with this web application. Managing permissions for each type may be difficult.
-    
--   Implementing real-time chat: Research is required to find out what libraries are needed to allow this to happen.
-    
--   Creating an intuitive and easy to use front-end for all users: this will be a multi page web application with different types of users.
+**Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items. 
+
+1.
+2.
+3. 
+
+## Contributions
+
+**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number). 
+
+# One more thing? 
+
+**Task:** Any additional comment you want to share with the course staff? 
