@@ -54,8 +54,6 @@ The whiteboard itself is a third-party component called [react-sketch-canvas](ht
 
 ## Deployment
 
-**Task:** Explain how you have deployed your application. 
-
 Our application is deployed to a Digital Ocean VM with Docker, nginx and acme-companion to handle our SSL certificate.
 
 We have also have continous deployment using Github Actions.
@@ -64,9 +62,7 @@ If our frontend or backend is modified when pushing to main, our auto deployment
 
 ## Maintenance
 
-**Task:** Explain how you monitor your deployed app to make sure that everything is working as expected.
-
-We connected our GraphQL server to Sentry.io for error tracking. Anytime an error happens, it is sent to us. We can track different  
+We connected our GraphQL server to Sentry.io for error tracking. Anytime an error happens, it is logged in Sentry. We can also see how many resources our VM is using on Digital Ocean.
 
 ## Challenges
 
