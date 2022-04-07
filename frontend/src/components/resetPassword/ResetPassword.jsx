@@ -33,7 +33,7 @@ export function ResetPassword() {
       navigate("/login");
     } catch (err) {
       setIsButtonDisabled(false);
-      console.log(err);
+      // console.log(err);
       alert.error(err.toString());
     }
   };

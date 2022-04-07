@@ -21,7 +21,7 @@ const JoinClassroomForm = () => {
   });
 
   const submit = async (values) => {
-    console.log(values);
+    // console.log(values);
     setIsButtonDisabled(true);
     try {
       await joinClassRoom({
@@ -32,7 +32,7 @@ const JoinClassroomForm = () => {
 
       navigate("/student/classrooms");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error(err.toString());
       setIsButtonDisabled(false);
     }

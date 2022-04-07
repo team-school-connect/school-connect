@@ -22,7 +22,7 @@ export function RequestResetPassword() {
       navigate("/forgotPassword/sent");
     } catch (err) {
       setIsButtonDisabled(false);
-      console.log(err);
+      // console.log(err);
       alert.error(err.toString());
     }
   };

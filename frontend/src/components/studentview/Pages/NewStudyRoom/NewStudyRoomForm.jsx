@@ -55,7 +55,7 @@ const NewStudyRoomForm = () => {
   });
 
   const submit = async (values) => {
-    console.log(values);
+    // console.log(values);
     try {
       const studyRoom = await createStudyRoom({
         variables: { roomName: values.roomName, subject: values.subject },
@@ -64,7 +64,7 @@ const NewStudyRoomForm = () => {
       alert.success("Created study room successfully!");
       navigate("/student/studyRooms");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error("Could not create study room");
     }
   };

@@ -26,7 +26,7 @@ const ViewAssignment = () => {
 
   useEffect(() => {
     fetchMore({ variables: { page: pageNum, classId: id } }).then((data) => {
-      console.log(data);
+      // console.log(data);
       setPageData(
         data.data.getAssignments.assignments.map(({ id, name, date, dueDate }) => {
           const dateString = new Date(parseInt(date));

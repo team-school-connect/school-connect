@@ -26,7 +26,7 @@ const StudentAssignmentPage = () => {
 
   useEffect(() => {
     fetchMore({ variables: { classId: id, page: pageNum } }).then((data) => {
-      console.log(data);
+      // console.log(data);
       setPageData(
         data.data.getAssignments.assignments
       );
@@ -37,7 +37,7 @@ const StudentAssignmentPage = () => {
 
   const updateAssignment = () => {
     fetchMore({ variables: { classId: id, page: pageNum } }).then((data) => {
-      console.log(data);
+      // console.log(data);
       setPageData(
         data.data.getAssignments.assignments
       );

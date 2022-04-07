@@ -22,8 +22,8 @@ const NewAssignmentForm = ({ id }) => {
   });
 
   const submit = async (values) => {
-    console.log(values);
-    console.log(id);
+    // console.log(values);
+    // console.log(id);
     const { title, content, duedate } = values;
     try {
       const announcement = await createAssignment({
@@ -33,7 +33,7 @@ const NewAssignmentForm = ({ id }) => {
       alert.success("Added assignment successfully!");
       navigate(`/teacher/classrooms/${id}`);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error("Could not create assignment");
     }
   };

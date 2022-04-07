@@ -16,7 +16,7 @@ export function TestUpload() {
           files: [file],
         },
       }) {
-        console.log(file);
+        // console.log(file);
         if (validity.valid) mutate({ variables: { assignmentId: String("6240d51b35cbd6b83920f833"), file } });
     }
 

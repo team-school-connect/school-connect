@@ -24,7 +24,7 @@ const ClassroomListingPage = () => {
 
   useEffect(() => {
     fetchMore({ variables: { page: pageNum } }).then((data) => {
-      console.log(data);
+      // console.log(data);
       setPageData(
         data.data.getMyClassrooms.classrooms.map(
           ({ id, name, teacher: { firstName, lastName, email } }) => {

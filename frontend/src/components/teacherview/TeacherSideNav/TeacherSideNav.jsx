@@ -27,7 +27,7 @@ const TeacherSideNav = () => {
       await signout();
       navigate("/");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error("Error signing out");
     }
   };

@@ -16,7 +16,7 @@ const AssignmentCard = ({assignId, title, description, date, submitted, updateAs
       files: [file]
     }
   }) => {
-    console.log(file, assignId);
+    // console.log(file, assignId);
     try {
       if (validity.valid) {
         await mutate({ variables: { assignmentId: assignId, file}});
@@ -24,7 +24,7 @@ const AssignmentCard = ({assignId, title, description, date, submitted, updateAs
         updateAssign();
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error('Error submitting assignment');
     }
   };

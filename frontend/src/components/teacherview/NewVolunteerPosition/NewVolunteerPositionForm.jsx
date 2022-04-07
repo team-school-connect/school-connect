@@ -82,7 +82,7 @@ const NewVolunteerPositionForm = () => {
 
       navigate("/teacher/volunteerBoard");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       alert.error(err.toString());
       setIsButtonDisabled(false);
     }

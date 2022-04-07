@@ -62,7 +62,7 @@ export function StudentSignupForm() {
       navigate("/verify");
     } catch (err) {
       setIsButtonDisabled(false);
-      console.log(err);
+      // console.log(err);
       alert.error("Signup Information is invalid");
     }
   };

@@ -42,16 +42,16 @@ export function TeacherSignupForm() {
       } = await getUsersSchool();
       // setSchoolName(schoolId);
 
-      console.log(schoolId);
+      // console.log(schoolId);
 
-      console.log({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-        schoolId: schoolId,
-        type: "TEACHER",
-      });
+      // console.log({
+      //   firstName: firstName,
+      //   lastName: lastName,
+      //   email: email,
+      //   password: password,
+      //   schoolId: schoolId,
+      //   type: "TEACHER",
+      // });
 
       await signup({
         variables: {
@@ -71,7 +71,7 @@ export function TeacherSignupForm() {
       setPassword("");
     } catch (err) {
       setIsButtonDisabled(false);
-      console.log(err);
+      // console.log(err);
       alert.error("Signup Information is invalid");
     }
   };

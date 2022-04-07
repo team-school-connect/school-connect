@@ -62,7 +62,7 @@ const resolvers = {
   Classroom: {
     teacher: async (parent) => {
       const teacher = await User.findOne({ _id: parent.teacherId });
-      console.log(teacher);
+      // console.log(teacher);
       return teacher;
     },
   },

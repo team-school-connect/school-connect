@@ -33,12 +33,12 @@ const AssignmentPage = () => {
   });
 
   useEffect(() => {
-    console.log(assignData);
+    // console.log(assignData);
   }, [assignData]);
 
   useEffect(() => {
     fetchMore({ variables: { page: pageNum, classId: id, assignmentId: assignId } }).then((data) => {
-      console.log(data);
+      // console.log(data);
       setPageData(
         data.data.getStudentSubmissions.submissions.map(({ id, userId, date }) => {
           const dateString = new Date(parseInt(date));
