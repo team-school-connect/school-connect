@@ -50,7 +50,6 @@ const UserResolver = {
       const { firstName, lastName, email, password, type, schoolId } = args;
       if (!validator.isEmail(email)) throw new UserInputError(`${email} is not a valid email`);
       let user = context.session.user;
-      console.log(user);
 
       if (((user && user.type !== "SCHOOL_ADMIN") || !user) && args.type === "TEACHER") {
         throw new ForbiddenError("cannot create teacher account");
@@ -103,8 +102,6 @@ const UserResolver = {
       const resPassword = await bcrypt.compare(password, user.hash);
       if (!resPassword) throw new ForbiddenError("access denied");
       context.session.user = user;
-      console.log(context.session.user);
-      console.log("LOGGEDIN");
 
       if (!user.isVerified)
         throw new UnverifiedError(

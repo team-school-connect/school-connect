@@ -41,7 +41,6 @@ const ClassroomResolver = {
         if (!resClass) throw new ApolloError("internal server error");
 
         resClass.id = resClass._id;
-        console.log(resClass);
 
         const joinClass = await ClassroomUser.create({
           classId: resClass._id,
