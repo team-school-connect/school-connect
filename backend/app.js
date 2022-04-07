@@ -8,7 +8,7 @@ const session = require("express-session")({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true, sameSite: true }
+  ...(process.env.NODE_ENV === "PRODUCTION" && { cookie: { secure: true, sameSite: true } }),
 });
 const sharedsession = require("express-socket.io-session");
 const http = require("http");
