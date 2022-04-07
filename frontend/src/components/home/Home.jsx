@@ -42,7 +42,7 @@ export function Home() {
           <CardContent>
             <Typography variant="h6">Video Study Groups</Typography>
             <Typography>
-              Students can join video study groups and connect with classmates from their school
+              Students can join video study groups and stay connected with students across different schools with screenshare and a collaborative whiteboard.
             </Typography>
           </CardContent>
         </Card>
@@ -54,7 +54,7 @@ export function Home() {
           />
           <CardContent>
             <Typography variant="h6">Online Classroom</Typography>
-            <Typography>Stay connected with your students with our online classroom</Typography>
+            <Typography>Stay connected with your students with our online classroom. You can give out assignments and make annoucments to your students.</Typography>
           </CardContent>
         </Card>
         <Card sx={{ margin: "1em", width: 300 }}>
