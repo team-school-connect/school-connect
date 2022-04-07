@@ -35,7 +35,6 @@ export const createAlreadyInRoomPeer = (sendingToId, myStream, socket) => {
 
 export const stopStream = (stream) => {
   if (stream) {
-    // console.log("stopping stream");
     stream.getVideoTracks().forEach((track) => {
       track.stop();
     });

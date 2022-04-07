@@ -10,12 +10,13 @@ import {
     useLoadScript,
     Marker,
     InfoWindow,
-  } from "@react-google-maps/api";
+} from "@react-google-maps/api";
 
-  import usePlacesAutocomplete, {
+import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
-  } from "use-places-autocomplete";
+} from "use-places-autocomplete";
+import { useAlert } from "react-alert";
 
 
 const libraries = ["places"];
@@ -35,6 +36,9 @@ const Map = (props) => {
         mapRef.current.panTo({ lat, lng });
         mapRef.current.setZoom(16);
     }, []);
+
+    const alert = useAlert();
+    
     const panToAddressCoordinates = async (address) => {
         try {
             const results = await getGeocode({ 'address': location });
@@ -42,8 +46,8 @@ const Map = (props) => {
             setLat(lat);
             setLng(lng);
             panTo({ lat, lng });
-        } catch (error) {
-            console.log("Problem: ", error);
+        } catch (err) {
+            alert.error(err.toString());
         }
     };
     if (loadError) return "Error loading maps";

@@ -23,9 +23,7 @@ export function TeacherSignupForm() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //  const [schoolName, setSchoolName] = useState("");
   const navigate = useNavigate();
-  //  setSchoolName(data?.getUsersSchool?.schoolId);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -40,18 +38,6 @@ export function TeacherSignupForm() {
           getUsersSchool: { schoolId },
         },
       } = await getUsersSchool();
-      // setSchoolName(schoolId);
-
-      // console.log(schoolId);
-
-      // console.log({
-      //   firstName: firstName,
-      //   lastName: lastName,
-      //   email: email,
-      //   password: password,
-      //   schoolId: schoolId,
-      //   type: "TEACHER",
-      // });
 
       await signup({
         variables: {
@@ -71,7 +57,6 @@ export function TeacherSignupForm() {
       setPassword("");
     } catch (err) {
       setIsButtonDisabled(false);
-      // console.log(err);
       alert.error("Signup Information is invalid");
     }
   };

@@ -44,7 +44,6 @@ export function AdministrationSignupForm() {
       navigate("/verify");
     } catch (err) {
       setIsButtonDisabled(false);
-      // console.log(err);
       alert.error("Signup Information is invalid");
     }
   };

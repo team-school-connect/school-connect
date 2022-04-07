@@ -212,7 +212,6 @@ const typeDefs = gql`
     ): MutationResponse
 
     submitAssignment(assignmentId: String, file: Upload!): Boolean
-    testUpload(file: Upload!): Boolean
   }
 `;
 

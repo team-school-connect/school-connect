@@ -52,7 +52,6 @@ export function Login() {
       }
     } catch (err) {
       setIsButtonDisabled(false);
-      console.log(err);
       alert.error(err.toString());
     }
   };

@@ -21,7 +21,6 @@ const NewClassroomForm = () => {
   });
 
   const submit = async (values) => {
-    // console.log(values);
     setIsButtonDisabled(true);
     try {
       await createClassRoom({
@@ -32,7 +31,6 @@ const NewClassroomForm = () => {
 
       navigate("/teacher/classrooms");
     } catch (err) {
-      // console.log(err);
       alert.error(err.toString());
       setIsButtonDisabled(false);
     }

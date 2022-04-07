@@ -118,7 +118,7 @@ const StudyRoom = () => {
           socket.current.emit("sendWhiteboard", { to: id, paths });
         })
         .catch((err) => {
-          // console.log(err);
+          alert.error(err.toString());
         });
     });
 
@@ -201,7 +201,7 @@ const StudyRoom = () => {
 
       setIsSharingScreen(true);
     } catch (err) {
-      // console.log(err);
+      alert.error(err.toString());
       setIsSharingScreen(false);
       myStreamRef.current.srcObject = camera;
     }
@@ -223,7 +223,7 @@ const StudyRoom = () => {
       });
       setIsSharingScreen(false);
     } catch (err) {
-      // console.log(err);
+      alert.error(err.toString());
       myStreamRef.current.srcObject = camera;
     }
   };

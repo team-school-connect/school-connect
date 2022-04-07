@@ -8,7 +8,6 @@ const ColorPicker = ({ onColorChange }) => {
   const [color, setColor] = useState("black");
 
   useEffect(() => {
-    // console.log("color change");
   }, [color]);
 
   return (

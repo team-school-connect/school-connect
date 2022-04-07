@@ -62,7 +62,6 @@ export function StudentSignupForm() {
       navigate("/verify");
     } catch (err) {
       setIsButtonDisabled(false);
-      // console.log(err);
       alert.error("Signup Information is invalid");
     }
   };
@@ -137,7 +136,6 @@ export function StudentSignupForm() {
             {data &&
               data.getSchools &&
               data.getSchools.map((school) => {
-                // console.log(school.name);
                 return (
                   <MenuItem key={school.name} value={school.name}>
                     {school.name}
