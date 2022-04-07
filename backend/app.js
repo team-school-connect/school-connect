@@ -27,8 +27,6 @@ const PORT = 3000;
 //models
 const Classroom = require("./models/Classroom");
 const User = require("./models/User");
-const School = require("./models/School");
-// const VolunteerPosition = require("./models/VolunteerPosition");
 
 // Resolvers
 const createStudyRoomMutation = require("./socket/mutations/CreateStudyRoomMutation");
@@ -74,11 +72,6 @@ const resolvers = {
     ...UserResolver.query,
     ...ClassroomResolver.query,
     ...VolunteerPositionResolver.query,
-
-    getSchools: async (parent, args, context) => {
-      const schools = await School.find({}).sort({ name: "asc" });
-      return schools;
-    },
   },
   Mutation: {
     ...UserResolver.mutation,
