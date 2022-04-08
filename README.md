@@ -4,7 +4,8 @@
 
 [https://schoolconnect.tech](https://schoolconnect.tech)
 
-### Teacher Demo Account Credentials:
+### Demo Account Credentials:
+#### Teacher
 - Username: teach1@school.com
 - Password: password
 
