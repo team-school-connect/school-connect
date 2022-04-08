@@ -7,7 +7,7 @@
 
 ## Project Video URL 
 
-**Task:** Provide the link to your youtube video. Please make sure the link works. 
+[https://youtu.be/QiHf6FJqD_M](https://youtu.be/QiHf6FJqD_M)
 
 ## Project Description
 
@@ -27,8 +27,6 @@ Teachers can post volunteer positions which includes relevant information about 
 
 
 ## Development
-
-**Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used.
 
 `Technolgoies Used: React, Apollo GraphQL, Express, Socket.IO, simple-peer, MongoDB, MUI, react-sketch-canvas, Nodemailer, Mailgun and the Google Maps API.`
 
@@ -67,9 +65,6 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 To track the google maps API usage, error rate and latency we use the Google Cloud Platform metrics dashboard.
 
 ## Challenges
-
-**Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items. 
-
 1. Video Chat
 	
 	There were a lot of different edge cases to handle. For example, streams would sometimes be duplicated or the room participant limit wouldn't work if too many people join at the same time. 
@@ -84,8 +79,6 @@ To track the google maps API usage, error rate and latency we use the Google Clo
 	Our domain is blacklisted by UofT, so it was difficult to send emails to a UofT address. Certain words are also blacklisted by UofT including the word "account", which we couldn't use in our account verification email. 
 
 ## Contributions
-
-**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number).
 
 ### Yusuf Khan
 - Video Chat (Everything)
