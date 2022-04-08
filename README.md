@@ -1,149 +1,110 @@
 # SchoolConnect
 
-## Developers:
-- Rakshit Patel (rakshit.patel@mail.utoronto.ca)
-- Yusuf Khan (yusuf.khan@mail.utoronto.ca)
-- Raymond Ma (ray.ma@mail.utoronto.ca)
+## Project URL
 
-## Overview
-SchoolConnect is an online platform where high schools can connect with their students online. Teachers and Students will be part of class rooms where they will be able to share class material and chat with each other. Students also will be able to organize their schedules via a built in calender and view volunteering postions as well as join clubs!
+[https://schoolconnect.tech](https://schoolconnect.tech
+) 
 
-A description of our main features are listed below.
+## Project Video URL 
 
-### Account Types
-There will be three types of accounts:
-    
+[https://youtu.be/QiHf6FJqD_M](https://youtu.be/QiHf6FJqD_M)
 
-1.  Student Accounts
-    
+## Project Description
 
-	-   Can only be created by a school account
-    
+School Connect is an online education platform where schools can interact with their students. 
 
-2.  Teacher Accounts
-    
+We have three main features, including video study rooms, online classrooms and a volunteer board.
 
-	-   Can only be created by a school account
-    
-	-   Has CRUD abilities for calendar events, classes and clubs
-    
+### Study Rooms
+A place where students from different schools can study together. We implemented a video chat with screen sharing. We also have a collaborative whiteboard that students can do work on.
 
-3.  School Account
-    
-
-	-   Can create new teacher and student accounts
-    
-	-   Due to security matters the developers must be contacted to receive credentials to create a school account. A code will be sent which will allow the creation of a school account.
-    
-
-	-   Teachers can create a class and share an invite code with students to join
-    
-	-   Every class has a live chat area for students to talk to their classmates and teacher
-    
-	-   Students can join multiple classes
-    
-	-   An area where teachers can post volunteer positions available at the school, so students can get hours required for their diploma
-    
-
-### Login Page
-    
-1.  Sign in for students (requires email + password)
-    
-2.  Sign In for teachers (requires email + password)
-    
-3.  School account creation (requires email + password + code)
-    
-
-### Calendar Feature
-
--   Teachers and students get a calendar section in which they can place events. Teachers will be allowed to place events that are public for their chosen classes. These public events will appear on the calendar of all students in that class.
-    
--   Students will also be allowed to subscribe to club events. If a club owner posts an event on the calendar, then all of their subscribers will also have that even show on their calendar.
-    
--   Everyone can add private events that only show up on their own calendar.
-    
--   To add events, the user will have to fill out a form with the start time and end time along with a title and description. If they are a teacher and wish to make the post public, then they can select which class and clubs can see it.
-    
--   Calendar events can also be deleted.
-    
-
-### Clubs
-
--   Teachers can create clubs and club events. Using a form, the teacher can create a new club with a title and description of the club.
-    
--   There will be a separate section that lists all the available clubs students can join where they can read descriptions about the club and see which other students are in that club.
-    
--   If a student wishes to join a club, they can click on “Join” and the club's events will be populated on that student's calendar.
-    
+### Online Classrooms
+Teachers can create their own classrooms for students to join via a code. Announcements can be made by the teacher to be shared with everyone in the class. Teachers also have the option to create assignments with due dates.
+Students can upload their work and teachers can download and view their submissions.
 
 ### Volunteer Board
+Teachers can post volunteer positions which includes relevant information about the position such as description, location, organization etc. The positions posted by the teacher will be visible to all students. Both students and teachers can view the positions and see all relevant information. There is also a map that the user can look at to see where the position is located.
 
--   Students in high school need to complete 40 hours of volunteer service to graduate
-    
--   Many students have a hard time finding hours to complete
-    
--   This area of our application gives teachers the ability to ask students for help with tasks that they might not be able to complete on their own
-    
--   A teacher first fills out a form which describes the position, how many students they need and how many hours each student will get
-    
--   Then a post is created on the school volunteer board
-    
--   A student then can browse the different postings and contact the teacher through email
-    
 
-### Classroom
+## Development
 
--   A teacher can create a class interact with their students
-    
--   The teacher first creates their class using a form
-    
--   Once the class is created, a unique code is generated which lets students join the teachers class
-    
--   Then teachers can post announcements, create events and share class assignments and files with their students
-    
+`Technolgoies Used: React, Apollo GraphQL, Express, Socket.IO, simple-peer, MongoDB, MUI, react-sketch-canvas, Nodemailer, Mailgun and the Google Maps API.`
 
-### Chat
+### Backend
+On the backend, we use apollo-server-express to run our GraphQL server using Express. We also have a GET endpoint to retrieve student assignment submissions for teachers.
 
--   Each class room has a chat page
-    
+Both GraphQL and Socket.IO are run on the same server. A single express-session is shared between GraphQL and Socket.IO for authentication.
 
--   There is only 1 chat for the entire classroom where students can chat with their classmates and teacher in a live chat area
-    
--   Solely text based chat
-    
-## Features Completed in Beta Version
-- Login and Account Types
-- Classroom
-- Calendar Features
-## Features Completed in Final Version
-- Clubs
-- Volunteer Board
-- Chat
-## Tech Stack
+To send account verification and password reset emails we Nodemailer with Mailgun.
 
--   React
-    
--   MongoDB
-    
--   Express
-    
--   NodeJS
-    
--   Google Cloud for Deployment
-    
--   GraphQL
-    
+Uploading files through GraphQl was done through the [graphql-upload](https://www.npmjs.com/package/graphql-upload) library which enables GraphQL multipart requests. Student submissions are stored locally on the VM. The path to the student's submission is stored in MongoDB.
 
-  
+### Frontend
+Our React frontend uses React Router for client side routing. Most of our components are from the MUI library. 
+
+The video study rooms use simple-peer to share video streams between students. The signal is first sent to the other students in the room using Socket.IO, so the peers can establish a connection. 
+
+The whiteboard itself is a third-party component called [react-sketch-canvas](https://www.npmjs.com/package/react-sketch-canvas), but we used Socket.IO to make it collaborative.
+
+The volunteer board also uses MUI components to diplay a DataGrid of all the volunteers positions. Each of the positions can be viewed in detail on a separate page. The Paper component is used to display the position details in a simplistic and clean manner. There is also google maps integration which displays a map with the positon location. This was done using the Maps JavaScript API and Geocoding API from Google Cloud Platform. To create a new position, there is a Formik form. The form is validated using Yup. For the location field, we also have autocomplete functionality using the Places API from Google Cloud Platform.
+
+The assignments feature was created with some components from MUI. The Cards component was used for showing the assignment info for students. The Datagrid component is used to show a record of student submissions in a compact way. The teacher can sort by email or submission time. 
+
+## Deployment
+
+Our application is deployed to a Digital Ocean VM with Docker, nginx and acme-companion to handle our SSL certificate.
+
+We have also have continuous deployment using Github Actions.
+If our frontend or backend is modified when pushing to main, our auto deployment action runs. It publishes each of them to the Github Container Registry. Then a deployment action goes into our VM, pulls, builds and runs our containers using ssh-action. All of our sensitive data is stored in Github secrets and we pass them into the containers as environment variables. A lot of the code is based off of lab 10, as our project has a similar structure. 
+
+
+## Maintenance
+
+We connected our GraphQL server to Sentry.io for error tracking. Anytime an error happens, it is logged in Sentry. We can also see how many resources our VM is using on Digital Ocean.
+
+To track the google maps API usage, error rate and latency we use the Google Cloud Platform metrics dashboard.
 
 ## Challenges
+1. Video Chat
+	
+	There were a lot of different edge cases to handle. For example, streams would sometimes be duplicated or the room participant limit wouldn't work if too many people join at the same time. 
 
--   Deployment: none of us have experience deploying a web application on a vm.
-    
--   Implementing publisher subscriber system for the calendar events
-    
--   Setting up the account system: There are many different types of accounts with this web application. Managing permissions for each type may be difficult.
-    
--   Implementing real-time chat: Research is required to find out what libraries are needed to allow this to happen.
-    
--   Creating an intuitive and easy to use front-end for all users: this will be a multi page web application with different types of users.
+2. Account System
+
+	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage interactions between all of them.
+
+
+3. Email Verification
+
+	Our domain is blacklisted by UofT, so it was difficult to send emails to a UofT address. Certain words are also blacklisted by UofT including the word "account", which we couldn't use in our account verification email. 
+
+## Contributions
+
+### Yusuf Khan
+- Video Chat (Everything)
+- Whiteboard Socket.IO integration
+- Classroom Listing and Announcement Pages and Forms (Frontend)
+- Home Page
+- Deployment
+- Account email verification
+- Account password reset
+- Left navigation bar for all pages
+- Sentry.io Error Tracking
+
+### Rakshit Patel
+- Volunteer Board (Everything)
+- Google Maps Integration
+- Login/Signup (Frontend)
+- Setup Apollo (Frontend)
+
+### Raymond Ma
+- Setup Apollo GraphQL (Backend)
+- Accounts (Everything except verification)
+- Classrooms
+	- Backend for everything
+	- Frontend for assignments
+
+
+# One more thing? 
+
+**Task:** Any additional comment you want to share with the course staff? 
