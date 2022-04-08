@@ -23,10 +23,7 @@ Teachers can create their own classrooms for students to join via a code. Announ
 Students can upload their work and teachers can download and view their submissions.
 
 ### Volunteer Board
----add here--- 
-
-
-
+Teachers can post volunteer positions which includes relevant information about the position such as description, location, organization etc. The positions posted by the teacher will be visible to all students. Both students and teachers can view the positions and see all relevant information. There is also a map that the user can look at to see where the position is located.
 
 
 ## Development
@@ -51,8 +48,7 @@ The video study rooms use simple-peer to share video streams between students. T
 
 The whiteboard itself is a third-party component called [react-sketch-canvas](https://www.npmjs.com/package/react-sketch-canvas), but we used Socket.IO to make it collaborative.
 
----Add about volunteer board and classrooms---
-
+The volunteer board also uses MUI components to diplay a DataGrid of all the volunteers positions. Each of the positions can be viewed in detail on a separate page. The Paper component is used to display the position details in a simplistic and clean manner. There is also google maps integration which displays a map with the positon location. This was done using the Maps JavaScript API and Geocoding API from Google Cloud Platform. To create a new position, there is a Formik form. The form is validated using Yup. For the location field, we also have autocomplete functionality using the Places API from Google Cloud Platform.
 
 The assignments feature was created with some components from MUI. The Cards component was used for showing the assignment info for students. The Datagrid component is used to show a record of student submissions in a compact way. The teacher can sort by email or submission time. 
 
@@ -68,6 +64,8 @@ If our frontend or backend is modified when pushing to main, our auto deployment
 
 We connected our GraphQL server to Sentry.io for error tracking. Anytime an error happens, it is logged in Sentry. We can also see how many resources our VM is using on Digital Ocean.
 
+To track the google maps API usage, error rate and latency we use the Google Cloud Platform metrics dashboard.
+
 ## Challenges
 
 **Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items. 
@@ -78,7 +76,7 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 
 2. Account System
 
-	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage all of them.
+	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage interactions between all of them.
 
 
 3. Email Verification
