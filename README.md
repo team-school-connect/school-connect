@@ -42,7 +42,7 @@ Both GraphQL and Socket.IO are run on the same server. A single express-session 
 
 To send account verification and password reset emails we Nodemailer with Mailgun.
 
-Uploading files through GraphQl was done through the [graphql-upload](https://www.npmjs.com/package/graphql-upload) library which enables GraphQL multipart requests. Student submissions are stored locally on the VM. The path to the student path submission is stored in MongoDB.
+Uploading files through GraphQl was done through the [graphql-upload](https://www.npmjs.com/package/graphql-upload) library which enables GraphQL multipart requests. Student submissions are stored locally on the VM. The path to the student's submission is stored in MongoDB.
 
 ### Frontend
 Our React frontend uses React Router for client side routing. Most of our components are from the MUI library. 
@@ -54,6 +54,7 @@ The whiteboard itself is a third-party component called [react-sketch-canvas](ht
 ---Add about volunteer board and classrooms---
 
 
+The assignments feature was created with some components from MUI. The Cards component was used for showing the assignment info for students. The Datagrid component is used to show a record of student submissions in a compact way. The teacher can sort by email or submission time. 
 
 ## Deployment
 
