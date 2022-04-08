@@ -71,7 +71,7 @@ To track the google maps API usage, error rate and latency we use the Google Clo
 
 2. Account System
 
-	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage interactions between all of them. We also needed to make sure that only school admins can create new teachers for security reasons, since teachers have elevated permissions such as creating classrooms, volunteer positions and assignments.
+	We have three different types of accounts (student, teacher, school). Each of them have different versions of pages, so it was hard to manage interactions between all of them. We also needed to make sure that only school admins can create new teachers for security reasons, since teachers have elevated permissions such as creating classrooms, volunteer positions and assignments. Overall, We learned how to manage access to different features based on the users accounts.
 
 
 3. Email Verification
