@@ -19,7 +19,8 @@ We have three main features, including video study rooms, online classrooms and 
 A place where students from different schools can study together. We implemented a video chat with screen sharing. We also have a collaborative whiteboard that students can do work on.
 
 ### Online Classrooms
----add here---
+Teachers can create their own classrooms for students to join via a code. Announcements can be made by the teacher to be shared with everyone in the class. Teachers also have the option to create assignments with due dates.
+Students can upload their work and teachers can download and view their submissions.
 
 ### Volunteer Board
 ---add here--- 
@@ -35,11 +36,13 @@ A place where students from different schools can study together. We implemented
 `Technolgoies Used: React, Apollo GraphQL, Express, Socket.IO, simple-peer, MongoDB, MUI, react-sketch-canvas, Nodemailer, Mailgun and the Google Maps API.`
 
 ### Backend
-On the backend, we use apollo-server-express to run our GraphQL server using Express. We also have a GET endpoint to retrieve student assignment submissions.
+On the backend, we use apollo-server-express to run our GraphQL server using Express. We also have a GET endpoint to retrieve student assignment submissions for teachers.
 
 Both GraphQL and Socket.IO are run on the same server. A single express-session is shared between GraphQL and Socket.IO for authentication.
 
 To send account verification and password reset emails we Nodemailer with Mailgun.
+
+Uploading files through GraphQl was done through the [graphql-upload](https://www.npmjs.com/package/graphql-upload) library which enables GraphQL multipart requests. Student submissions are stored locally on the VM. The path to the student path submission is stored in MongoDB.
 
 ### Frontend
 Our React frontend uses React Router for client side routing. Most of our components are from the MUI library. 
@@ -102,7 +105,7 @@ We connected our GraphQL server to Sentry.io for error tracking. Anytime an erro
 - Login/Signup (Frontend)
 - Setup Apollo (Frontend)
 
-### Raymond
+### Raymond Ma
 - Setup Apollo GraphQL (Backend)
 - Accounts (Everything except verification)
 - Classrooms
