@@ -6,8 +6,11 @@
 
 ### Demo Account Credentials:
 #### Teacher
-- Username: teach1@school.com
-- Password: password
+- Username: tim@gmail.com
+- Password: 123
+#### Student
+- Username: bob@gmail.com
+- Password: 123
 
 ## Project Video URL 
 
