@@ -2,8 +2,11 @@
 
 ## Project URL
 
-[https://schoolconnect.tech](https://schoolconnect.tech
-) 
+[https://schoolconnect.tech](https://schoolconnect.tech)
+
+### Teacher Demo Account Credentials:
+- Username: teach1@school.com
+- Password: password
 
 ## Project Video URL 
 
