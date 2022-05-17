@@ -4,14 +4,6 @@
 
 [https://schoolconnect.tech](https://schoolconnect.tech)
 
-### Demo Account Credentials:
-#### Teacher
-- Username: tim@gmail.com
-- Password: 123
-#### Student
-- Username: bob@gmail.com
-- Password: 123
-
 ## Project Video URL 
 
 [https://youtu.be/QiHf6FJqD_M](https://youtu.be/QiHf6FJqD_M)
@@ -110,8 +102,3 @@ To track the google maps API usage, error rate and latency we use the Google Clo
 - Classrooms
 	- Backend for everything
 	- Frontend for assignments
-
-
-# One more thing? 
-
-**Task:** Any additional comment you want to share with the course staff? 
